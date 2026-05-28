@@ -7,10 +7,14 @@ import {
   CheckCircle2,
   ClipboardList,
   Download,
+  LockKeyhole,
+  LogOut,
   RotateCcw,
   Search,
-  Table2
+  Table2,
+  UserRound
 } from "lucide-react";
+import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
 import htmlPlan from "../src/data/htmlPlan.json";
 import excelData from "../src/data/planner.json";
@@ -65,11 +69,21 @@ type RowEdit = {
 };
 
 type StoredState = Record<string, RowEdit>;
+type Account = {
+  username: string;
+  password: string;
+  name: string;
+};
 
 const phaseData = (htmlPlan as { phases: HtmlPhase[] }).phases;
 const syllabusRows = (excelData as { "Syllabus Map": SyllabusRow[] })["Syllabus Map"];
-const storageKey = "gate-me-html-planner-progress-v1";
+const sessionStorageKey = "gate-me-planner-current-user-v1";
+const storageKeyPrefix = "gate-me-html-planner-progress-v2";
 const statuses: Status[] = ["Not Started", "In Progress", "Done", "Backlog"];
+const accounts: Account[] = [
+  { username: "SK001", password: "SK001@123", name: "SK001" },
+  { username: "AR001", password: "AR001@123", name: "AR001" }
+];
 
 const phaseColors: Record<number, string> = {
   1: "#2c9a74",
@@ -189,7 +203,28 @@ function getInitialEdits(): StoredState {
   }, {});
 }
 
+function storageKeyFor(username: string) {
+  return `${storageKeyPrefix}-${username}`;
+}
+
+function readUserProgress(username: string) {
+  const saved = window.localStorage.getItem(storageKeyFor(username));
+  if (!saved) {
+    return getInitialEdits();
+  }
+  try {
+    return { ...getInitialEdits(), ...JSON.parse(saved) };
+  } catch {
+    return getInitialEdits();
+  }
+}
+
 export default function PlannerPage() {
+  const [currentUser, setCurrentUser] = useState<Account | null>(null);
+  const [isAuthReady, setIsAuthReady] = useState(false);
+  const [loginUsername, setLoginUsername] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [edits, setEdits] = useState<StoredState>(() => getInitialEdits());
   const [query, setQuery] = useState("");
   const [phase, setPhase] = useState("All");
@@ -199,22 +234,21 @@ export default function PlannerPage() {
   const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
 
   useEffect(() => {
-    const saved = window.localStorage.getItem(storageKey);
-    if (saved) {
-      try {
-        setEdits({ ...getInitialEdits(), ...JSON.parse(saved) });
-      } catch {
-        setEdits(getInitialEdits());
-      }
+    const savedUser = window.localStorage.getItem(sessionStorageKey);
+    const account = accounts.find((item) => item.username === savedUser);
+    if (account) {
+      setCurrentUser(account);
+      setEdits(readUserProgress(account.username));
+      setHasLoadedProgress(true);
     }
-    setHasLoadedProgress(true);
+    setIsAuthReady(true);
   }, []);
 
   useEffect(() => {
-    if (hasLoadedProgress) {
-      window.localStorage.setItem(storageKey, JSON.stringify(edits));
+    if (currentUser && hasLoadedProgress) {
+      window.localStorage.setItem(storageKeyFor(currentUser.username), JSON.stringify(edits));
     }
-  }, [edits, hasLoadedProgress]);
+  }, [currentUser, edits, hasLoadedProgress]);
 
   const phases = useMemo(() => ["All", ...phaseData.map((item) => item.title)], []);
   const subjects = useMemo(() => ["All", ...Array.from(new Set(dayRows.map((row) => row["Main Subject"])))], []);
@@ -310,6 +344,83 @@ export default function PlannerPage() {
     URL.revokeObjectURL(url);
   }
 
+  function handleLogin(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const normalizedUsername = loginUsername.trim().toUpperCase();
+    const account = accounts.find(
+      (item) => item.username === normalizedUsername && item.password === loginPassword
+    );
+    if (!account) {
+      setLoginError("Invalid username or password");
+      return;
+    }
+    setLoginError("");
+    setLoginUsername("");
+    setLoginPassword("");
+    setCurrentUser(account);
+    setEdits(readUserProgress(account.username));
+    setHasLoadedProgress(true);
+    window.localStorage.setItem(sessionStorageKey, account.username);
+  }
+
+  function handleLogout() {
+    window.localStorage.removeItem(sessionStorageKey);
+    setCurrentUser(null);
+    setHasLoadedProgress(false);
+    setEdits(getInitialEdits());
+  }
+
+  if (!isAuthReady) {
+    return <main className="loginShell" />;
+  }
+
+  if (!currentUser) {
+    return (
+      <main className="loginShell">
+        <section className="loginPanel" aria-label="Login">
+          <div className="loginBrand">
+            <p className="eyebrow">GATE ME 2027</p>
+            <h1>Study Planner</h1>
+            <p>Sign in to keep your planner progress separate on this device.</p>
+          </div>
+          <form className="loginCard" onSubmit={handleLogin}>
+            <div className="loginIcon">
+              <LockKeyhole size={24} />
+            </div>
+            <h2>Login</h2>
+            <label>
+              <span>Username</span>
+              <div>
+                <UserRound size={18} />
+                <input
+                  value={loginUsername}
+                  onChange={(event) => setLoginUsername(event.target.value)}
+                  placeholder="SK001 or AR001"
+                  autoComplete="username"
+                />
+              </div>
+            </label>
+            <label>
+              <span>Password</span>
+              <div>
+                <LockKeyhole size={18} />
+                <input
+                  value={loginPassword}
+                  onChange={(event) => setLoginPassword(event.target.value)}
+                  placeholder="Enter password"
+                  type="password"
+                  autoComplete="current-password"
+                />
+              </div>
+            </label>
+            {loginError && <p className="loginError">{loginError}</p>}
+            <button type="submit">Sign In</button>
+          </form>
+        </section>
+      </main>
+    );
+  }
+
   return (
     <main>
       <section className="hero">
@@ -322,11 +433,19 @@ export default function PlannerPage() {
           </p>
         </div>
         <div className="heroPanel" aria-label="Overall completion">
+          <div className="accountPill">
+            <UserRound size={16} />
+            <span>{currentUser.name}</span>
+          </div>
           <span>{metrics.completion}%</span>
           <p>complete</p>
           <div className="progressTrack">
             <div style={{ width: `${metrics.completion}%` }} />
           </div>
+          <button className="logoutButton" onClick={handleLogout}>
+            <LogOut size={16} />
+            Logout
+          </button>
         </div>
       </section>
 
