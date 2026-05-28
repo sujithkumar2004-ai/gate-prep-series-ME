@@ -395,7 +395,7 @@ export default function PlannerPage() {
                 <input
                   value={loginUsername}
                   onChange={(event) => setLoginUsername(event.target.value)}
-                  placeholder="SK001 or AR001"
+                  placeholder="Username"
                   autoComplete="username"
                 />
               </div>
