@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "GATE ME Daily Syllabus Planner",
-  description: "Date-wise GATE Mechanical Engineering syllabus planner from July 6, 2026"
+  description: "GATE Mechanical Engineering planner with syllabus completion by December 31 and exam day on February 7"
 };
 
 export default function RootLayout({

@@ -11,6 +11,7 @@ import {
   LogOut,
   RotateCcw,
   Search,
+  Server,
   Table2,
   UserRound
 } from "lucide-react";
@@ -75,10 +76,19 @@ type Account = {
   name: string;
 };
 
+type BackendStatus = {
+  status: "connected";
+  framework: string;
+  totalDays: number;
+  subjectsCovered: string[];
+  syllabusCompletionDate: string | null;
+  examDate: string | null;
+};
+
 const phaseData = (htmlPlan as { phases: HtmlPhase[] }).phases;
 const syllabusRows = (excelData as { "Syllabus Map": SyllabusRow[] })["Syllabus Map"];
 const sessionStorageKey = "gate-me-planner-current-user-v1";
-const storageKeyPrefix = "gate-me-html-planner-progress-v3-jul6";
+const storageKeyPrefix = "gate-me-html-planner-progress-v4-feb7";
 const statuses: Status[] = ["Not Started", "In Progress", "Done", "Backlog"];
 const accounts: Account[] = [
   { username: "SK001", password: "SK001@123", name: "SK001" },
@@ -181,7 +191,9 @@ function buildRows() {
 
 const dayRows = buildRows();
 const planStartDate = dayRows[0]?.Date ?? "2026-07-06";
-const planEndDate = dayRows[dayRows.length - 1]?.Date ?? "2027-03-08";
+const planEndDate = dayRows[dayRows.length - 1]?.Date ?? "2027-02-07";
+const syllabusCompletionDate =
+  dayRows.find((row) => row["Daily Task"].includes("Syllabus completion checkpoint"))?.Date ?? "2026-12-31";
 
 function rowKey(row: DayRow) {
   return `${row.Date}-${row["Daily Task"]}`;
@@ -235,6 +247,7 @@ export default function PlannerPage() {
   const [status, setStatus] = useState<Status | "All">("All");
   const [activeTab, setActiveTab] = useState<"calendar" | "plan" | "weeks" | "syllabus">("calendar");
   const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
+  const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null);
 
   useEffect(() => {
     const savedUser = window.localStorage.getItem(sessionStorageKey);
@@ -252,6 +265,25 @@ export default function PlannerPage() {
       window.localStorage.setItem(storageKeyFor(currentUser.username), JSON.stringify(edits));
     }
   }, [currentUser, edits, hasLoadedProgress]);
+
+  useEffect(() => {
+    let isActive = true;
+    fetch("/api/planner")
+      .then((response) => response.json())
+      .then((data: BackendStatus) => {
+        if (isActive) {
+          setBackendStatus(data);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setBackendStatus(null);
+        }
+      });
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   const phases = useMemo(() => ["All", ...phaseData.map((item) => item.title)], []);
   const subjects = useMemo(() => ["All", ...Array.from(new Set(dayRows.map((row) => row["Main Subject"])))], []);
@@ -435,11 +467,13 @@ export default function PlannerPage() {
           <p className="eyebrow">GATE ME 2027</p>
           <h1>Daily Syllabus Planner</h1>
           <p className="heroCopy">
-            {formatDate(planStartDate)} to {formatDate(planEndDate)}. A day-by-day Mechanical Engineering
-            syllabus plan with calendar blocks, Excel-style marking, weekly tracking, rest days, and exam-day visibility.
+            {formatDate(planStartDate)} to {formatDate(planEndDate)}. Finish every GATE Mechanical syllabus
+            topic by {formatDate(syllabusCompletionDate)}, then use January for mocks, analysis, speed drills,
+            and final strategy before exam day.
           </p>
           <div className="dateRibbon" aria-label="Plan dates">
             <span>Starts {formatDate(planStartDate)}</span>
+            <span>Syllabus lock {formatDate(syllabusCompletionDate)}</span>
             <span>Next: {formatDate(nextRow.Date)}</span>
             <span>Exam: {formatDate(planEndDate)}</span>
           </div>
@@ -463,11 +497,13 @@ export default function PlannerPage() {
 
       <section className="metricGrid" aria-label="Planner summary">
         <Metric icon={<CalendarDays />} label="Plan Window" value={`${formatDate(planStartDate)} - ${formatDate(planEndDate)}`} />
+        <Metric icon={<CheckCircle2 />} label="Syllabus Lock" value={formatDate(syllabusCompletionDate)} />
         <Metric icon={<BookOpen />} label="Study Days" value={metrics.studyDays.toString()} />
         <Metric icon={<ClipboardList />} label="Rest Days" value={metrics.restDays.toString()} />
         <Metric icon={<CheckCircle2 />} label="Done" value={metrics.counts.Done.toString()} />
         <Metric icon={<ClipboardList />} label="Backlog" value={metrics.counts.Backlog.toString()} />
         <Metric icon={<BarChart3 />} label="Hours" value={`${metrics.actualHours}/${metrics.targetHours}`} />
+        <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Checking"} />
       </section>
 
       <section className="toolbar" aria-label="Planner controls">
