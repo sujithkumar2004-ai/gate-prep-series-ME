@@ -79,6 +79,30 @@ function buildWorkItems(row: RawDay) {
   ].filter((item) => item && item !== "-");
 }
 
+function isPostLockPrepDate(date: string) {
+  return date > syllabusLockDate && date < finalExamDate;
+}
+
+function normalizePostLockDailyTask(row: RawDay) {
+  const test = row["Test/Mock"].toLowerCase();
+  const task = row["Daily Task"].toLowerCase();
+  if (test.includes("full mock")) return row["Daily Task"];
+  if (task.includes("analyze") || task.includes("analysis")) return row["Daily Task"];
+  if (test.includes("sectional")) return "Sectional test analysis + revision + weak-area recovery";
+  if (test.includes("weekly")) return "Weekly test analysis + mixed revision + backlog recovery";
+  return "Revision + timed PYQ retry + weak-area recovery";
+}
+
+function normalizePostLockWorkItems(row: RawDay) {
+  const items = buildWorkItems(row).map((item) =>
+    item
+      .replace(/Learn concept \+ make short notes \+ solve examples \+ topic PYQs/gi, "Revise locked syllabus notes + solve timed PYQ retries")
+      .replace(/Concept completion \+ high-quality solved examples \+ timed practice/gi, "Mock-style revision + high-quality solved examples + timed practice")
+      .replace(/finish pending notes/gi, "repair weak notes")
+  );
+  return Array.from(new Set([...items, "Backlog recovery block", "Mistake notebook update"]));
+}
+
 function normalizeSubjects(): Subject[] {
   const rows = rawPlanner["Syllabus Map"].map((row) => ({
     id: slug(row.Subject),
@@ -185,6 +209,7 @@ function normalizeDays(subjects: Subject[], topics: Topic[]): PlannerDay[] {
   return rawPlanner["Daywise Plan"].map((row, index) => {
     const subjectId = subjects.find((subject) => subject.name === row["Main Subject"])?.id ?? slug(row["Main Subject"]);
     const topicId = findBestTopicId(subjectId, row.Topic, topics) ?? topicIdFor(subjectId, row.Topic);
+    const postLock = isPostLockPrepDate(row.Date);
     return {
       id: `${row.Date}-${index}`,
       date: row.Date,
@@ -195,8 +220,8 @@ function normalizeDays(subjects: Subject[], topics: Topic[]): PlannerDay[] {
       topicId,
       mainSubject: row["Main Subject"],
       topic: row.Topic,
-      dailyTask: row["Daily Task"],
-      workItems: buildWorkItems(row),
+      dailyTask: postLock ? normalizePostLockDailyTask(row) : row["Daily Task"],
+      workItems: postLock ? normalizePostLockWorkItems(row) : buildWorkItems(row),
       targetHours: row["Target Hours"],
       status: row.Status,
       notes: row.Notes,
