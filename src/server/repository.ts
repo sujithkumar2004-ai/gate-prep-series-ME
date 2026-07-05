@@ -23,7 +23,11 @@ const defaultUser: UserRecord = {
   updatedAt: new Date().toISOString()
 };
 
-const userStore = new Map<string, UserRecord>([[defaultUser.email, defaultUser]]);
+function shouldSeedLocalUser() {
+  return process.env.NODE_ENV !== "production" || process.env.ENABLE_DEV_DEFAULT_USER === "true";
+}
+
+const userStore = new Map<string, UserRecord>(shouldSeedLocalUser() ? [[defaultUser.email, defaultUser]] : []);
 const progressStore = new Map<string, PlannerState>();
 
 export async function findUserByEmail(email: string) {

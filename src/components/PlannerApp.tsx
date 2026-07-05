@@ -50,6 +50,7 @@ import { PlannerTabs, type PlannerTab } from "./planner/PlannerTabs";
 import { PlannerToolbar } from "./planner/PlannerToolbar";
 import { PYQTracker } from "./planner/PYQTracker";
 import { QuestionBank } from "./planner/QuestionBank";
+import { ProductionSettings } from "./planner/ProductionSettings";
 import { ReminderSettings } from "./planner/ReminderSettings";
 import { RevisionSystem } from "./planner/RevisionSystem";
 import { MonthlyReviewView, WeeklyReviewView } from "./planner/ReviewViews";
@@ -58,6 +59,7 @@ import { SyllabusMap } from "./planner/SyllabusMap";
 import { SyllabusTracker } from "./planner/SyllabusTracker";
 import { WeaknessEngine } from "./planner/WeaknessEngine";
 import { WeeklyTracker } from "./planner/WeeklyTracker";
+import { storageKeyFor } from "../lib/progressStorage";
 
 export function PlannerApp() {
   const [currentUser, setCurrentUser] = useState<Account | null>(null);
@@ -167,7 +169,9 @@ export function PlannerApp() {
   }
 
   function resetProgress() {
-    setPlannerState(createInitialPlannerState());
+    if (window.confirm("Reset all visible progress in this planner?")) {
+      setPlannerState(createInitialPlannerState());
+    }
   }
 
   function exportProgress() {
@@ -178,6 +182,19 @@ export function PlannerApp() {
     link.download = "gate-me-planner-progress.json";
     link.click();
     URL.revokeObjectURL(url);
+  }
+
+  function restorePlannerState(nextState: PlannerState) {
+    setPlannerState(nextState);
+    setSyncStatus("syncing");
+  }
+
+  function clearLocalData() {
+    if (currentUser) {
+      window.localStorage.removeItem(storageKeyFor(currentUser.id ?? currentUser.email));
+    }
+    setPlannerState(createInitialPlannerState());
+    setSyncStatus("local only");
   }
 
   function handleLogin(event: FormEvent<HTMLFormElement>) {
@@ -417,6 +434,7 @@ export function PlannerApp() {
       {activeTab === "energy" && <EnergyTracker state={plannerState} onSave={saveEnergy} />}
       {activeTab === "gym" && <GymRoutineView state={plannerState} onSave={saveGym} />}
       {activeTab === "reminders" && <ReminderSettings state={plannerState} onUpdate={changeReminder} onEnable={enableNotifications} />}
+      {activeTab === "settings" && <ProductionSettings state={plannerState} currentUser={currentUser} syncStatus={syncStatus} onRestore={restorePlannerState} onClearLocal={clearLocalData} />}
       {activeTab === "calendar" && <PhaseCalendar plannerData={plannerData} edits={plannerState.rowEdits} phaseFilter={phase} />}
       {activeTab === "plan" && (
         <DaywiseTable rows={filteredRows} edits={plannerState.rowEdits} totalRows={metrics.total} onUpdateRow={updateRow} />

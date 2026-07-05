@@ -5,6 +5,7 @@ import type {
   PlannerDay,
   PlannerPhase,
   PlannerWeek,
+  QuestionDifficulty,
   RowEdit,
   Subject,
   Status,
@@ -102,17 +103,32 @@ function normalizeSyllabus(subjects: Subject[]): SyllabusSubject[] {
       .split("\n")
       .map((topic) => topic.trim())
       .filter(Boolean)
-      .map((topic, topicIndex) => ({
-        id: `${slug(row.Subject)}-${topicIndex}`,
-        topicId: topicIdFor(subjects.find((subject) => subject.name === row.Subject)?.id ?? slug(row.Subject), topic),
-        title: topic,
-        weightage: defaultWeightage(topicIndex)
-      }))
+      .map((topic, topicIndex) => {
+        const weightage = defaultWeightage(topicIndex);
+        const difficulty = defaultDifficulty(topicIndex);
+        return {
+          id: `${slug(row.Subject)}-${topicIndex}`,
+          topicId: topicIdFor(subjects.find((subject) => subject.name === row.Subject)?.id ?? slug(row.Subject), topic),
+          title: topic,
+          weightage,
+          difficulty,
+          priority: defaultPriority(weightage, difficulty)
+        };
+      })
   }));
 }
 
 function defaultWeightage(index: number) {
   return Math.max(1, 5 - (index % 5));
+}
+
+function defaultDifficulty(index: number): QuestionDifficulty {
+  return index % 5 === 0 ? "Hard" : index % 3 === 0 ? "Medium" : "Easy";
+}
+
+function defaultPriority(weightage: number, difficulty: QuestionDifficulty) {
+  const difficultyBoost = difficulty === "Hard" ? 2 : difficulty === "Medium" ? 1 : 0;
+  return Math.min(5, Math.max(1, weightage + difficultyBoost));
 }
 
 function topicIdFor(subjectId: string, title: string) {
@@ -129,6 +145,8 @@ function normalizeTopics(subjects: Subject[], syllabus: SyllabusSubject[]): Topi
         subjectId: subject?.id ?? slug(subjectRow.subject),
         title: topic.title,
         weightage: topic.weightage,
+        difficulty: topic.difficulty,
+        priority: topic.priority,
         source: "syllabus"
       });
     });
@@ -142,6 +160,8 @@ function normalizeTopics(subjects: Subject[], syllabus: SyllabusSubject[]): Topi
         subjectId,
         title: row.Topic,
         weightage: 2,
+        difficulty: "Medium",
+        priority: 3,
         source: "planner"
       });
     }

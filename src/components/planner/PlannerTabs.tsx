@@ -1,6 +1,6 @@
 "use client";
 
-import { Activity, AlertTriangle, BarChart3, Bell, BookOpen, Brain, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, NotebookPen, RotateCcw, Target, Timer, Table2 } from "lucide-react";
+import { Activity, AlertTriangle, BarChart3, Bell, BookOpen, Brain, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, NotebookPen, RotateCcw, Settings, Target, Timer, Table2 } from "lucide-react";
 
 export type PlannerTab =
   | "dashboard"
@@ -22,6 +22,7 @@ export type PlannerTab =
   | "energy"
   | "gym"
   | "reminders"
+  | "settings"
   | "calendar"
   | "plan"
   | "weeks"
@@ -92,6 +93,9 @@ export function PlannerTabs({
       </button>
       <button className={activeTab === "reminders" ? "active" : ""} onClick={() => onTabChange("reminders")}>
         <Bell size={17} /> Reminders
+      </button>
+      <button className={activeTab === "settings" ? "active" : ""} onClick={() => onTabChange("settings")}>
+        <Settings size={17} /> Settings
       </button>
       <button className={activeTab === "calendar" ? "active" : ""} onClick={() => onTabChange("calendar")}>
         <CalendarDays size={17} /> Phase Calendar

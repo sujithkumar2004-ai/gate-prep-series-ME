@@ -1,4 +1,5 @@
 import { createHmac, randomBytes, pbkdf2Sync, timingSafeEqual } from "crypto";
+import { jwtSecret } from "./env";
 
 export function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -13,7 +14,7 @@ export function verifyPassword(password: string, encoded: string) {
 }
 
 function secret() {
-  return process.env.JWT_SECRET || "change_this_secret";
+  return jwtSecret();
 }
 
 export function signToken(payload: Record<string, string>) {

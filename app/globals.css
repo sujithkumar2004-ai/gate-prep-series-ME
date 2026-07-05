@@ -1118,6 +1118,30 @@ dd {
   margin-top: 8px;
 }
 
+.compactMetrics {
+  margin-top: 16px;
+}
+
+.buttonGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 12px 0;
+}
+
+.checkGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+
+.checkGrid label {
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: rgba(248, 250, 252, 0.8);
+}
+
 @media (max-width: 980px) {
   .hero {
     grid-template-columns: 1fr;

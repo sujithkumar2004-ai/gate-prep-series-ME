@@ -23,6 +23,9 @@ model Subject {
   section   String
   topics    Topic[]
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([section])
 }
 
 model Topic {
@@ -30,8 +33,17 @@ model Topic {
   subjectId String
   title     String
   weightage Int
+  difficulty String  @default("Medium")
+  priority   Int     @default(3)
   source    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   subject   Subject  @relation(fields: [subjectId], references: [id])
+
+  @@unique([subjectId, title])
+  @@index([subjectId])
+  @@index([weightage])
+  @@index([priority])
 }
 
 model DailyTask {
@@ -47,6 +59,14 @@ model DailyTask {
   status         String
   skipReason     String?
   completedAt    DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([date])
+  @@index([status])
 }
 
 model DailyProgress {
@@ -61,6 +81,12 @@ model DailyProgress {
   actualMinutes        Int
   completionPercentage Int
   dailyScore           Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
 }
 
 model RevisionItem {
@@ -74,6 +100,14 @@ model RevisionItem {
   title        String
   status       String
   completedAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([dueDate])
+  @@index([status])
 }
 
 model BacklogItem {
@@ -89,6 +123,15 @@ model BacklogItem {
   priority     String
   status       String
   recoveredAt  DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([date])
+  @@index([recoveryDate])
+  @@index([status])
 }
 
 model PYQSession {
@@ -105,6 +148,13 @@ model PYQSession {
   retryNeeded      Boolean
   bookmarked       Boolean
   notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([date])
 }
 
 model PYQQuestion {
@@ -114,6 +164,11 @@ model PYQQuestion {
   label            String
   isCorrect        Boolean
   timeSpentMinutes Int
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([topicId])
 }
 
 model MockTest {
@@ -129,6 +184,12 @@ model MockTest {
   accuracy         Int
   timeSpentMinutes Int
   actionPlan       String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
+  @@index([createdAt])
 }
 
 model MockSubjectScore {
@@ -139,6 +200,11 @@ model MockSubjectScore {
   attempted Int
   correct   Int
   wrong     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([mockId])
+  @@index([subjectId])
 }
 
 model Mistake {
@@ -155,7 +221,15 @@ model Mistake {
   retryDate     DateTime
   isFixed       Boolean  @default(false)
   createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
   fixedAt       DateTime?
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([retryDate])
+  @@index([createdAt])
+  @@index([isFixed])
 }
 
 model QuestionBankItem {
@@ -171,6 +245,14 @@ model QuestionBankItem {
   retryNeeded   Boolean
   bookmarked    Boolean
   notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([solved])
+  @@index([bookmarked])
 }
 
 model DeepWorkSession {
@@ -189,6 +271,14 @@ model DeepWorkSession {
   completedAt      DateTime?
   pauseReason      String?
   notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([date])
+  @@index([status])
 }
 
 model DistractionLog {
@@ -196,6 +286,11 @@ model DistractionLog {
   sessionId String
   reason    String
   timestamp DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([sessionId])
+  @@index([timestamp])
 }
 
 model WeeklyReview {
@@ -205,6 +300,12 @@ model WeeklyReview {
   weekEndDate    DateTime
   weeklyScore    Int
   reflectionNotes String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, weekStartDate])
+  @@index([userId])
+  @@index([weekStartDate])
 }
 
 model MonthlyReview {
@@ -213,6 +314,11 @@ model MonthlyReview {
   month          String
   expectedExamReadiness Int
   reflectionNotes String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([userId, month])
+  @@index([userId])
 }
 
 model ActiveRecallCard {
@@ -228,6 +334,13 @@ model ActiveRecallCard {
   rating         String?
   confidence     Int
   createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId])
+  @@index([subjectId])
+  @@index([topicId])
+  @@index([nextReviewAt])
+  @@index([createdAt])
 }
 
 model EnergyLog {
@@ -240,6 +353,12 @@ model EnergyLog {
   stressLevel Int
   workoutDone Boolean
   notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
 }
 
 model GymLog {
@@ -250,6 +369,12 @@ model GymLog {
   workoutCompleted Boolean
   bodyweight       Float?
   recoveryNotes    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId])
+  @@index([date])
 }
 
 model Reminder {
@@ -259,6 +384,11 @@ model Reminder {
   title   String
   time    String
   enabled Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, type])
+  @@index([userId])
 }
 
 model SalaryEntry {
@@ -267,6 +397,11 @@ model SalaryEntry {
   amount    Float
   date      DateTime
   notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
 }
 
 model ExpenseEntry {
@@ -276,6 +411,12 @@ model ExpenseEntry {
   category  String
   date      DateTime
   notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([date])
+  @@index([category])
 }
 
 model AppSetting {
@@ -283,4 +424,9 @@ model AppSetting {
   userId    String
   key       String
   value     Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, key])
+  @@index([userId])
 }

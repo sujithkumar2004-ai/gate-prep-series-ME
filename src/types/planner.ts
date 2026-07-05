@@ -52,6 +52,8 @@ export type Topic = {
   subjectId: string;
   title: string;
   weightage: number;
+  difficulty: QuestionDifficulty;
+  priority: number;
   source: "syllabus" | "planner";
 };
 
@@ -78,6 +80,8 @@ export type SyllabusTopic = {
   title: string;
   topicId: string;
   weightage: number;
+  difficulty: QuestionDifficulty;
+  priority: number;
 };
 
 export type SyllabusSubject = {
