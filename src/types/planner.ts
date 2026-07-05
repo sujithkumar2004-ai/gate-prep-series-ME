@@ -2,30 +2,9 @@ export type ProgressStatus = "Not Started" | "In Progress" | "Done" | "Backlog";
 
 export type DayKind = "Study" | "PYQ" | "Mock" | "Revision" | "Rest" | "Exam";
 
-export type MasteryStatus =
-  | "Not Started"
-  | "Learning"
-  | "Notes Done"
-  | "PYQ Started"
-  | "PYQ Done"
-  | "Revision Due"
-  | "Revised"
-  | "Weak"
-  | "Mastered";
+export type MasteryStatus = "Not Started" | "Learning" | "Practicing" | "Mastered" | "Weak";
 
-export type MistakeType =
-  | "Concept gap"
-  | "Formula mistake"
-  | "Calculation mistake"
-  | "Silly mistake"
-  | "Time pressure"
-  | "Wrong approach"
-  | "Memory gap"
-  | "Skipped revision";
-
-export type EmergencyMode = "Normal Mode" | "Backlog Mode" | "Crash Mode" | "Mock-Only Mode";
-
-export type DailyScoreLabel = "Failed Day" | "Acceptable Day" | "Strong Day" | "Superhuman Day";
+export type MistakeType = "Concept" | "Formula" | "Calculation" | "Reading" | "Time" | "Silly";
 
 export type PlannerUser = {
   id: string;
@@ -46,16 +25,10 @@ export type WorkItemProgress = {
 
 export type DailyProgress = {
   status: ProgressStatus;
-  actualMinutes: number;
   actualHours: number;
-  conceptDone: boolean;
-  notesDone: boolean;
   pyqSolved: number;
-  pyqAccuracy: number;
-  mockAnalysisDone: boolean;
   revisionDone: boolean;
   workItems: WorkItemProgress[];
-  skipReason: string;
   notes: string;
   mistakeType?: MistakeType;
 };
@@ -68,29 +41,17 @@ export type TopicProgress = {
   doneDays: number;
   backlogDays: number;
   pyqSolved: number;
-  revisionsDone: number;
-  accuracy: number;
-  lastRevisionDate?: string;
 };
 
 export type MockTestRecord = {
   id: string;
   date: string;
-  mockNumber?: number;
   name: string;
   targetScore: number;
-  totalMarks?: number;
   score?: number;
   accuracy?: number;
   attempted?: number;
-  correct?: number;
   wrong?: number;
-  timeSpentMinutes?: number;
-  subjectWiseScore?: Record<string, number>;
-  weakTopics?: string[];
-  topMistakes?: string[];
-  actionPlan?: string;
-  retryTopics?: string[];
   analysisDone?: boolean;
   weaknessNotes?: string;
 };
@@ -98,14 +59,11 @@ export type MockTestRecord = {
 export type MistakeRecord = {
   id: string;
   date: string;
-  questionSource: string;
   subject: string;
   topic: string;
   type: MistakeType;
-  explanation: string;
-  correctMethod: string;
-  retryDate: string;
-  fixed: boolean;
+  fix: string;
+  resolved: boolean;
 };
 
 export type RevisionSchedule = {
@@ -140,32 +98,15 @@ export type Expense = {
   category: "Study" | "Food" | "Travel" | "Gym" | "Bills" | "Other";
 };
 
-export type IncomeEntry = {
-  id: string;
-  label: string;
-  amount: number;
-  date: string;
-};
-
 export type GymRoutine = {
   weeklyGoal: string;
-  sessions: { day: string; focus: string; durationMinutes: number; exercises?: string[]; sets?: number; reps?: string }[];
-};
-
-export type GymLog = {
-  id: string;
-  date: string;
-  session: string;
-  attended: boolean;
-  bodyweight?: number;
-  recoveryNotes?: string;
+  sessions: { day: string; focus: string; durationMinutes: number }[];
 };
 
 export type SyllabusTopic = {
   id: string;
   title: string;
   planned: boolean;
-  weightage: number;
 };
 
 export type SubjectSyllabus = {
@@ -239,12 +180,6 @@ export type PlannerData = {
     weakTopicDetection: string;
     spacedRevisionOffsets: number[];
   };
-  seedData: {
-    revisionCycles: string[];
-    mistakeCategories: MistakeType[];
-    financeCategories: Expense["category"][];
-    gymCategories: string[];
-  };
 };
 
 export type PlannerState = {
@@ -252,32 +187,7 @@ export type PlannerState = {
   mockTests: Record<string, MockTestRecord>;
   mistakes: MistakeRecord[];
   backlog: BacklogItem[];
-  income: IncomeEntry[];
   expenses: Expense[];
   salary: SalaryProfile;
   gymRoutine: GymRoutine;
-  gymLogs: GymLog[];
-};
-
-export type PYQSession = {
-  id: string;
-  date: string;
-  subject: string;
-  topic: string;
-  attempted: number;
-  correct: number;
-  source: string;
-};
-
-export type FormulaEntry = {
-  id: string;
-  formula: string;
-  subject: string;
-  topic: string;
-  usage: string;
-  example: string;
-  lastRevisedDate?: string;
-  nextRevisionDate?: string;
-  confidenceScore: number;
-  quizHidden: boolean;
 };

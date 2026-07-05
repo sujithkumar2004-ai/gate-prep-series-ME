@@ -589,21 +589,6 @@ h1 {
   line-height: 1;
 }
 
-.modeScore {
-  font-size: clamp(1.7rem, 5vw, 2.8rem);
-}
-
-.scoreLabel {
-  width: fit-content;
-  margin: 0 0 12px;
-  border-radius: 999px;
-  background: #eef5fb;
-  color: var(--blue);
-  padding: 6px 10px;
-  font-size: 0.8rem;
-  font-weight: 850;
-}
-
 .scoreStrong {
   color: var(--green);
 }
@@ -995,47 +980,6 @@ textarea {
   outline: 0;
 }
 
-.modalBackdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 20;
-  display: grid;
-  place-items: center;
-  background: rgba(15, 23, 32, 0.56);
-  padding: 20px;
-}
-
-.confirmModal {
-  width: min(420px, 100%);
-  border: 1px solid rgba(216, 224, 232, 0.9);
-  border-radius: 8px;
-  background: #fff;
-  box-shadow: 0 26px 70px rgba(15, 23, 32, 0.24);
-  padding: 22px;
-}
-
-.confirmModal h2 {
-  margin: 0 0 8px;
-}
-
-.confirmModal p {
-  margin: 0 0 18px;
-  color: var(--muted);
-  line-height: 1.5;
-}
-
-.confirmModal div {
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.dangerAction {
-  color: #fff;
-  border-color: var(--red);
-  background: linear-gradient(180deg, #d45a52, var(--red));
-}
-
 .hourInput:focus,
 textarea:focus {
   border-color: rgba(23, 109, 85, 0.48);
@@ -1180,59 +1124,5 @@ dd {
 
   .loginShell {
     place-items: start center;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #111820;
-    --surface: #17212b;
-    --ink: #eef4f8;
-    --muted: #a9b5c1;
-    --line: #2a3642;
-    --line-strong: #3b4b59;
-    --panel: #17212b;
-    --shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
-    --shadow-soft: 0 10px 28px rgba(0, 0, 0, 0.18);
-  }
-
-  body {
-    background: linear-gradient(180deg, rgba(20, 30, 40, 0.94), rgba(17, 24, 32, 0.98) 360px), var(--bg);
-  }
-
-  .metricCard,
-  .strategyCard,
-  .panelCard,
-  .phaseBlock,
-  .weekCard,
-  .syllabusCard,
-  .tableScroll,
-  .confirmModal {
-    background: linear-gradient(180deg, #1b2631, #16202a);
-    border-color: var(--line);
-  }
-
-  .plannerTable tr:nth-child(even) td,
-  .plannerTable tbody tr:hover td,
-  .dayCell,
-  .searchBox,
-  .selectBox,
-  .iconTextButton,
-  .iconButton,
-  .hourInput,
-  textarea,
-  .fieldLine input {
-    color: var(--ink);
-    background: #16202a;
-    border-color: var(--line);
-  }
-
-  .daySubject,
-  .workCell ul,
-  .workCheck,
-  .compactList,
-  .checkList,
-  .syllabusCard ul {
-    color: #dbe5ec;
   }
 }

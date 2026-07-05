@@ -1,9 +1,7 @@
 import plannerJson from "../data/planner.json";
-import { examConfig } from "../config/examConfig";
 import type {
   BacklogItem,
   DailyProgress,
-  EmergencyMode,
   MasteryStatus,
   MockTestRecord,
   PlannerData,
@@ -33,16 +31,10 @@ export function formatDate(value: string) {
 export function createInitialDailyProgress(day: PlannerDay): DailyProgress {
   return {
     status: day.status,
-    actualMinutes: 0,
     actualHours: 0,
-    conceptDone: false,
-    notesDone: false,
     pyqSolved: 0,
-    pyqAccuracy: 0,
-    mockAnalysisDone: false,
     revisionDone: false,
     workItems: day.workItems.map(() => ({ done: false })),
-    skipReason: "",
     notes: ""
   };
 }
@@ -59,36 +51,25 @@ export function createInitialState(): PlannerState {
     }, {}),
     mistakes: [],
     backlog: [],
-    income: [],
     expenses: [...plannerData.salaryExpense.fixedExpenses, ...plannerData.salaryExpense.studyBudget],
     salary: {
       monthlySalary: plannerData.salaryExpense.monthlySalary,
       savingsGoal: plannerData.salaryExpense.savingsGoal
     },
-    gymRoutine: plannerData.gymRoutine,
-    gymLogs: []
+    gymRoutine: plannerData.gymRoutine
   };
 }
 
 export function dailyScore(day: PlannerDay, progress: DailyProgress) {
-  const completedWorkRatio = progress.workItems.length
-    ? progress.workItems.filter((item) => item.done).length / progress.workItems.length
+  const statusScore =
+    progress.status === "Done" ? 35 : progress.status === "In Progress" ? 20 : progress.status === "Backlog" ? 5 : 0;
+  const hourScore = day.targetHours ? Math.min(20, Math.round((progress.actualHours / day.targetHours) * 20)) : 10;
+  const workScore = progress.workItems.length
+    ? Math.round((progress.workItems.filter((item) => item.done).length / progress.workItems.length) * 20)
     : 0;
-  const conceptStudy = progress.conceptDone || completedWorkRatio >= 0.34 ? examConfig.scoreParts.conceptStudy : 0;
-  const pyqSolving = Math.min(
-    examConfig.scoreParts.pyqSolving,
-    Math.round((progress.pyqSolved / Math.max(day.pyqTarget, 1)) * examConfig.scoreParts.pyqSolving)
-  );
-  const revision = progress.revisionDone ? examConfig.scoreParts.revision : 0;
-  const mockErrorAnalysis =
-    progress.mockAnalysisDone || /analysis|mock/i.test(progress.notes)
-      ? examConfig.scoreParts.mockErrorAnalysis
-      : Math.round(completedWorkRatio * examConfig.scoreParts.mockErrorAnalysis);
-  const discipline =
-    progress.actualMinutes > 0 && progress.notes.trim() && (progress.status !== "Backlog" || progress.skipReason.trim())
-      ? examConfig.scoreParts.discipline
-      : 0;
-  return Math.max(0, Math.min(100, conceptStudy + pyqSolving + revision + mockErrorAnalysis + discipline));
+  const pyqScore = Math.min(15, Math.round((progress.pyqSolved / Math.max(day.pyqTarget, 1)) * 15));
+  const notesScore = progress.revisionDone || progress.notes.trim() ? 10 : 0;
+  return Math.max(0, Math.min(100, statusScore + hourScore + workScore + pyqScore + notesScore));
 }
 
 export function topicMastery(state: PlannerState): TopicProgress[] {
@@ -105,34 +86,21 @@ export function topicMastery(state: PlannerState): TopicProgress[] {
         plannedDays: 0,
         doneDays: 0,
         backlogDays: 0,
-        pyqSolved: 0,
-        revisionsDone: 0,
-        accuracy: 0
+        pyqSolved: 0
       } satisfies TopicProgress);
     current.plannedDays += 1;
     current.doneDays += progress.status === "Done" ? 1 : 0;
     current.backlogDays += progress.status === "Backlog" ? 1 : 0;
     current.pyqSolved += progress.pyqSolved;
-    current.revisionsDone += progress.revisionDone ? 1 : 0;
-    current.accuracy = Math.max(current.accuracy, progress.pyqAccuracy);
-    current.lastRevisionDate = progress.revisionDone ? day.date : current.lastRevisionDate;
     grouped.set(key, current);
   });
 
   return Array.from(grouped.values()).map((topic) => {
     const ratio = topic.doneDays / Math.max(topic.plannedDays, 1);
-    const lastRevisionAge = topic.lastRevisionDate
-      ? Math.floor((Date.now() - new Date(`${topic.lastRevisionDate}T00:00:00`).getTime()) / 86400000)
-      : Infinity;
     let mastery: MasteryStatus = "Not Started";
     if (topic.backlogDays > 0) mastery = "Weak";
-    else if (ratio >= 1 && topic.pyqSolved >= 40 && topic.revisionsDone >= 2 && topic.accuracy >= 75 && lastRevisionAge <= 30) {
-      mastery = "Mastered";
-    } else if (topic.revisionsDone >= 2) mastery = "Revised";
-    else if (topic.revisionsDone > 0) mastery = "Revision Due";
-    else if (topic.pyqSolved >= 40) mastery = "PYQ Done";
-    else if (topic.pyqSolved > 0) mastery = "PYQ Started";
-    else if (ratio >= 1) mastery = "Notes Done";
+    else if (ratio >= 0.9 && topic.pyqSolved >= 40) mastery = "Mastered";
+    else if (ratio >= 0.5 || topic.pyqSolved > 0) mastery = "Practicing";
     else if (topic.doneDays > 0) mastery = "Learning";
     return { ...topic, mastery };
   });
@@ -146,7 +114,6 @@ export function weakTopics(state: PlannerState) {
 }
 
 export function autoBacklog(state: PlannerState): BacklogItem[] {
-  const lightDays = plannerData.daywisePlan.filter((day) => day.kind === "Rest" || /light|recovery|buffer/i.test(day.task));
   return plannerData.daywisePlan
     .filter((day) => state.dailyProgress[day.id]?.status === "Backlog")
     .map((day, index) => ({
@@ -155,21 +122,13 @@ export function autoBacklog(state: PlannerState): BacklogItem[] {
       subject: day.subject,
       topic: day.topic,
       reason: state.dailyProgress[day.id]?.notes || "Marked as backlog",
-      recoveryDate: lightDays.find((candidate) => candidate.date >= day.date)?.date ?? day.date,
+      recoveryDate: plannerData.daywisePlan[Math.min(plannerData.daywisePlan.length - 1, index + 3)]?.date ?? day.date,
       status: "Scheduled"
     }));
 }
 
-export function emergencyMode(state: PlannerState, today = new Date().toISOString().slice(0, 10)): EmergencyMode {
-  const backlogCount = autoBacklog(state).length;
-  if (today > examConfig.syllabusCompletionDate) return "Mock-Only Mode";
-  if (backlogCount > 7) return "Crash Mode";
-  if (backlogCount > 3) return "Backlog Mode";
-  return "Normal Mode";
-}
-
 export function spacedRevisionSchedule(state: PlannerState): RevisionSchedule[] {
-  const offsets = examConfig.revisionOffsets;
+  const offsets = plannerData.intelligenceRules.spacedRevisionOffsets;
   return plannerData.daywisePlan
     .filter((day) => state.dailyProgress[day.id]?.status === "Done")
     .flatMap((day) =>
@@ -191,8 +150,8 @@ export function spacedRevisionSchedule(state: PlannerState): RevisionSchedule[] 
 
 export function readinessScore(state: PlannerState) {
   const days = plannerData.daywisePlan;
-  const masteryRows = topicMastery(state);
-  const masteredRatio = masteryRows.filter((topic) => topic.mastery === "Mastered").length / Math.max(masteryRows.length, 1);
+  const doneRatio =
+    days.filter((day) => state.dailyProgress[day.id]?.status === "Done").length / Math.max(days.length, 1);
   const pyqTarget = days.reduce((sum, day) => sum + day.pyqTarget, 0);
   const pyqDone = days.reduce((sum, day) => sum + (state.dailyProgress[day.id]?.pyqSolved ?? 0), 0);
   const pyqRatio = Math.min(1, pyqDone / Math.max(pyqTarget, 1));
@@ -201,18 +160,8 @@ export function readinessScore(state: PlannerState) {
   const mockRatio = scoredMocks.length
     ? Math.min(1, scoredMocks.reduce((sum, mock) => sum + (mock.score ?? 0), 0) / scoredMocks.length / 80)
     : 0;
-  const revisionRows = days.filter((day) => state.dailyProgress[day.id]?.revisionDone).length / Math.max(days.length, 1);
-  const discipline =
-    days.reduce((sum, day) => sum + (dailyScore(day, state.dailyProgress[day.id] ?? createInitialDailyProgress(day)) >= 70 ? 1 : 0), 0) /
-    Math.max(days.length, 1);
-  return Math.round(
-    (examConfig.readinessWeights.syllabusMastery * masteredRatio +
-      examConfig.readinessWeights.pyqCompletion * pyqRatio +
-      examConfig.readinessWeights.mockPerformance * mockRatio +
-      examConfig.readinessWeights.revisionConsistency * revisionRows +
-      examConfig.readinessWeights.disciplineScore * discipline) *
-      100
-  );
+  const weaknessRecovery = 1 - Math.min(1, weakTopics(state).length / 12);
+  return Math.round((0.35 * doneRatio + 0.25 * pyqRatio + 0.25 * mockRatio + 0.15 * weaknessRecovery) * 100);
 }
 
 export function mockTrend(state: PlannerState) {
