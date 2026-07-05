@@ -1,449 +1,325 @@
 "use client";
 
 import {
+  Activity,
+  AlertTriangle,
   BarChart3,
   BookOpen,
+  Brain,
   CalendarDays,
   CheckCircle2,
   ClipboardList,
-  Download,
+  CreditCard,
+  Dumbbell,
   Flame,
+  LineChart,
   LockKeyhole,
   LogOut,
+  PiggyBank,
   RotateCcw,
   Search,
   Server,
-  Table2,
-  UserRound
+  ShieldCheck,
+  Target,
+  TimerReset,
+  UserRound,
+  WalletCards
 } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import htmlPlan from "../src/data/htmlPlan.json";
-import excelData from "../src/data/planner.json";
-
-type Status = "Not Started" | "In Progress" | "Done" | "Backlog";
-
-type HtmlDay = {
-  date: string;
-  sub: string;
-  hours: string;
-  workItems?: string[];
-};
-
-type HtmlWeek = {
-  label: string;
-  days: HtmlDay[];
-};
-
-type HtmlPhase = {
-  id: number;
-  title: string;
-  dates: string;
-  duration: string;
-  goal: string;
-  weeks: HtmlWeek[];
-};
-
-type DayRow = {
-  Date: string;
-  Day: string;
-  Phase: string;
-  PhaseId: number;
-  Week: string;
-  "Main Subject": string;
-  Topic: string;
-  "Daily Task": string;
-  "Work Items": string[];
-  "Target Hours": number;
-  Status: Status;
-  Notes: string | null;
-  Kind: "Study" | "Rest" | "Exam";
-};
-
-type SyllabusRow = {
-  Section: string;
-  Subject: string;
-  "Topics Included": string;
-};
-
-type RowEdit = {
-  status: Status;
-  notes: string;
-  actualHours: number;
-};
-
-type StoredState = Record<string, RowEdit>;
-type Account = {
-  username: string;
-  password: string;
-  name: string;
-};
+import { loginWithBackendFallback } from "../src/lib/authClient";
+import {
+  autoBacklog,
+  createInitialState,
+  dailyScore,
+  examDate,
+  formatDate,
+  mockTrend,
+  plannerData,
+  planStartDate,
+  readinessScore,
+  spacedRevisionSchedule,
+  statuses,
+  subjectCompletion,
+  syllabusCompletionDate,
+  topicMastery,
+  weakTopics
+} from "../src/lib/plannerData";
+import { loadProgress, saveProgress } from "../src/lib/progressClient";
+import type {
+  AuthSession,
+  DailyProgress,
+  Expense,
+  MistakeRecord,
+  MockTestRecord,
+  PlannerDay,
+  PlannerState,
+  ProgressStatus
+} from "../src/types/planner";
 
 type BackendStatus = {
   status: "connected";
-  framework: string;
   totalDays: number;
-  subjectsCovered: string[];
-  syllabusCompletionDate: string | null;
-  examDate: string | null;
+  dailyWorkItems: number;
+  sourceOfTruth: string;
+  rule: string;
 };
 
-const phaseData = (htmlPlan as { phases: HtmlPhase[] }).phases;
-const syllabusRows = (excelData as { "Syllabus Map": SyllabusRow[] })["Syllabus Map"];
-const sessionStorageKey = "gate-me-planner-current-user-v1";
-const storageKeyPrefix = "gate-me-html-planner-progress-v4-feb7";
-const statuses: Status[] = ["Not Started", "In Progress", "Done", "Backlog"];
-const accounts: Account[] = [
-  { username: "SK001", password: "SK001@123", name: "SK001" },
-  { username: "AR001", password: "AR001@123", name: "AR001" }
+type TabId =
+  | "dashboard"
+  | "daily"
+  | "syllabus"
+  | "pyq"
+  | "mocks"
+  | "weakness"
+  | "backlog"
+  | "revision"
+  | "formula"
+  | "money"
+  | "gym"
+  | "war";
+
+const sessionStorageKey = "gate-me-planner-session-v5";
+
+const tabs: { id: TabId; label: string; icon: React.ReactNode }[] = [
+  { id: "dashboard", label: "Dashboard", icon: <BarChart3 size={16} /> },
+  { id: "daily", label: "Daily Plan", icon: <CalendarDays size={16} /> },
+  { id: "syllabus", label: "Syllabus Tracker", icon: <BookOpen size={16} /> },
+  { id: "pyq", label: "PYQ Tracker", icon: <ClipboardList size={16} /> },
+  { id: "mocks", label: "Mock Test Analysis", icon: <LineChart size={16} /> },
+  { id: "weakness", label: "Weakness Engine", icon: <Brain size={16} /> },
+  { id: "backlog", label: "Backlog Recovery", icon: <TimerReset size={16} /> },
+  { id: "revision", label: "Revision System", icon: <RotateCcw size={16} /> },
+  { id: "formula", label: "Formula Book", icon: <ShieldCheck size={16} /> },
+  { id: "money", label: "Salary + Expense", icon: <WalletCards size={16} /> },
+  { id: "gym", label: "Gym Routine", icon: <Dumbbell size={16} /> },
+  { id: "war", label: "Exam War Room", icon: <Flame size={16} /> }
 ];
 
-const phaseColors: Record<number, string> = {
-  1: "#2c9a74",
-  2: "#397fbd",
-  3: "#766bd1",
-  4: "#bd7414",
-  5: "#c44b45"
-};
-
-const phaseSoftColors: Record<number, string> = {
-  1: "#e1f5ee",
-  2: "#e6f1fb",
-  3: "#eeedfe",
-  4: "#faeeda",
-  5: "#fcebeb"
-};
-
-const strategyCards = [
-  {
-    label: "Accuracy First",
-    text: "Protect marks in MCQs, because wrong MCQs carry negative marking. Attempt sure questions first, then return to risky ones."
-  },
-  {
-    label: "Daily Error Log",
-    text: "Every wrong, skipped, or slow question must become one line in the mistake notebook with the exact fix."
-  },
-  {
-    label: "Mock Discipline",
-    text: "January is for full mocks, analysis, speed drills, and strategy correction after the full syllabus is locked."
-  },
-  {
-    label: "99% Routine",
-    text: "Concept, timed practice, PYQs, formula recall, and same-day reattempts happen daily. No passive reading day."
-  }
-];
-
-const statusClass: Record<Status, string> = {
+const statusClass: Record<ProgressStatus, string> = {
   "Not Started": "statusNotStarted",
   "In Progress": "statusInProgress",
   Done: "statusDone",
   Backlog: "statusBacklog"
 };
 
-function toIsoDate(value: string) {
-  const [month, rawDay] = value.split(" ");
-  const year = month === "Jan" || month === "Feb" || month === "Mar" ? 2027 : 2026;
-  const monthMap: Record<string, string> = {
-    Jun: "06",
-    Jul: "07",
-    Aug: "08",
-    Sep: "09",
-    Oct: "10",
-    Nov: "11",
-    Dec: "12",
-    Jan: "01",
-    Feb: "02",
-    Mar: "03"
-  };
-  return `${year}-${monthMap[month]}-${rawDay.padStart(2, "0")}`;
-}
+const strategyCards = [
+  {
+    label: "99 Percentile System",
+    text: "Every day must end with concept clarity, timed questions, PYQ work, mistake review, and recall."
+  },
+  {
+    label: "Topper Pattern",
+    text: "Toppers usually protect accuracy, revise short notes often, analyze mocks deeply, and repeat PYQs until patterns become automatic."
+  },
+  {
+    label: "January Rule",
+    text: "No new syllabus in January. Only mocks, analysis, speed drills, revision, weakness repair, and exam strategy."
+  }
+];
 
-function parseSubjectAndTopic(text: string) {
-  if (text.includes(":")) {
-    const [subject, ...topic] = text.split(":");
-    return { subject: subject.trim(), topic: topic.join(":").trim() };
-  }
-  if (text.startsWith("REST")) {
-    return { subject: "Rest / Review", topic: text.replace(/^REST\s*—?\s*/i, "") || "Rest" };
-  }
-  if (text.includes("mock") || text.includes("Mock")) {
-    return { subject: "Mock Test", topic: text };
-  }
-  if (text.includes("PYQ")) {
-    return { subject: "PYQ Practice", topic: text };
-  }
-  if (text.includes("GATE EXAM")) {
-    return { subject: "Exam Day", topic: text };
-  }
-  return { subject: "Revision", topic: text };
-}
-
-function parseHours(value: string) {
-  const match = value.match(/\d+(\.\d+)?/);
-  return match ? Number(match[0]) : 0;
-}
-
-function buildRows() {
-  return phaseData.flatMap((phase) =>
-    phase.weeks.flatMap((week) =>
-      week.days
-        .filter((day) => day.date && day.date !== "n/a")
-        .map<DayRow>((day) => {
-          const date = toIsoDate(day.date);
-          const parsed = parseSubjectAndTopic(day.sub);
-          const kind = day.hours === "Exam" ? "Exam" : /^REST/i.test(day.sub) ? "Rest" : "Study";
-          return {
-            Date: date,
-            Day: new Intl.DateTimeFormat("en-IN", { weekday: "long" }).format(new Date(`${date}T00:00:00`)),
-            Phase: phase.title,
-            PhaseId: phase.id,
-            Week: week.label,
-            "Main Subject": parsed.subject,
-            Topic: parsed.topic,
-            "Daily Task": day.sub,
-            "Work Items": day.workItems ?? [],
-            "Target Hours": parseHours(day.hours),
-            Status: "Not Started",
-            Notes: null,
-            Kind: kind
-          };
-        })
-    )
+function defaultProgress(day: PlannerDay): DailyProgress {
+  return (
+    createInitialState().dailyProgress[day.id] ?? {
+      status: "Not Started",
+      actualHours: 0,
+      pyqSolved: 0,
+      revisionDone: false,
+      workItems: day.workItems.map(() => ({ done: false })),
+      notes: ""
+    }
   );
 }
 
-const dayRows = buildRows();
-const planStartDate = dayRows[0]?.Date ?? "2026-07-06";
-const planEndDate = dayRows[dayRows.length - 1]?.Date ?? "2027-02-07";
-const syllabusCompletionDate =
-  dayRows.find((row) => row["Daily Task"].includes("Syllabus completion checkpoint"))?.Date ?? "2026-12-31";
-
-function rowKey(row: DayRow) {
-  return `${row.Date}-${row["Daily Task"]}`;
+function scoreClass(value: number) {
+  if (value >= 80) return "scoreStrong";
+  if (value >= 55) return "scoreMedium";
+  return "scoreWeak";
 }
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat("en-IN", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric"
-  }).format(new Date(`${value}T00:00:00`));
-}
-
-function getInitialEdits(): StoredState {
-  return dayRows.reduce<StoredState>((acc, row) => {
-    acc[rowKey(row)] = {
-      status: row.Status,
-      notes: row.Notes ?? "",
-      actualHours: 0
-    };
-    return acc;
-  }, {});
-}
-
-function storageKeyFor(username: string) {
-  return `${storageKeyPrefix}-${username}`;
-}
-
-function readUserProgress(username: string) {
-  const saved = window.localStorage.getItem(storageKeyFor(username));
-  if (!saved) {
-    return getInitialEdits();
-  }
-  try {
-    return { ...getInitialEdits(), ...JSON.parse(saved) };
-  } catch {
-    return getInitialEdits();
-  }
+function patchDailyProgress(
+  state: PlannerState,
+  day: PlannerDay,
+  patch: Partial<DailyProgress>
+): PlannerState {
+  const current = state.dailyProgress[day.id] ?? defaultProgress(day);
+  return {
+    ...state,
+    dailyProgress: {
+      ...state.dailyProgress,
+      [day.id]: {
+        ...current,
+        ...patch
+      }
+    }
+  };
 }
 
 export default function PlannerPage() {
-  const [currentUser, setCurrentUser] = useState<Account | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [edits, setEdits] = useState<StoredState>(() => getInitialEdits());
+  const [plannerState, setPlannerState] = useState<PlannerState>(() => createInitialState());
   const [query, setQuery] = useState("");
-  const [phase, setPhase] = useState("All");
-  const [subject, setSubject] = useState("All");
-  const [status, setStatus] = useState<Status | "All">("All");
-  const [activeTab, setActiveTab] = useState<"calendar" | "plan" | "weeks" | "syllabus">("calendar");
-  const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
+  const [subjectFilter, setSubjectFilter] = useState("All");
+  const [activeTab, setActiveTab] = useState<TabId>("dashboard");
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null);
+  const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
 
   useEffect(() => {
-    const savedUser = window.localStorage.getItem(sessionStorageKey);
-    const account = accounts.find((item) => item.username === savedUser);
-    if (account) {
-      setCurrentUser(account);
-      setEdits(readUserProgress(account.username));
-      setHasLoadedProgress(true);
+    const saved = window.localStorage.getItem(sessionStorageKey);
+    if (!saved) {
+      setIsAuthReady(true);
+      return;
     }
-    setIsAuthReady(true);
+    try {
+      const parsed = JSON.parse(saved) as AuthSession;
+      setSession(parsed);
+      loadProgress(parsed.user.id, parsed.token).then((state) => {
+        setPlannerState(state);
+        setHasLoadedProgress(true);
+      });
+    } catch {
+      window.localStorage.removeItem(sessionStorageKey);
+    } finally {
+      setIsAuthReady(true);
+    }
   }, []);
 
   useEffect(() => {
-    if (currentUser && hasLoadedProgress) {
-      window.localStorage.setItem(storageKeyFor(currentUser.username), JSON.stringify(edits));
-    }
-  }, [currentUser, edits, hasLoadedProgress]);
-
-  useEffect(() => {
-    let isActive = true;
     fetch("/api/planner")
       .then((response) => response.json())
-      .then((data: BackendStatus) => {
-        if (isActive) {
-          setBackendStatus(data);
-        }
-      })
-      .catch(() => {
-        if (isActive) {
-          setBackendStatus(null);
-        }
-      });
-    return () => {
-      isActive = false;
-    };
+      .then((data: BackendStatus) => setBackendStatus(data))
+      .catch(() => setBackendStatus(null));
   }, []);
 
-  const phases = useMemo(() => ["All", ...phaseData.map((item) => item.title)], []);
-  const subjects = useMemo(() => ["All", ...Array.from(new Set(dayRows.map((row) => row["Main Subject"])))], []);
+  useEffect(() => {
+    if (session && hasLoadedProgress) {
+      saveProgress(session.user.id, session.token, plannerState);
+    }
+  }, [hasLoadedProgress, plannerState, session]);
 
-  const filteredRows = useMemo(() => {
+  const subjects = useMemo(
+    () => ["All", ...Array.from(new Set(plannerData.daywisePlan.map((day) => day.subject)))],
+    []
+  );
+
+  const filteredDays = useMemo(() => {
     const needle = query.trim().toLowerCase();
-    return dayRows.filter((row) => {
-      const edit = edits[rowKey(row)];
-      const matchesQuery =
-        !needle ||
-        [row.Topic, row["Daily Task"], row["Work Items"].join(" "), row["Main Subject"], row.Phase, row.Week]
-          .join(" ")
-          .toLowerCase()
-          .includes(needle);
-      return (
-        matchesQuery &&
-        (phase === "All" || row.Phase === phase) &&
-        (subject === "All" || row["Main Subject"] === subject) &&
-        (status === "All" || edit?.status === status)
-      );
+    return plannerData.daywisePlan.filter((day) => {
+      const text = [day.subject, day.topic, day.task, day.workItems.join(" "), day.phase, day.week].join(" ").toLowerCase();
+      return (!needle || text.includes(needle)) && (subjectFilter === "All" || day.subject === subjectFilter);
     });
-  }, [edits, phase, query, status, subject]);
+  }, [query, subjectFilter]);
 
   const metrics = useMemo(() => {
-    const counts = statuses.reduce<Record<Status, number>>((acc, item) => {
-      acc[item] = 0;
-      return acc;
-    }, {} as Record<Status, number>);
-    let actualHours = 0;
-    let targetHours = 0;
-    dayRows.forEach((row) => {
-      const edit = edits[rowKey(row)];
-      counts[edit?.status ?? row.Status] += 1;
-      actualHours += Number(edit?.actualHours ?? 0);
-      targetHours += Number(row["Target Hours"] ?? 0);
-    });
-    const studyDays = dayRows.filter((row) => row.Kind === "Study").length;
-    const restDays = dayRows.filter((row) => row.Kind === "Rest").length;
-    return {
-      total: dayRows.length,
-      studyDays,
-      restDays,
-      counts,
-      targetHours,
-      actualHours,
-      completion: Math.round((counts.Done / dayRows.length) * 100)
-    };
-  }, [edits]);
-
-  const nextRow = useMemo(() => {
-    return dayRows.find((row) => edits[rowKey(row)]?.status !== "Done") ?? dayRows[dayRows.length - 1];
-  }, [edits]);
-
-  const weeklyRows = useMemo(() => {
-    return phaseData.flatMap((phase) =>
-      phase.weeks.map((week, index) => {
-        const rows = dayRows.filter((row) => row.PhaseId === phase.id && row.Week === week.label);
-        const done = rows.filter((row) => edits[rowKey(row)]?.status === "Done").length;
-        const actual = rows.reduce((sum, row) => sum + Number(edits[rowKey(row)]?.actualHours ?? 0), 0);
-        const target = rows.reduce((sum, row) => sum + row["Target Hours"], 0);
-        return {
-          id: `${phase.id}-${index}`,
-          phase,
-          label: week.label,
-          start: rows[0]?.Date,
-          end: rows[rows.length - 1]?.Date,
-          done,
-          total: rows.length,
-          actual,
-          target
-        };
-      })
+    const total = plannerData.daywisePlan.length;
+    const done = plannerData.daywisePlan.filter((day) => plannerState.dailyProgress[day.id]?.status === "Done").length;
+    const backlog = plannerData.daywisePlan.filter((day) => plannerState.dailyProgress[day.id]?.status === "Backlog").length;
+    const pyqSolved = plannerData.daywisePlan.reduce(
+      (sum, day) => sum + (plannerState.dailyProgress[day.id]?.pyqSolved ?? 0),
+      0
     );
-  }, [edits]);
+    const pyqTarget = plannerData.daywisePlan.reduce((sum, day) => sum + day.pyqTarget, 0);
+    const dailyAverage = Math.round(
+      plannerData.daywisePlan.reduce((sum, day) => sum + dailyScore(day, plannerState.dailyProgress[day.id] ?? defaultProgress(day)), 0) /
+        Math.max(total, 1)
+    );
+    return {
+      total,
+      done,
+      backlog,
+      pyqSolved,
+      pyqTarget,
+      completion: Math.round((done / total) * 100),
+      readiness: readinessScore(plannerState),
+      dailyAverage
+    };
+  }, [plannerState]);
 
-  function updateRow(key: string, patch: Partial<RowEdit>) {
-    setEdits((current) => ({
+  const subjectRows = useMemo(() => subjectCompletion(plannerState), [plannerState]);
+  const masteryRows = useMemo(() => topicMastery(plannerState), [plannerState]);
+  const weakRows = useMemo(() => weakTopics(plannerState), [plannerState]);
+  const backlogRows = useMemo(() => [...autoBacklog(plannerState), ...plannerState.backlog], [plannerState]);
+  const revisionRows = useMemo(() => spacedRevisionSchedule(plannerState).slice(0, 80), [plannerState]);
+  const mockRows = useMemo(() => Object.values(plannerState.mockTests), [plannerState.mockTests]);
+  const mockTrendRows = useMemo(() => mockTrend(plannerState), [plannerState]);
+
+  const nextDay =
+    plannerData.daywisePlan.find((day) => plannerState.dailyProgress[day.id]?.status !== "Done") ??
+    plannerData.daywisePlan[plannerData.daywisePlan.length - 1];
+
+  function updateDay(day: PlannerDay, patch: Partial<DailyProgress>) {
+    setPlannerState((current) => patchDailyProgress(current, day, patch));
+  }
+
+  function toggleWorkItem(day: PlannerDay, index: number) {
+    const progress = plannerState.dailyProgress[day.id] ?? defaultProgress(day);
+    const workItems = progress.workItems.map((item, itemIndex) =>
+      itemIndex === index ? { ...item, done: !item.done } : item
+    );
+    updateDay(day, { workItems });
+  }
+
+  function updateMock(id: string, patch: Partial<MockTestRecord>) {
+    setPlannerState((current) => ({
       ...current,
-      [key]: {
-        ...current[key],
-        ...patch
+      mockTests: {
+        ...current.mockTests,
+        [id]: {
+          ...current.mockTests[id],
+          ...patch
+        }
       }
     }));
   }
 
-  function resetProgress() {
-    setEdits(getInitialEdits());
+  function addExpense(expense: Expense) {
+    setPlannerState((current) => ({ ...current, expenses: [...current.expenses, expense] }));
   }
 
-  function exportProgress() {
-    const blob = new Blob([JSON.stringify(edits, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "gate-me-planner-progress.json";
-    link.click();
-    URL.revokeObjectURL(url);
-  }
-
-  function handleLogin(event: FormEvent<HTMLFormElement>) {
+  async function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const normalizedUsername = loginUsername.trim().toUpperCase();
-    const account = accounts.find(
-      (item) => item.username === normalizedUsername && item.password === loginPassword
-    );
-    if (!account) {
-      setLoginError("Invalid username or password");
-      return;
+    try {
+      const nextSession = await loginWithBackendFallback({ username: loginUsername, password: loginPassword });
+      const state = await loadProgress(nextSession.user.id, nextSession.token);
+      setSession(nextSession);
+      setPlannerState(state);
+      setHasLoadedProgress(true);
+      setLoginError("");
+      setLoginUsername("");
+      setLoginPassword("");
+      window.localStorage.setItem(sessionStorageKey, JSON.stringify(nextSession));
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : "Login failed");
     }
-    setLoginError("");
-    setLoginUsername("");
-    setLoginPassword("");
-    setCurrentUser(account);
-    setEdits(readUserProgress(account.username));
-    setHasLoadedProgress(true);
-    window.localStorage.setItem(sessionStorageKey, account.username);
   }
 
   function handleLogout() {
     window.localStorage.removeItem(sessionStorageKey);
-    setCurrentUser(null);
+    setSession(null);
+    setPlannerState(createInitialState());
     setHasLoadedProgress(false);
-    setEdits(getInitialEdits());
+  }
+
+  function resetProgress() {
+    setPlannerState(createInitialState());
   }
 
   if (!isAuthReady) {
     return <main className="loginShell" />;
   }
 
-  if (!currentUser) {
+  if (!session) {
     return (
       <main className="loginShell">
         <section className="loginPanel" aria-label="Login">
           <div className="loginBrand">
             <p className="eyebrow">GATE ME 2027</p>
-            <h1>Daily Syllabus Planner</h1>
-            <p>Sign in to keep your planner progress separate on this device.</p>
+            <h1>Exam Clearance Planner</h1>
+            <p>Backend-ready planner with local fallback, syllabus lock, mocks, weaknesses, money, and gym discipline.</p>
           </div>
           <form className="loginCard" onSubmit={handleLogin}>
             <div className="loginIcon">
@@ -485,31 +361,30 @@ export default function PlannerPage() {
 
   return (
     <main>
-      <section className="hero">
+      <section className="hero compactHero">
         <div>
           <p className="eyebrow">GATE ME 2027</p>
-          <h1>Daily Syllabus Planner</h1>
+          <h1>Exam Clearance Planner</h1>
           <p className="heroCopy">
-            {formatDate(planStartDate)} to {formatDate(planEndDate)}. Finish every GATE Mechanical syllabus
-            topic by {formatDate(syllabusCompletionDate)}, then use January for mocks, analysis, speed drills,
-            and final strategy before exam day.
+            One source of truth, syllabus lock by {formatDate(syllabusCompletionDate)}, January-only mocks and revision,
+            and final exam day on {formatDate(examDate)}.
           </p>
           <div className="dateRibbon" aria-label="Plan dates">
             <span>Starts {formatDate(planStartDate)}</span>
             <span>Syllabus lock {formatDate(syllabusCompletionDate)}</span>
-            <span>Next: {formatDate(nextRow.Date)}</span>
-            <span>Exam: {formatDate(planEndDate)}</span>
+            <span>Next {formatDate(nextDay.date)}</span>
+            <span>Exam {formatDate(examDate)}</span>
           </div>
         </div>
-        <div className="heroPanel" aria-label="Overall completion">
+        <div className="heroPanel" aria-label="Overall readiness">
           <div className="accountPill">
             <UserRound size={16} />
-            <span>{currentUser.name}</span>
+            <span>{session.user.displayName}</span>
           </div>
-          <span>{metrics.completion}%</span>
-          <p>complete</p>
+          <span>{metrics.readiness}%</span>
+          <p>readiness</p>
           <div className="progressTrack">
-            <div style={{ width: `${metrics.completion}%` }} />
+            <div style={{ width: `${metrics.readiness}%` }} />
           </div>
           <button className="logoutButton" onClick={handleLogout}>
             <LogOut size={16} />
@@ -519,14 +394,12 @@ export default function PlannerPage() {
       </section>
 
       <section className="metricGrid" aria-label="Planner summary">
-        <Metric icon={<CalendarDays />} label="Plan Window" value={`${formatDate(planStartDate)} - ${formatDate(planEndDate)}`} />
-        <Metric icon={<CheckCircle2 />} label="Syllabus Lock" value={formatDate(syllabusCompletionDate)} />
-        <Metric icon={<BookOpen />} label="Study Days" value={metrics.studyDays.toString()} />
-        <Metric icon={<ClipboardList />} label="Rest Days" value={metrics.restDays.toString()} />
-        <Metric icon={<CheckCircle2 />} label="Done" value={metrics.counts.Done.toString()} />
-        <Metric icon={<ClipboardList />} label="Backlog" value={metrics.counts.Backlog.toString()} />
-        <Metric icon={<BarChart3 />} label="Hours" value={`${metrics.actualHours}/${metrics.targetHours}`} />
-        <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Checking"} />
+        <Metric icon={<Target />} label="Readiness" value={`${metrics.readiness}%`} />
+        <Metric icon={<CheckCircle2 />} label="Syllabus" value={`${metrics.completion}%`} />
+        <Metric icon={<ClipboardList />} label="PYQs" value={`${metrics.pyqSolved}/${metrics.pyqTarget}`} />
+        <Metric icon={<AlertTriangle />} label="Backlog" value={metrics.backlog.toString()} />
+        <Metric icon={<Activity />} label="Daily Avg" value={`${metrics.dailyAverage}/100`} />
+        <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Fallback"} />
       </section>
 
       <section className="strategyStrip" aria-label="Topper style strategy">
@@ -541,149 +414,106 @@ export default function PlannerPage() {
         ))}
       </section>
 
-      <section className="toolbar" aria-label="Planner controls">
+      <section className="toolbar cleanToolbar" aria-label="Planner controls">
         <label className="searchBox">
           <Search size={18} />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search topics, tasks, subjects"
+            placeholder="Search subjects, topics, work items"
           />
         </label>
-        <Select label="Phase" value={phase} onChange={setPhase} options={phases} />
-        <Select label="Subject" value={subject} onChange={setSubject} options={subjects} />
-        <Select label="Status" value={status} onChange={(value) => setStatus(value as Status | "All")} options={["All", ...statuses]} />
-        <button className="iconButton" onClick={exportProgress} title="Export progress">
-          <Download size={18} />
-        </button>
-        <button className="iconButton danger" onClick={resetProgress} title="Reset progress">
-          <RotateCcw size={18} />
+        <Select label="Subject" value={subjectFilter} onChange={setSubjectFilter} options={subjects} />
+        <button className="iconTextButton" onClick={resetProgress}>
+          <RotateCcw size={17} />
+          Reset
         </button>
       </section>
 
-      <nav className="tabs" aria-label="Planner views">
-        <button className={activeTab === "calendar" ? "active" : ""} onClick={() => setActiveTab("calendar")}>
-          <CalendarDays size={17} /> Phase Calendar
-        </button>
-        <button className={activeTab === "plan" ? "active" : ""} onClick={() => setActiveTab("plan")}>
-          <Table2 size={17} /> Daywise Marking
-        </button>
-        <button className={activeTab === "weeks" ? "active" : ""} onClick={() => setActiveTab("weeks")}>
-          <BarChart3 size={17} /> Weekly Tracker
-        </button>
-        <button className={activeTab === "syllabus" ? "active" : ""} onClick={() => setActiveTab("syllabus")}>
-          <BookOpen size={17} /> Syllabus Map
-        </button>
+      <nav className="tabs megaTabs" aria-label="Planner views">
+        {tabs.map((tab) => (
+          <button className={activeTab === tab.id ? "active" : ""} onClick={() => setActiveTab(tab.id)} key={tab.id}>
+            {tab.icon}
+            {tab.label}
+          </button>
+        ))}
       </nav>
 
-      {activeTab === "calendar" && (
-        <section className="phaseStack" aria-label="Phase calendar">
-          {phaseData
-            .filter((item) => phase === "All" || item.title === phase)
-            .map((item) => (
-              <article className="phaseBlock" key={item.id}>
-                <div className="phaseTop" style={{ background: phaseSoftColors[item.id] }}>
-                  <div>
-                    <span style={{ color: phaseColors[item.id] }}>{item.duration}</span>
-                    <h2>{item.title}</h2>
-                    <p>{item.goal}</p>
-                  </div>
-                  <strong>{item.dates}</strong>
-                </div>
-                <div className="weekdayHeader">
-                  {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-                    <span key={day}>{day}</span>
-                  ))}
-                </div>
-                {item.weeks.map((week) => (
-                  <div className="calendarWeek" key={week.label}>
-                    <p>{week.label}</p>
-                    <div className="dayGrid">
-                      {week.days.filter((day) => day.date && day.date !== "n/a").map((day, index) => {
-                        const matchingRow = dayRows.find(
-                          (row) => row.PhaseId === item.id && row.Week === week.label && row["Daily Task"] === day.sub
-                        );
-                        const edit = matchingRow ? edits[rowKey(matchingRow)] : undefined;
-                        const isRest = /^REST/i.test(day.sub);
-                        const isExam = day.hours === "Exam";
-                        return (
-                          <div
-                            className={`dayCell ${matchingRow?.Date === planStartDate ? "startDay" : ""} ${isRest ? "restDay" : ""} ${isExam ? "examDay" : ""}`}
-                            key={`${week.label}-${day.date}-${index}`}
-                          >
-                            <div className="dayNum" style={{ color: phaseColors[item.id] }}>{day.date}</div>
-                            <div className="daySubject">{day.sub}</div>
-                            {day.workItems && (
-                              <ul className="dayWork">
-                                {day.workItems.slice(0, 2).map((work) => (
-                                  <li key={work}>{work}</li>
-                                ))}
-                              </ul>
-                            )}
-                            <div className="dayFoot">
-                              <span>{day.hours}</span>
-                              {edit && <small className={statusClass[edit.status]}>{edit.status}</small>}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                ))}
-              </article>
-            ))}
+      {activeTab === "dashboard" && (
+        <section className="contentGrid">
+          <Panel title="Today Score" icon={<Activity />}>
+            <div className={`bigScore ${scoreClass(dailyScore(nextDay, plannerState.dailyProgress[nextDay.id] ?? defaultProgress(nextDay)))}`}>
+              {dailyScore(nextDay, plannerState.dailyProgress[nextDay.id] ?? defaultProgress(nextDay))}/100
+            </div>
+            <p className="panelText">{nextDay.task}</p>
+            <ul className="checkList">
+              {nextDay.workItems.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </Panel>
+          <Panel title="Readiness Formula" icon={<Target />}>
+            <p className="panelText">{plannerData.intelligenceRules.readinessScore}</p>
+            <div className="readinessBar">
+              <span style={{ width: `${metrics.readiness}%` }} />
+            </div>
+          </Panel>
+          <Panel title="Mock Trend" icon={<LineChart />}>
+            <TrendList rows={mockTrendRows} />
+          </Panel>
+          <Panel title="Critical Weak Topics" icon={<Brain />}>
+            <CompactList rows={weakRows.map((row) => `${row.subject}: ${row.topic}`)} empty="No weak topics detected yet." />
+          </Panel>
         </section>
       )}
 
-      {activeTab === "plan" && (
-        <section className="sheetWrap" aria-label="Daywise marking table">
-          <div className="sheetInfo">
-            Showing {filteredRows.length} of {metrics.total} rows
-          </div>
+      {activeTab === "daily" && (
+        <section className="sheetWrap">
+          <div className="sheetInfo">Showing {filteredDays.length} of {plannerData.daywisePlan.length} days</div>
           <div className="tableScroll">
-            <table className="plannerTable">
+            <table className="plannerTable premiumTable">
               <thead>
                 <tr>
                   <th>Date</th>
-                  <th>Day</th>
-                  <th>Phase</th>
-                  <th>Week</th>
                   <th>Subject</th>
                   <th>Task</th>
-                  <th>Daily Work</th>
-                  <th>Target</th>
-                  <th>Kind</th>
+                  <th>Work Items</th>
+                  <th>Score</th>
                   <th>Status</th>
-                  <th>Actual</th>
+                  <th>Hours</th>
+                  <th>PYQ</th>
+                  <th>Revision</th>
                   <th>Notes</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRows.map((row) => {
-                  const key = rowKey(row);
-                  const edit = edits[key];
+                {filteredDays.map((day) => {
+                  const progress = plannerState.dailyProgress[day.id] ?? defaultProgress(day);
                   return (
-                    <tr key={key}>
-                      <td className="dateCell">{formatDate(row.Date)}</td>
-                      <td>{row.Day}</td>
-                      <td>{row.Phase}</td>
-                      <td>{row.Week}</td>
-                      <td className="subjectCell">{row["Main Subject"]}</td>
-                      <td className="topicCell">{row["Daily Task"]}</td>
+                    <tr key={day.id}>
+                      <td className="dateCell">{formatDate(day.date)}</td>
+                      <td className="subjectCell">{day.subject}</td>
+                      <td className="topicCell">{day.task}</td>
                       <td className="workCell">
-                        <ul>
-                          {row["Work Items"].map((item) => (
-                            <li key={item}>{item}</li>
-                          ))}
-                        </ul>
+                        {day.workItems.map((item, index) => (
+                          <label className="workCheck" key={item}>
+                            <input
+                              type="checkbox"
+                              checked={progress.workItems[index]?.done ?? false}
+                              onChange={() => toggleWorkItem(day, index)}
+                            />
+                            <span>{item}</span>
+                          </label>
+                        ))}
                       </td>
-                      <td className="numberCell">{row["Target Hours"]}</td>
-                      <td>{row.Kind}</td>
+                      <td>
+                        <span className={`scorePill ${scoreClass(dailyScore(day, progress))}`}>{dailyScore(day, progress)}</span>
+                      </td>
                       <td>
                         <select
-                          className={`statusSelect ${statusClass[edit?.status ?? row.Status]}`}
-                          value={edit?.status ?? row.Status}
-                          onChange={(event) => updateRow(key, { status: event.target.value as Status })}
+                          className={`statusSelect ${statusClass[progress.status]}`}
+                          value={progress.status}
+                          onChange={(event) => updateDay(day, { status: event.target.value as ProgressStatus })}
                         >
                           {statuses.map((item) => (
                             <option key={item} value={item}>
@@ -698,15 +528,31 @@ export default function PlannerPage() {
                           type="number"
                           min="0"
                           step="0.5"
-                          value={edit?.actualHours || ""}
-                          onChange={(event) => updateRow(key, { actualHours: Number(event.target.value) })}
+                          value={progress.actualHours || ""}
+                          onChange={(event) => updateDay(day, { actualHours: Number(event.target.value) })}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          className="hourInput"
+                          type="number"
+                          min="0"
+                          value={progress.pyqSolved || ""}
+                          onChange={(event) => updateDay(day, { pyqSolved: Number(event.target.value) })}
+                        />
+                      </td>
+                      <td>
+                        <input
+                          type="checkbox"
+                          checked={progress.revisionDone}
+                          onChange={(event) => updateDay(day, { revisionDone: event.target.checked })}
                         />
                       </td>
                       <td>
                         <textarea
-                          value={edit?.notes ?? ""}
-                          onChange={(event) => updateRow(key, { notes: event.target.value })}
-                          placeholder="Mistakes, backlog, formula notes"
+                          value={progress.notes}
+                          onChange={(event) => updateDay(day, { notes: event.target.value })}
+                          placeholder="Mistake, formula, backlog reason"
                         />
                       </td>
                     </tr>
@@ -718,45 +564,210 @@ export default function PlannerPage() {
         </section>
       )}
 
-      {activeTab === "weeks" && (
-        <section className="weekGrid" aria-label="Weekly tracker">
-          {weeklyRows.map((week) => {
-            const completion = week.total ? Math.round((week.done / week.total) * 100) : 0;
-            return (
-              <article className="weekCard" key={week.id}>
-                <div className="weekHead">
-                  <span>{week.label}</span>
-                  <strong>{completion}%</strong>
-                </div>
-                <p>{formatDate(week.start)} to {formatDate(week.end)}</p>
-                <h3>{week.phase.title}</h3>
-                <div className="miniTrack">
-                  <div style={{ width: `${completion}%`, background: phaseColors[week.phase.id] }} />
-                </div>
-                <dl>
-                  <div><dt>Target</dt><dd>{week.target}h</dd></div>
-                  <div><dt>Actual</dt><dd>{week.actual}h</dd></div>
-                  <div><dt>Done</dt><dd>{week.done}/{week.total}</dd></div>
-                </dl>
-              </article>
-            );
-          })}
-        </section>
-      )}
-
       {activeTab === "syllabus" && (
-        <section className="syllabusGrid" aria-label="Syllabus map">
-          {syllabusRows.map((row) => (
-            <article className="syllabusCard" key={`${row.Section}-${row.Subject}`}>
-              <p>{row.Section}</p>
-              <h3>{row.Subject}</h3>
+        <section className="syllabusGrid">
+          {subjectRows.map((row) => (
+            <article className="syllabusCard" key={row.id}>
+              <p>{row.section}</p>
+              <h3>{row.subject}</h3>
+              <div className="miniTrack">
+                <div style={{ width: `${row.completion}%` }} />
+              </div>
+              <strong>{row.completion}% complete</strong>
               <ul>
-                {row["Topics Included"].split("\n").map((topic) => (
-                  <li key={topic}>{topic}</li>
+                {row.topics.map((topic) => (
+                  <li key={topic.id}>{topic.title}</li>
                 ))}
               </ul>
             </article>
           ))}
+        </section>
+      )}
+
+      {activeTab === "pyq" && (
+        <section className="contentGrid">
+          <Panel title="PYQ Completion" icon={<ClipboardList />}>
+            <div className="bigScore">{metrics.pyqSolved}/{metrics.pyqTarget}</div>
+            <p className="panelText">Target includes topic PYQs, deep PYQ days, mocks, and January speed drills.</p>
+          </Panel>
+          <Panel title="Top PYQ Subjects" icon={<BookOpen />}>
+            <CompactList
+              rows={masteryRows
+                .sort((a, b) => b.pyqSolved - a.pyqSolved)
+                .slice(0, 10)
+                .map((row) => `${row.subject}: ${row.pyqSolved} solved`)}
+            />
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "mocks" && (
+        <section className="sheetWrap">
+          <div className="tableScroll">
+            <table className="plannerTable compactTable">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Mock</th>
+                  <th>Target</th>
+                  <th>Score</th>
+                  <th>Accuracy</th>
+                  <th>Wrong</th>
+                  <th>Analysis</th>
+                  <th>Weakness Notes</th>
+                </tr>
+              </thead>
+              <tbody>
+                {mockRows.map((mock) => (
+                  <tr key={mock.id}>
+                    <td>{formatDate(mock.date)}</td>
+                    <td>{mock.name}</td>
+                    <td>{mock.targetScore}</td>
+                    <td>
+                      <input className="hourInput" value={mock.score ?? ""} onChange={(event) => updateMock(mock.id, { score: Number(event.target.value) })} />
+                    </td>
+                    <td>
+                      <input className="hourInput" value={mock.accuracy ?? ""} onChange={(event) => updateMock(mock.id, { accuracy: Number(event.target.value) })} />
+                    </td>
+                    <td>
+                      <input className="hourInput" value={mock.wrong ?? ""} onChange={(event) => updateMock(mock.id, { wrong: Number(event.target.value) })} />
+                    </td>
+                    <td>
+                      <input type="checkbox" checked={mock.analysisDone ?? false} onChange={(event) => updateMock(mock.id, { analysisDone: event.target.checked })} />
+                    </td>
+                    <td>
+                      <textarea value={mock.weaknessNotes ?? ""} onChange={(event) => updateMock(mock.id, { weaknessNotes: event.target.value })} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "weakness" && (
+        <section className="contentGrid">
+          <Panel title="Detected Weak Topics" icon={<Brain />}>
+            <CompactList rows={weakRows.map((row) => `${row.subject}: ${row.topic} (${row.backlogDays} backlog)`)} empty="No weak topics yet." />
+          </Panel>
+          <Panel title="Mistake Classification" icon={<AlertTriangle />}>
+            <MistakeList mistakes={plannerState.mistakes} />
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "backlog" && (
+        <section className="contentGrid">
+          <Panel title="Auto Backlog Recovery" icon={<TimerReset />}>
+            <CompactList rows={backlogRows.map((row) => `${formatDate(row.date)} ${row.subject}: recover by ${formatDate(row.recoveryDate)}`)} empty="No backlog scheduled." />
+          </Panel>
+          <Panel title="Recovery Rule" icon={<ShieldCheck />}>
+            <p className="panelText">Backlog is automatically detected from daily status and routed into recovery slots with the exact topic and reason.</p>
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "revision" && (
+        <section className="contentGrid">
+          <Panel title="Spaced Revision Queue" icon={<RotateCcw />}>
+            <CompactList rows={revisionRows.map((row) => `${formatDate(row.revisionDate)}: ${row.subject} (${row.offsetDays}d)`)} empty="Mark days Done to generate spaced revisions." />
+          </Panel>
+          <Panel title="Revision Offsets" icon={<CalendarDays />}>
+            <CompactList rows={plannerData.intelligenceRules.spacedRevisionOffsets.map((offset) => `Revise after ${offset} day(s)`).map(String)} />
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "formula" && (
+        <section className="syllabusGrid">
+          {subjectRows.map((row) => (
+            <article className="syllabusCard" key={row.id}>
+              <p>Formula Book</p>
+              <h3>{row.subject}</h3>
+              <ul>
+                {row.topics.slice(0, 5).map((topic) => (
+                  <li key={topic.id}>{topic.title}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </section>
+      )}
+
+      {activeTab === "money" && (
+        <section className="contentGrid">
+          <Panel title="Salary Plan" icon={<PiggyBank />}>
+            <label className="fieldLine">
+              Monthly salary
+              <input
+                type="number"
+                value={plannerState.salary.monthlySalary || ""}
+                onChange={(event) =>
+                  setPlannerState((current) => ({
+                    ...current,
+                    salary: { ...current.salary, monthlySalary: Number(event.target.value) }
+                  }))
+                }
+              />
+            </label>
+            <label className="fieldLine">
+              Savings goal
+              <input
+                type="number"
+                value={plannerState.salary.savingsGoal || ""}
+                onChange={(event) =>
+                  setPlannerState((current) => ({
+                    ...current,
+                    salary: { ...current.salary, savingsGoal: Number(event.target.value) }
+                  }))
+                }
+              />
+            </label>
+          </Panel>
+          <Panel title="Expenses" icon={<CreditCard />}>
+            <CompactList rows={plannerState.expenses.map((expense) => `${expense.label}: ${expense.amount}`)} empty="No expenses added yet." />
+            <button
+              className="iconTextButton"
+              onClick={() =>
+                addExpense({ id: `expense-${Date.now()}`, label: "Study expense", amount: 0, category: "Study" })
+              }
+            >
+              Add Expense
+            </button>
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "gym" && (
+        <section className="contentGrid">
+          <Panel title="Gym Routine" icon={<Dumbbell />}>
+            <p className="panelText">{plannerState.gymRoutine.weeklyGoal}</p>
+            <CompactList rows={plannerState.gymRoutine.sessions.map((session) => `${session.day}: ${session.focus} (${session.durationMinutes} min)`)} />
+          </Panel>
+          <Panel title="Energy Rule" icon={<Activity />}>
+            <p className="panelText">Gym supports consistency. Keep workouts short near mock days and protect sleep before full-length tests.</p>
+          </Panel>
+        </section>
+      )}
+
+      {activeTab === "war" && (
+        <section className="contentGrid">
+          <Panel title="Exam War Room" icon={<Flame />}>
+            <div className={`bigScore ${scoreClass(metrics.readiness)}`}>{metrics.readiness}%</div>
+            <p className="panelText">Exam day: {formatDate(examDate)}. Last week is light revision, formula recall, calculator rhythm, and sleep discipline.</p>
+          </Panel>
+          <Panel title="Final Rules" icon={<ShieldCheck />}>
+            <CompactList
+              rows={[
+                "No new topics after Dec 31.",
+                "Every mock must be analyzed before the next mock.",
+                "Wrong MCQ accuracy matters because negative marking exists.",
+                "Formula sheet and mistake notebook are daily assets.",
+                "Sleep, food, and calm matter in the final week."
+              ]}
+            />
+          </Panel>
         </section>
       )}
     </main>
@@ -796,4 +807,43 @@ function Select({
       </select>
     </label>
   );
+}
+
+function Panel({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return (
+    <article className="panelCard">
+      <div className="panelHead">
+        <span>{icon}</span>
+        <h2>{title}</h2>
+      </div>
+      {children}
+    </article>
+  );
+}
+
+function CompactList({ rows, empty }: { rows: string[]; empty?: string }) {
+  if (!rows.length) {
+    return <p className="panelText">{empty ?? "No rows yet."}</p>;
+  }
+  return (
+    <ul className="compactList">
+      {rows.map((row) => (
+        <li key={row}>{row}</li>
+      ))}
+    </ul>
+  );
+}
+
+function TrendList({ rows }: { rows: MockTestRecord[] }) {
+  if (!rows.length) {
+    return <p className="panelText">Enter mock scores to build a trend.</p>;
+  }
+  return <CompactList rows={rows.map((row) => `${formatDate(row.date)}: ${row.score} marks`)} />;
+}
+
+function MistakeList({ mistakes }: { mistakes: MistakeRecord[] }) {
+  if (!mistakes.length) {
+    return <p className="panelText">Mistakes are captured from notes and mock analysis once you start marking progress.</p>;
+  }
+  return <CompactList rows={mistakes.map((mistake) => `${mistake.type}: ${mistake.subject} - ${mistake.fix}`)} />;
 }
