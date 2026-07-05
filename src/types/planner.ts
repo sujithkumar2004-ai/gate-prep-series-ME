@@ -33,6 +33,14 @@ export type QuestionSource = "PYQ" | "Test Series" | "Textbook" | "Custom";
 
 export type QuestionDifficulty = "Easy" | "Medium" | "Hard";
 
+export type TimerMode = "Pomodoro" | "Deep Work" | "Custom";
+
+export type RecallRating = "forgot" | "partial" | "perfect";
+
+export type DailyScoreLabel = "Failed Day" | "Acceptable Day" | "Strong Day" | "Superhuman Day";
+
+export type ReminderType = "daily_study_start" | "revision_due" | "mock_test" | "backlog_warning" | "weekly_review";
+
 export type Subject = {
   id: string;
   name: string;
@@ -199,6 +207,13 @@ export type PlannerState = {
   mockTests: Record<string, MockTest>;
   mistakes: Record<string, Mistake>;
   attemptStrategies: Record<string, AttemptStrategy>;
+  deepWorkSessions: Record<string, DeepWorkSession>;
+  activeRecallCards: Record<string, ActiveRecallCard>;
+  energyLogs: Record<string, EnergyLog>;
+  gymLogs: Record<string, GymLog>;
+  reminders: Record<string, Reminder>;
+  weeklyReviews: Record<string, WeeklyReview>;
+  monthlyReviews: Record<string, MonthlyReview>;
 };
 
 export type PYQSession = {
@@ -326,6 +341,134 @@ export type AttemptStrategy = {
   easyAccuracy: number;
   mediumAccuracy: number;
   hardAccuracy: number;
+};
+
+export type DailyScore = {
+  date: string;
+  score: number;
+  label: DailyScoreLabel;
+  conceptStudy: number;
+  pyqSolving: number;
+  revision: number;
+  mockErrorAnalysis: number;
+  discipline: number;
+  skippedPenalty: number;
+  distractionPenalty: number;
+  deepWorkBonus: number;
+};
+
+export type DistractionLog = {
+  id: string;
+  reason: string;
+  timestamp: string;
+};
+
+export type SkipReason = {
+  taskId: string;
+  topicId: string;
+  reason: string;
+  date: string;
+};
+
+export type DeepWorkSession = {
+  id: string;
+  date: string;
+  mode: TimerMode;
+  subjectId: string;
+  topicId: string;
+  taskId?: string;
+  plannedMinutes: number;
+  completedMinutes: number;
+  status: "idle" | "running" | "paused" | "completed";
+  startedAt?: string;
+  pausedAt?: string;
+  completedAt?: string;
+  pauseReason: string;
+  notes: string;
+  distractions: DistractionLog[];
+};
+
+export type WeeklyReview = {
+  id: string;
+  weekStartDate: string;
+  weekEndDate: string;
+  topicsCompleted: number;
+  pyqsSolved: number;
+  mocksCompleted: number;
+  averageDailyScore: number;
+  bestDay?: string;
+  worstDay?: string;
+  mistakesRepeated: number;
+  backlogAdded: number;
+  backlogCleared: number;
+  revisionConsistency: number;
+  nextWeekTarget: string;
+  weeklyScore: number;
+  reflectionNotes: string;
+};
+
+export type MonthlyReview = {
+  id: string;
+  month: string;
+  syllabusCompletion: number;
+  subjectWiseReadiness: Record<string, number>;
+  mockAverage: number;
+  strongestTopics: string[];
+  weakestTopics: string[];
+  revisionDelay: number;
+  dailyScoreAverage: number;
+  backlogTrend: string;
+  expectedExamReadiness: number;
+  nextMonthBattlePlan: string;
+  reflectionNotes: string;
+};
+
+export type ActiveRecallCard = {
+  id: string;
+  cardType: "concept" | "formula" | "mistake";
+  subjectId: string;
+  topicId: string;
+  front: string;
+  back: string;
+  lastReviewedAt?: string;
+  nextReviewAt: string;
+  rating?: RecallRating;
+  confidence: number;
+  createdAt: string;
+};
+
+export type EnergyLog = {
+  id: string;
+  date: string;
+  sleepHours: number;
+  energyLevel: 1 | 2 | 3 | 4 | 5;
+  focusLevel: 1 | 2 | 3 | 4 | 5;
+  stressLevel: 1 | 2 | 3 | 4 | 5;
+  workoutDone: boolean;
+  notes: string;
+};
+
+export type GymLog = {
+  id: string;
+  date: string;
+  routineTitle: string;
+  exercises: { name: string; sets: number; reps: string; completed: boolean }[];
+  workoutCompleted: boolean;
+  bodyweight?: number;
+  recoveryNotes: string;
+};
+
+export type Reminder = {
+  id: string;
+  type: ReminderType;
+  title: string;
+  time: string;
+  enabled: boolean;
+};
+
+export type NotificationPreference = {
+  remindersEnabled: boolean;
+  permission: "default" | "granted" | "denied" | "unsupported";
 };
 
 export type Account = {

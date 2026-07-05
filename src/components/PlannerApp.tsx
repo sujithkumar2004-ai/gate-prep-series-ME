@@ -21,13 +21,24 @@ import { savePYQSession } from "../services/pyqService";
 import { addQuestionBankItem } from "../services/questionBankService";
 import { addMockTest } from "../services/mockService";
 import { addMistake, markMistakeFixed } from "../services/mistakeService";
-import type { Account, AttemptStrategy, BackendStatus, DailyTask, DailyTaskStatus, Mistake, MockTest, PlannerState, PYQSession, QuestionBankItem, RowEdit, Status } from "../types/planner";
+import { calculateDailyScore } from "../services/dailyScoreService";
+import { completeDeepWorkSession, logDistraction, pauseDeepWorkSession, resumeDeepWorkSession, startDeepWorkSession, upsertDeepWorkSession } from "../services/deepWorkService";
+import { saveEnergyLog } from "../services/energyService";
+import { saveGymLog } from "../services/gymService";
+import { rateRecallCard } from "../services/activeRecallService";
+import { requestNotificationPermission, updateReminder } from "../services/reminderService";
+import type { Account, AttemptStrategy, BackendStatus, DailyTask, DailyTaskStatus, DeepWorkSession, EnergyLog, GymLog, Mistake, MockTest, PlannerState, PYQSession, QuestionBankItem, RecallRating, Reminder, RowEdit, Status } from "../types/planner";
+import { ActiveRecallView } from "./planner/ActiveRecallView";
 import { AnalyticsView } from "./planner/AnalyticsView";
 import { AttemptStrategyView } from "./planner/AttemptStrategyView";
 import { BacklogRecovery } from "./planner/BacklogRecovery";
 import { DailyPlanView } from "./planner/DailyPlanView";
 import { DashboardView } from "./planner/DashboardView";
+import { DeepWorkTimer } from "./planner/DeepWorkTimer";
 import { DaywiseTable } from "./planner/DaywiseTable";
+import { DisciplineView } from "./planner/DisciplineView";
+import { EnergyTracker } from "./planner/EnergyTracker";
+import { GymRoutineView } from "./planner/GymRoutineView";
 import { LoginPanel } from "./planner/LoginPanel";
 import { MistakeNotebook } from "./planner/MistakeNotebook";
 import { MockAnalysis } from "./planner/MockAnalysis";
@@ -37,7 +48,9 @@ import { PlannerTabs, type PlannerTab } from "./planner/PlannerTabs";
 import { PlannerToolbar } from "./planner/PlannerToolbar";
 import { PYQTracker } from "./planner/PYQTracker";
 import { QuestionBank } from "./planner/QuestionBank";
+import { ReminderSettings } from "./planner/ReminderSettings";
 import { RevisionSystem } from "./planner/RevisionSystem";
+import { MonthlyReviewView, WeeklyReviewView } from "./planner/ReviewViews";
 import { Metric } from "./planner/Shared";
 import { SyllabusMap } from "./planner/SyllabusMap";
 import { SyllabusTracker } from "./planner/SyllabusTracker";
@@ -236,6 +249,34 @@ export function PlannerApp() {
     });
   }
 
+  function createDeepSession(session: DeepWorkSession) {
+    setPlannerState((current) => upsertDeepWorkSession(current, session));
+  }
+
+  function completeDeepSession(id: string, minutes: number) {
+    setPlannerState((current) => syncRowEditFromTaskState(completeDeepWorkSession(current, id, minutes)));
+  }
+
+  function rateRecall(id: string, rating: RecallRating) {
+    setPlannerState((current) => rateRecallCard(current, id, rating));
+  }
+
+  function saveEnergy(log: Omit<EnergyLog, "id">) {
+    setPlannerState((current) => saveEnergyLog(current, log));
+  }
+
+  function saveGym(log: Omit<GymLog, "id">) {
+    setPlannerState((current) => saveGymLog(current, log));
+  }
+
+  function changeReminder(id: string, patch: Partial<Reminder>) {
+    setPlannerState((current) => updateReminder(current, id, patch));
+  }
+
+  async function enableNotifications() {
+    await requestNotificationPermission();
+  }
+
   if (!isAuthReady) {
     return <main className="loginShell" />;
   }
@@ -305,7 +346,7 @@ export function PlannerApp() {
 
       <PlannerTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {activeTab === "dashboard" && <DashboardView state={plannerState} />}
+      {activeTab === "dashboard" && <DashboardView state={plannerState} dailyScore={calculateDailyScore(plannerState)} />}
       {activeTab === "daily" && <DailyPlanView state={plannerState} onTaskUpdate={updateDailyTask} />}
       {activeTab === "syllabus" && <SyllabusTracker state={plannerState} onAccuracyChange={changeTopicAccuracy} />}
       {activeTab === "revision" && <RevisionSystem state={plannerState} onCompleteRevision={completeRevision} />}
@@ -316,6 +357,24 @@ export function PlannerApp() {
       {activeTab === "mistakes" && <MistakeNotebook state={plannerState} onAdd={saveMistake} onFix={fixMistake} />}
       {activeTab === "weakness" && <WeaknessEngine state={plannerState} />}
       {activeTab === "analytics" && <AnalyticsView state={plannerState} />}
+      {activeTab === "timer" && (
+        <DeepWorkTimer
+          state={plannerState}
+          onCreate={createDeepSession}
+          onStart={(id) => setPlannerState((current) => startDeepWorkSession(current, id))}
+          onPause={(id, reason) => setPlannerState((current) => pauseDeepWorkSession(current, id, reason))}
+          onResume={(id) => setPlannerState((current) => resumeDeepWorkSession(current, id))}
+          onDistraction={(id, reason) => setPlannerState((current) => logDistraction(current, id, reason))}
+          onComplete={completeDeepSession}
+        />
+      )}
+      {activeTab === "discipline" && <DisciplineView state={plannerState} />}
+      {activeTab === "weekly-review" && <WeeklyReviewView state={plannerState} />}
+      {activeTab === "monthly-review" && <MonthlyReviewView state={plannerState} />}
+      {activeTab === "recall" && <ActiveRecallView state={plannerState} onRate={rateRecall} />}
+      {activeTab === "energy" && <EnergyTracker state={plannerState} onSave={saveEnergy} />}
+      {activeTab === "gym" && <GymRoutineView state={plannerState} onSave={saveGym} />}
+      {activeTab === "reminders" && <ReminderSettings state={plannerState} onUpdate={changeReminder} onEnable={enableNotifications} />}
       {activeTab === "calendar" && <PhaseCalendar plannerData={plannerData} edits={plannerState.rowEdits} phaseFilter={phase} />}
       {activeTab === "plan" && (
         <DaywiseTable rows={filteredRows} edits={plannerState.rowEdits} totalRows={metrics.total} onUpdateRow={updateRow} />

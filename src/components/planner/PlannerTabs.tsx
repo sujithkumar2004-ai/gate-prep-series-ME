@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, BarChart3, BookOpen, Brain, CalendarDays, ClipboardList, LayoutDashboard, NotebookPen, RotateCcw, Target, Table2 } from "lucide-react";
+import { Activity, AlertTriangle, BarChart3, Bell, BookOpen, Brain, CalendarDays, ClipboardList, Dumbbell, LayoutDashboard, NotebookPen, RotateCcw, Target, Timer, Table2 } from "lucide-react";
 
 export type PlannerTab =
   | "dashboard"
@@ -14,6 +14,14 @@ export type PlannerTab =
   | "mistakes"
   | "weakness"
   | "analytics"
+  | "timer"
+  | "discipline"
+  | "weekly-review"
+  | "monthly-review"
+  | "recall"
+  | "energy"
+  | "gym"
+  | "reminders"
   | "calendar"
   | "plan"
   | "weeks"
@@ -60,6 +68,30 @@ export function PlannerTabs({
       </button>
       <button className={activeTab === "analytics" ? "active" : ""} onClick={() => onTabChange("analytics")}>
         <BarChart3 size={17} /> Analytics
+      </button>
+      <button className={activeTab === "timer" ? "active" : ""} onClick={() => onTabChange("timer")}>
+        <Timer size={17} /> Deep Work
+      </button>
+      <button className={activeTab === "discipline" ? "active" : ""} onClick={() => onTabChange("discipline")}>
+        <AlertTriangle size={17} /> Discipline
+      </button>
+      <button className={activeTab === "weekly-review" ? "active" : ""} onClick={() => onTabChange("weekly-review")}>
+        <CalendarDays size={17} /> Weekly Review
+      </button>
+      <button className={activeTab === "monthly-review" ? "active" : ""} onClick={() => onTabChange("monthly-review")}>
+        <BarChart3 size={17} /> Monthly Review
+      </button>
+      <button className={activeTab === "recall" ? "active" : ""} onClick={() => onTabChange("recall")}>
+        <Brain size={17} /> Active Recall
+      </button>
+      <button className={activeTab === "energy" ? "active" : ""} onClick={() => onTabChange("energy")}>
+        <Activity size={17} /> Energy
+      </button>
+      <button className={activeTab === "gym" ? "active" : ""} onClick={() => onTabChange("gym")}>
+        <Dumbbell size={17} /> Gym
+      </button>
+      <button className={activeTab === "reminders" ? "active" : ""} onClick={() => onTabChange("reminders")}>
+        <Bell size={17} /> Reminders
       </button>
       <button className={activeTab === "calendar" ? "active" : ""} onClick={() => onTabChange("calendar")}>
         <CalendarDays size={17} /> Phase Calendar

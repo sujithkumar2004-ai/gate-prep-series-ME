@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertTriangle, CalendarDays, CheckCircle2, ClipboardList, Gauge, Target } from "lucide-react";
+import { AlertTriangle, BarChart3, CalendarDays, CheckCircle2, ClipboardList, Gauge, Target } from "lucide-react";
 import type { PlannerState } from "../../types/planner";
 import { getDashboardMetrics } from "../../services/plannerService";
 import { getMockSummary } from "../../services/mockService";
@@ -8,10 +8,14 @@ import { calculatePriorityScore } from "../../services/priorityService";
 import { getPYQSummary } from "../../services/pyqService";
 import { calculateReadinessScore } from "../../services/readinessService";
 import { calculateWeakTopics } from "../../services/weaknessService";
+import { calculateStudyStreak } from "../../services/dailyScoreService";
+import { deepWorkMinutesForDate, distractionCountForDate } from "../../services/deepWorkService";
+import { calculateWeeklyReview } from "../../services/weeklyReviewService";
 import { plannerData } from "../../lib/plannerData";
 import { Metric } from "./Shared";
+import type { DailyScore } from "../../types/planner";
 
-export function DashboardView({ state }: { state: PlannerState }) {
+export function DashboardView({ state, dailyScore }: { state: PlannerState; dailyScore: DailyScore }) {
   const metrics = getDashboardMetrics(state);
   const pyq = getPYQSummary(state);
   const mocks = getMockSummary(state);
@@ -21,6 +25,9 @@ export function DashboardView({ state }: { state: PlannerState }) {
   const weakestSubject = weakest ? plannerData.subjects.find((subject) => subject.id === weakest.subjectId)?.name ?? "-" : "-";
   const weakestTopic = weakest ? plannerData.topics.find((topic) => topic.id === weakest.topicId)?.title ?? "-" : "-";
   const priorityTopic = priority ? plannerData.topics.find((topic) => topic.id === priority.topicId)?.title ?? "-" : "-";
+  const today = new Date().toISOString().slice(0, 10);
+  const weekly = calculateWeeklyReview(state, today);
+  const todayEnergy = Object.values(state.energyLogs).find((log) => log.date === today);
   return (
     <section className="coreGrid" aria-label="Core dashboard">
       <Metric icon={<CalendarDays />} label="Days to Exam" value={metrics.daysLeftForExam.toString()} />
@@ -34,6 +41,12 @@ export function DashboardView({ state }: { state: PlannerState }) {
       <Metric icon={<Target />} label="Last Mock" value={`${mocks.lastMock?.score ?? 0}`} />
       <Metric icon={<Gauge />} label="Readiness" value={`${readiness.overall}%`} />
       <Metric icon={<Target />} label="Score Gap" value={`${readiness.requiredScoreImprovement}`} />
+      <Metric icon={<Gauge />} label="Today Score" value={`${dailyScore.score}/100`} />
+      <Metric icon={<CheckCircle2 />} label="Streak" value={`${calculateStudyStreak(state)} days`} />
+      <Metric icon={<Target />} label="Deep Work" value={`${deepWorkMinutesForDate(state, today)}m`} />
+      <Metric icon={<AlertTriangle />} label="Distractions" value={`${distractionCountForDate(state, today)}`} />
+      <Metric icon={<BarChart3 />} label="Weekly Score" value={`${weekly.weeklyScore}`} />
+      <Metric icon={<Gauge />} label="Energy Today" value={todayEnergy ? `${todayEnergy.energyLevel}/5` : "-"} />
       <article className="widePanel">
         <div className="panelTitle"><Target size={18} /><h2>Today&apos;s Priority</h2></div>
         <p>{priorityTopic || metrics.todayPriority}</p>
@@ -45,6 +58,10 @@ export function DashboardView({ state }: { state: PlannerState }) {
       <article className="widePanel">
         <div className="panelTitle"><AlertTriangle size={18} /><h2>Weakest Area</h2></div>
         <p>{weakestSubject}: {weakestTopic}</p>
+      </article>
+      <article className="widePanel">
+        <div className="panelTitle"><AlertTriangle size={18} /><h2>Recovery Warning</h2></div>
+        <p>{dailyScore.score < 70 ? "Failed-day recovery is needed today." : "No recovery warning right now."}</p>
       </article>
     </section>
   );
