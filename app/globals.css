@@ -1,22 +1,24 @@
 :root {
-  --bg: #f4f6f3;
-  --surface: #fbfcf8;
-  --ink: #1c221f;
-  --muted: #68716a;
-  --line: #d8dfd4;
-  --line-strong: #c1cabd;
+  --bg: #f5f7fb;
+  --surface: #fbfcff;
+  --ink: #17212b;
+  --muted: #65717f;
+  --line: #d8e0e8;
+  --line-strong: #b7c3cf;
   --panel: #ffffff;
-  --green: #176d55;
-  --green-soft: #def3e9;
-  --amber: #99650d;
-  --amber-soft: #fff1c5;
-  --red: #b44339;
-  --red-soft: #ffe1dc;
-  --blue: #285f92;
-  --blue-soft: #deedf8;
-  --charcoal: #202a25;
-  --shadow: 0 20px 55px rgba(31, 42, 35, 0.1);
-  --shadow-soft: 0 10px 28px rgba(31, 42, 35, 0.07);
+  --green: #15785f;
+  --green-soft: #dff5ec;
+  --amber: #a56512;
+  --amber-soft: #fff0c7;
+  --red: #bf4b45;
+  --red-soft: #ffe3df;
+  --blue: #23669e;
+  --blue-soft: #e0effb;
+  --coral: #d85c4a;
+  --coral-soft: #ffe8df;
+  --charcoal: #1f2b38;
+  --shadow: 0 20px 55px rgba(37, 51, 66, 0.1);
+  --shadow-soft: 0 10px 28px rgba(37, 51, 66, 0.07);
 }
 
 * {
@@ -31,7 +33,7 @@ body {
   margin: 0;
   color: var(--ink);
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(244, 246, 243, 0.96) 360px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.86), rgba(245, 247, 251, 0.98) 360px),
     var(--bg);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
@@ -59,10 +61,10 @@ main {
   padding: clamp(20px, 5vw, 72px);
   color: #fff;
   background:
-    linear-gradient(112deg, rgba(12, 25, 23, 0.98), rgba(25, 67, 62, 0.92)),
+    linear-gradient(112deg, rgba(17, 30, 45, 0.98), rgba(26, 90, 89, 0.9), rgba(112, 58, 70, 0.78)),
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.095) 0 1px, transparent 1px 96px),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.065) 0 1px, transparent 1px 48px),
-    #183b37;
+    #172d38;
 }
 
 .loginPanel {
@@ -100,8 +102,8 @@ main {
   display: grid;
   place-items: center;
   border-radius: 8px;
-  color: #12352f;
-  background: #bcebd8;
+  color: #102b31;
+  background: #b9ead9;
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.16);
 }
 
@@ -159,8 +161,8 @@ main {
   margin-top: 20px;
   border: 0;
   border-radius: 8px;
-  color: #12352f;
-  background: linear-gradient(180deg, #d7f7e9, #9ce4c4);
+  color: #102b31;
+  background: linear-gradient(180deg, #ddf7ec, #9ee5c6);
   box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2);
   font-weight: 850;
 }
@@ -174,12 +176,12 @@ main {
   padding: 62px clamp(20px, 5vw, 72px) 42px;
   color: #fff;
   background:
-    linear-gradient(112deg, rgba(12, 25, 23, 0.98), rgba(25, 67, 62, 0.92)),
+    linear-gradient(112deg, rgba(17, 30, 45, 0.98), rgba(28, 89, 96, 0.92), rgba(118, 62, 75, 0.78)),
     repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.105) 0 1px, transparent 1px 96px),
     repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.07) 0 1px, transparent 1px 48px),
-    #183b37;
-  border-bottom: 1px solid rgba(20, 35, 31, 0.38);
-  box-shadow: 0 24px 70px rgba(23, 45, 39, 0.18);
+    #172d38;
+  border-bottom: 1px solid rgba(24, 42, 56, 0.38);
+  box-shadow: 0 24px 70px rgba(24, 42, 56, 0.18);
 }
 
 .eyebrow {
@@ -206,6 +208,27 @@ h1 {
   color: rgba(242, 250, 246, 0.9);
   font-size: 1.06rem;
   line-height: 1.7;
+}
+
+.dateRibbon {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.dateRibbon span {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  color: #f7fbff;
+  background: rgba(255, 255, 255, 0.12);
+  padding: 0 13px;
+  font-size: 0.82rem;
+  font-weight: 820;
+  white-space: nowrap;
 }
 
 .heroPanel {
@@ -311,9 +334,9 @@ h1 {
   display: grid;
   place-items: center;
   border-radius: 8px;
-  color: var(--green);
-  background: linear-gradient(180deg, #eaf8f1, var(--green-soft));
-  box-shadow: inset 0 0 0 1px rgba(23, 109, 85, 0.08);
+  color: var(--blue);
+  background: linear-gradient(180deg, #edf6ff, var(--blue-soft));
+  box-shadow: inset 0 0 0 1px rgba(35, 102, 158, 0.08);
 }
 
 .metricCard p {
@@ -325,7 +348,9 @@ h1 {
 }
 
 .metricCard strong {
-  font-size: 1.7rem;
+  overflow-wrap: anywhere;
+  font-size: clamp(1.08rem, 2.1vw, 1.7rem);
+  line-height: 1.16;
 }
 
 .toolbar {
@@ -433,10 +458,10 @@ h1 {
 }
 
 .tabs button.active {
-  border-color: rgba(23, 109, 85, 0.82);
+  border-color: rgba(35, 102, 158, 0.82);
   color: #fff;
-  background: linear-gradient(180deg, #238468, var(--green));
-  box-shadow: 0 12px 30px rgba(23, 109, 85, 0.22);
+  background: linear-gradient(180deg, #2f7eb8, var(--blue));
+  box-shadow: 0 12px 30px rgba(35, 102, 158, 0.22);
 }
 
 .sheetWrap,
@@ -548,6 +573,12 @@ h1 {
 
 .dayCell.restDay {
   background: linear-gradient(180deg, #f5f7f1, #ebefe6);
+}
+
+.dayCell.startDay {
+  border-color: rgba(216, 92, 74, 0.74);
+  background: linear-gradient(180deg, #fff8f5, var(--coral-soft));
+  box-shadow: 0 14px 34px rgba(216, 92, 74, 0.14);
 }
 
 .dayCell.examDay {

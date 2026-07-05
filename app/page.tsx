@@ -78,7 +78,7 @@ type Account = {
 const phaseData = (htmlPlan as { phases: HtmlPhase[] }).phases;
 const syllabusRows = (excelData as { "Syllabus Map": SyllabusRow[] })["Syllabus Map"];
 const sessionStorageKey = "gate-me-planner-current-user-v1";
-const storageKeyPrefix = "gate-me-html-planner-progress-v2";
+const storageKeyPrefix = "gate-me-html-planner-progress-v3-jul6";
 const statuses: Status[] = ["Not Started", "In Progress", "Done", "Backlog"];
 const accounts: Account[] = [
   { username: "SK001", password: "SK001@123", name: "SK001" },
@@ -110,7 +110,7 @@ const statusClass: Record<Status, string> = {
 
 function toIsoDate(value: string) {
   const [month, rawDay] = value.split(" ");
-  const year = month === "Jan" || month === "Feb" ? 2027 : 2026;
+  const year = month === "Jan" || month === "Feb" || month === "Mar" ? 2027 : 2026;
   const monthMap: Record<string, string> = {
     Jun: "06",
     Jul: "07",
@@ -120,7 +120,8 @@ function toIsoDate(value: string) {
     Nov: "11",
     Dec: "12",
     Jan: "01",
-    Feb: "02"
+    Feb: "02",
+    Mar: "03"
   };
   return `${year}-${monthMap[month]}-${rawDay.padStart(2, "0")}`;
 }
@@ -179,6 +180,8 @@ function buildRows() {
 }
 
 const dayRows = buildRows();
+const planStartDate = dayRows[0]?.Date ?? "2026-07-06";
+const planEndDate = dayRows[dayRows.length - 1]?.Date ?? "2027-03-08";
 
 function rowKey(row: DayRow) {
   return `${row.Date}-${row["Daily Task"]}`;
@@ -298,6 +301,10 @@ export default function PlannerPage() {
     };
   }, [edits]);
 
+  const nextRow = useMemo(() => {
+    return dayRows.find((row) => edits[rowKey(row)]?.status !== "Done") ?? dayRows[dayRows.length - 1];
+  }, [edits]);
+
   const weeklyRows = useMemo(() => {
     return phaseData.flatMap((phase) =>
       phase.weeks.map((week, index) => {
@@ -380,7 +387,7 @@ export default function PlannerPage() {
         <section className="loginPanel" aria-label="Login">
           <div className="loginBrand">
             <p className="eyebrow">GATE ME 2027</p>
-            <h1>Study Planner</h1>
+            <h1>Daily Syllabus Planner</h1>
             <p>Sign in to keep your planner progress separate on this device.</p>
           </div>
           <form className="loginCard" onSubmit={handleLogin}>
@@ -426,11 +433,16 @@ export default function PlannerPage() {
       <section className="hero">
         <div>
           <p className="eyebrow">GATE ME 2027</p>
-          <h1>Study Planner</h1>
+          <h1>Daily Syllabus Planner</h1>
           <p className="heroCopy">
-            June 1, 2026 to February 1, 2027. Rebuilt from your HTML phase plan with a calendar view,
-            Excel-style marking, weekly tracking, rest days, and exam-day visibility.
+            {formatDate(planStartDate)} to {formatDate(planEndDate)}. A day-by-day Mechanical Engineering
+            syllabus plan with calendar blocks, Excel-style marking, weekly tracking, rest days, and exam-day visibility.
           </p>
+          <div className="dateRibbon" aria-label="Plan dates">
+            <span>Starts {formatDate(planStartDate)}</span>
+            <span>Next: {formatDate(nextRow.Date)}</span>
+            <span>Exam: {formatDate(planEndDate)}</span>
+          </div>
         </div>
         <div className="heroPanel" aria-label="Overall completion">
           <div className="accountPill">
@@ -450,7 +462,7 @@ export default function PlannerPage() {
       </section>
 
       <section className="metricGrid" aria-label="Planner summary">
-        <Metric icon={<CalendarDays />} label="Total Days" value={metrics.total.toString()} />
+        <Metric icon={<CalendarDays />} label="Plan Window" value={`${formatDate(planStartDate)} - ${formatDate(planEndDate)}`} />
         <Metric icon={<BookOpen />} label="Study Days" value={metrics.studyDays.toString()} />
         <Metric icon={<ClipboardList />} label="Rest Days" value={metrics.restDays.toString()} />
         <Metric icon={<CheckCircle2 />} label="Done" value={metrics.counts.Done.toString()} />
@@ -525,7 +537,7 @@ export default function PlannerPage() {
                         const isExam = day.hours === "Exam";
                         return (
                           <div
-                            className={`dayCell ${isRest ? "restDay" : ""} ${isExam ? "examDay" : ""}`}
+                            className={`dayCell ${matchingRow?.Date === planStartDate ? "startDay" : ""} ${isRest ? "restDay" : ""} ${isExam ? "examDay" : ""}`}
                             key={`${week.label}-${day.date}-${index}`}
                           >
                             <div className="dayNum" style={{ color: phaseColors[item.id] }}>{day.date}</div>

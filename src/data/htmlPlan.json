@@ -3,280 +3,280 @@
     {
       "id": 1,
       "title": "Phase 1 — Foundation",
-      "dates": "Jun 1 – Jul 18, 2026",
+      "dates": "Jul 6 – Aug 22, 2026",
       "duration": "7 weeks",
       "goal": "Engineering Mathematics (full) + Engineering Mechanics + Mechanics of Materials basics",
       "weeks": [
         {
-          "label": "Week 1 (Jun 1–7)",
+          "label": "Week 1 (Jul 6–Jul 12)",
           "days": [
             {
-              "date": "Jun 1",
+              "date": "Jul 6",
               "sub": "Engg Maths: Linear Algebra — matrices, eigenvalues",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 2",
+              "date": "Jul 7",
               "sub": "Engg Maths: Linear Algebra — systems of equations",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 3",
+              "date": "Jul 8",
               "sub": "Engg Maths: Calculus — limits, continuity, differentiability",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 4",
+              "date": "Jul 9",
               "sub": "Engg Maths: Calculus — mean value theorems, integrals",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 5",
+              "date": "Jul 10",
               "sub": "Engg Maths: Calculus — double/triple integrals, partial derivatives",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 6",
+              "date": "Jul 11",
               "sub": "Engg Maths: Calculus — Taylor series, maxima/minima, Fourier series",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 7",
+              "date": "Jul 12",
               "sub": "REST — weekly review",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 2 (Jun 8–14)",
+          "label": "Week 2 (Jul 13–Jul 19)",
           "days": [
             {
-              "date": "Jun 8",
+              "date": "Jul 13",
               "sub": "Engg Maths: Calculus — gradient, divergence, curl, vector identities",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 9",
+              "date": "Jul 14",
               "sub": "Engg Maths: Calculus — line, surface, volume integrals; Gauss/Stokes/Green",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 10",
+              "date": "Jul 15",
               "sub": "Engg Maths: Differential Equations — 1st order linear & nonlinear",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 11",
+              "date": "Jul 16",
               "sub": "Engg Maths: Differential Equations — higher order, Euler-Cauchy",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 12",
+              "date": "Jul 17",
               "sub": "Engg Maths: Differential Equations — Laplace transforms, BVPs",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 13",
+              "date": "Jul 18",
               "sub": "Engg Maths: Complex Variables — analytic functions, C-R equations, Cauchy",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 14",
+              "date": "Jul 19",
               "sub": "REST — PYQ practice: Maths",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 3 (Jun 15–21)",
+          "label": "Week 3 (Jul 20–Jul 26)",
           "days": [
             {
-              "date": "Jun 15",
+              "date": "Jul 20",
               "sub": "Engg Maths: Probability — definitions, conditional probability, Bayes",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 16",
+              "date": "Jul 21",
               "sub": "Engg Maths: Probability — distributions: binomial, Poisson, normal",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 17",
+              "date": "Jul 22",
               "sub": "Engg Maths: Numerical Methods — roots of equations (bisection, N-R)",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 18",
+              "date": "Jul 23",
               "sub": "Engg Maths: Numerical Methods — interpolation, numerical integration",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 19",
+              "date": "Jul 24",
               "sub": "Engg Maths: Numerical Methods — ODE methods; full maths revision",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 20",
+              "date": "Jul 25",
               "sub": "Maths PYQ full practice — solve 2015–2020 maths questions",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 21",
+              "date": "Jul 26",
               "sub": "REST",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 4 (Jun 22–28)",
+          "label": "Week 4 (Jul 27–Aug 2)",
           "days": [
             {
-              "date": "Jun 22",
+              "date": "Jul 27",
               "sub": "Engineering Mechanics: FBD, equilibrium, 2D & 3D forces",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 23",
+              "date": "Jul 28",
               "sub": "Engineering Mechanics: Friction — Coulomb, rolling, belt-pulley, brakes",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 24",
+              "date": "Jul 29",
               "sub": "Engineering Mechanics: Trusses and frames, method of joints/sections",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 25",
+              "date": "Jul 30",
               "sub": "Engineering Mechanics: Virtual work, kinematics of rigid bodies",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 26",
+              "date": "Jul 31",
               "sub": "Engineering Mechanics: Dynamics — impulse, momentum, energy, Lagrange",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 27",
+              "date": "Aug 1",
               "sub": "Engineering Mechanics: PYQ practice + revision",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 28",
+              "date": "Aug 2",
               "sub": "REST",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 5 (Jun 29–Jul 5)",
+          "label": "Week 5 (Aug 3–Aug 9)",
           "days": [
             {
-              "date": "Jun 29",
+              "date": "Aug 3",
               "sub": "Mechanics of Materials: Stress, strain, elastic constants, Poisson ratio",
               "hours": "6 hrs"
             },
             {
-              "date": "Jun 30",
+              "date": "Aug 4",
               "sub": "Mechanics of Materials: Mohr circle — plane stress & plane strain",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 1",
+              "date": "Aug 5",
               "sub": "Mechanics of Materials: Thin cylinders, shear force & BM diagrams",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 2",
+              "date": "Aug 6",
               "sub": "Mechanics of Materials: Bending and shear stresses, shear centre",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 3",
+              "date": "Aug 7",
               "sub": "Mechanics of Materials: Deflection of beams — various methods",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 4",
+              "date": "Aug 8",
               "sub": "Mechanics of Materials: Torsion of shafts, Euler column theory",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 5",
+              "date": "Aug 9",
               "sub": "REST",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 6 (Jul 6–12)",
+          "label": "Week 6 (Aug 10–Aug 16)",
           "days": [
             {
-              "date": "Jul 6",
+              "date": "Aug 10",
               "sub": "Mechanics of Materials: Energy methods, thermal stresses",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 7",
+              "date": "Aug 11",
               "sub": "Mechanics of Materials: Strain gauges, UTM testing, hardness/impact",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 8",
+              "date": "Aug 12",
               "sub": "SOM PYQ practice — 2015–2022",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 9",
+              "date": "Aug 13",
               "sub": "Theory of Machines: Displacement, velocity, acceleration of mechanisms",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 10",
+              "date": "Aug 14",
               "sub": "Theory of Machines: Dynamic analysis of linkages, cams",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 11",
+              "date": "Aug 15",
               "sub": "Theory of Machines: Gears and gear trains — spur, helical, bevel",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 12",
+              "date": "Aug 16",
               "sub": "REST",
               "hours": "Rest"
             }
           ]
         },
         {
-          "label": "Week 7 (Jul 13–18)",
+          "label": "Week 7 (Aug 17–Aug 22)",
           "days": [
             {
-              "date": "Jul 13",
+              "date": "Aug 17",
               "sub": "Theory of Machines: Flywheels, governors, balancing — reciprocating & rotating",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 14",
+              "date": "Aug 18",
               "sub": "Theory of Machines: Gyroscope + PYQ practice",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 15",
+              "date": "Aug 19",
               "sub": "Vibrations: Free & forced vibration, SDoF systems, damping",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 16",
+              "date": "Aug 20",
               "sub": "Vibrations: Vibration isolation, resonance, critical speeds of shafts",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 17",
+              "date": "Aug 21",
               "sub": "Phase 1 full revision — Maths + Engg Mechanics + SOM + TOM + Vibrations",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 18",
+              "date": "Aug 22",
               "sub": "Phase 1 mock test (self-assessment)",
               "hours": "6 hrs"
             },
@@ -292,241 +292,41 @@
     {
       "id": 2,
       "title": "Phase 2 — Core subjects",
-      "dates": "Jul 19 – Sep 13, 2026",
+      "dates": "Aug 23 – Oct 18, 2026",
       "duration": "8 weeks",
       "goal": "Thermodynamics + Fluid Mechanics + Heat Transfer + Machine Design",
       "weeks": [
         {
-          "label": "Week 8 (Jul 19–25)",
+          "label": "Week 8 (Aug 23–Aug 29)",
           "days": [
             {
-              "date": "Jul 19",
+              "date": "Aug 23",
               "sub": "Thermodynamics: Systems, processes, properties of pure substances",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 20",
+              "date": "Aug 24",
               "sub": "Thermodynamics: Ideal & real gases; zeroth & first laws",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 21",
+              "date": "Aug 25",
               "sub": "Thermodynamics: Work and heat calculations in all processes",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 22",
+              "date": "Aug 26",
               "sub": "Thermodynamics: Second law — entropy, availability, irreversibility",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 23",
+              "date": "Aug 27",
               "sub": "Thermodynamics: Property charts/tables, thermodynamic relations",
               "hours": "6 hrs"
             },
             {
-              "date": "Jul 24",
-              "sub": "Thermodynamics: Power cycles — Rankine, Brayton; regeneration/reheat",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 25",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 9 (Jul 26–Aug 1)",
-          "days": [
-            {
-              "date": "Jul 26",
-              "sub": "Thermodynamics: IC engines — Otto, Diesel, dual cycles",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 27",
-              "sub": "Thermodynamics: Refrigeration — vapour/gas cycles, heat pumps",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 28",
-              "sub": "Thermodynamics: Psychrometrics — moist air, psychrometric chart",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 29",
-              "sub": "Thermodynamics: Turbomachinery — impulse/reaction, Pelton, Francis, Kaplan",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 30",
-              "sub": "Thermodynamics: Gas/steam turbines; compressors",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Jul 31",
-              "sub": "Thermodynamics PYQ practice 2015–2022",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 1",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 10 (Aug 2–8)",
-          "days": [
-            {
-              "date": "Aug 2",
-              "sub": "Fluid Mechanics: Fluid properties, statics, forces on submerged bodies",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 3",
-              "sub": "Fluid Mechanics: Stability of floating bodies, control-volume analysis",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 4",
-              "sub": "Fluid Mechanics: Continuity & momentum equations, Bernoulli",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 5",
-              "sub": "Fluid Mechanics: Dimensional analysis, viscous flow, boundary layer",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 6",
-              "sub": "Fluid Mechanics: Turbulent flow, flow through pipes, head losses",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 7",
-              "sub": "Fluid Mechanics: Compressible flow basics + PYQ practice",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 8",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 11 (Aug 9–15)",
-          "days": [
-            {
-              "date": "Aug 9",
-              "sub": "Heat Transfer: Modes — conduction basics, 1D steady state",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 10",
-              "sub": "Heat Transfer: Resistance concept, electrical analogy, fins",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 11",
-              "sub": "Heat Transfer: Unsteady conduction — lumped system, Heisler charts",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 12",
-              "sub": "Heat Transfer: Convection — thermal BL, dimensionless parameters",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 13",
-              "sub": "Heat Transfer: Correlations — flat plate & pipe flow, turbulence effects",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 14",
-              "sub": "Heat Transfer: Heat exchangers — LMTD, NTU methods",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 15",
-              "sub": "REST (Independence Day)",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 12 (Aug 16–22)",
-          "days": [
-            {
-              "date": "Aug 16",
-              "sub": "Heat Transfer: Radiation — Stefan-Boltzmann, Wien, view factors, network",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 17",
-              "sub": "Heat Transfer PYQ practice 2015–2022",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 18",
-              "sub": "Machine Design: Static & dynamic loading, failure theories",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 19",
-              "sub": "Machine Design: Fatigue strength, S-N diagram, endurance limit",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 20",
-              "sub": "Machine Design: Bolted, riveted, welded joints",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 21",
-              "sub": "Machine Design: Shafts, gears, rolling & sliding bearings",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 22",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 13 (Aug 23–29)",
-          "days": [
-            {
-              "date": "Aug 23",
-              "sub": "Machine Design: Brakes, clutches, springs + PYQ practice",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 24",
-              "sub": "Engineering Materials: Structure & properties, phase diagrams",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 25",
-              "sub": "Engineering Materials: Heat treatment, stress-strain diagrams",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 26",
-              "sub": "Casting, Forming: Types of casting, patterns, moulds, solidification",
-              "hours": "6 hrs"
-            },
-            {
-              "date": "Aug 27",
-              "sub": "Casting, Forming: Plastic deformation, hot & cold working, forging, rolling",
-              "hours": "6 hrs"
-            },
-            {
               "date": "Aug 28",
-              "sub": "Casting, Forming: Extrusion, drawing, sheet metal, powder metallurgy",
+              "sub": "Thermodynamics: Power cycles — Rankine, Brayton; regeneration/reheat",
               "hours": "6 hrs"
             },
             {
@@ -537,36 +337,36 @@
           ]
         },
         {
-          "label": "Week 14 (Aug 30–Sep 5)",
+          "label": "Week 9 (Aug 30–Sep 5)",
           "days": [
             {
               "date": "Aug 30",
-              "sub": "Joining Processes: Welding, brazing, soldering, adhesive bonding",
+              "sub": "Thermodynamics: IC engines — Otto, Diesel, dual cycles",
               "hours": "6 hrs"
             },
             {
               "date": "Aug 31",
-              "sub": "Machining: Mechanics of machining, cutting tools, tool geometry",
+              "sub": "Thermodynamics: Refrigeration — vapour/gas cycles, heat pumps",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 1",
-              "sub": "Machining: Tool life, wear, economics; non-traditional processes",
+              "sub": "Thermodynamics: Psychrometrics — moist air, psychrometric chart",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 2",
-              "sub": "Machining: Jigs & fixtures, abrasive processes, NC/CNC programming",
+              "sub": "Thermodynamics: Turbomachinery — impulse/reaction, Pelton, Francis, Kaplan",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 3",
-              "sub": "Metrology: Limits, fits, tolerances; linear & angular measurements",
+              "sub": "Thermodynamics: Gas/steam turbines; compressors",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 4",
-              "sub": "Metrology: Comparators, interferometry, form/finish, CMM",
+              "sub": "Thermodynamics PYQ practice 2015–2022",
               "hours": "6 hrs"
             },
             {
@@ -577,45 +377,245 @@
           ]
         },
         {
-          "label": "Week 15 (Sep 6–13)",
+          "label": "Week 10 (Sep 6–Sep 12)",
           "days": [
             {
               "date": "Sep 6",
-              "sub": "CAD/CAM basics, additive manufacturing",
+              "sub": "Fluid Mechanics: Fluid properties, statics, forces on submerged bodies",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 7",
-              "sub": "Production Planning: Forecasting, aggregate planning, scheduling, MRP",
+              "sub": "Fluid Mechanics: Stability of floating bodies, control-volume analysis",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 8",
-              "sub": "Inventory Control + Operations Research: LP, simplex, transportation",
+              "sub": "Fluid Mechanics: Continuity & momentum equations, Bernoulli",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 9",
-              "sub": "Operations Research: Assignment, network flow, queuing, PERT/CPM",
+              "sub": "Fluid Mechanics: Dimensional analysis, viscous flow, boundary layer",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 10",
-              "sub": "Manufacturing & IE PYQ practice 2015–2022",
+              "sub": "Fluid Mechanics: Turbulent flow, flow through pipes, head losses",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 11",
-              "sub": "Phase 2 mock test (full Section 3 + Section 4)",
+              "sub": "Fluid Mechanics: Compressible flow basics + PYQ practice",
               "hours": "6 hrs"
             },
             {
               "date": "Sep 12",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 11 (Sep 13–Sep 19)",
+          "days": [
+            {
+              "date": "Sep 13",
+              "sub": "Heat Transfer: Modes — conduction basics, 1D steady state",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 14",
+              "sub": "Heat Transfer: Resistance concept, electrical analogy, fins",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 15",
+              "sub": "Heat Transfer: Unsteady conduction — lumped system, Heisler charts",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 16",
+              "sub": "Heat Transfer: Convection — thermal BL, dimensionless parameters",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 17",
+              "sub": "Heat Transfer: Correlations — flat plate & pipe flow, turbulence effects",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 18",
+              "sub": "Heat Transfer: Heat exchangers — LMTD, NTU methods",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 19",
+              "sub": "REST (Independence Day)",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 12 (Sep 20–Sep 26)",
+          "days": [
+            {
+              "date": "Sep 20",
+              "sub": "Heat Transfer: Radiation — Stefan-Boltzmann, Wien, view factors, network",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 21",
+              "sub": "Heat Transfer PYQ practice 2015–2022",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 22",
+              "sub": "Machine Design: Static & dynamic loading, failure theories",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 23",
+              "sub": "Machine Design: Fatigue strength, S-N diagram, endurance limit",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 24",
+              "sub": "Machine Design: Bolted, riveted, welded joints",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 25",
+              "sub": "Machine Design: Shafts, gears, rolling & sliding bearings",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 26",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 13 (Sep 27–Oct 3)",
+          "days": [
+            {
+              "date": "Sep 27",
+              "sub": "Machine Design: Brakes, clutches, springs + PYQ practice",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 28",
+              "sub": "Engineering Materials: Structure & properties, phase diagrams",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 29",
+              "sub": "Engineering Materials: Heat treatment, stress-strain diagrams",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Sep 30",
+              "sub": "Casting, Forming: Types of casting, patterns, moulds, solidification",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 1",
+              "sub": "Casting, Forming: Plastic deformation, hot & cold working, forging, rolling",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 2",
+              "sub": "Casting, Forming: Extrusion, drawing, sheet metal, powder metallurgy",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 3",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 14 (Oct 4–Oct 10)",
+          "days": [
+            {
+              "date": "Oct 4",
+              "sub": "Joining Processes: Welding, brazing, soldering, adhesive bonding",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 5",
+              "sub": "Machining: Mechanics of machining, cutting tools, tool geometry",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 6",
+              "sub": "Machining: Tool life, wear, economics; non-traditional processes",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 7",
+              "sub": "Machining: Jigs & fixtures, abrasive processes, NC/CNC programming",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 8",
+              "sub": "Metrology: Limits, fits, tolerances; linear & angular measurements",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 9",
+              "sub": "Metrology: Comparators, interferometry, form/finish, CMM",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 10",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 15 (Oct 11–Oct 18)",
+          "days": [
+            {
+              "date": "Oct 11",
+              "sub": "CAD/CAM basics, additive manufacturing",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 12",
+              "sub": "Production Planning: Forecasting, aggregate planning, scheduling, MRP",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 13",
+              "sub": "Inventory Control + Operations Research: LP, simplex, transportation",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 14",
+              "sub": "Operations Research: Assignment, network flow, queuing, PERT/CPM",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 15",
+              "sub": "Manufacturing & IE PYQ practice 2015–2022",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 16",
+              "sub": "Phase 2 mock test (full Section 3 + Section 4)",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Oct 17",
               "sub": "Phase 2 error analysis & weak area identification",
               "hours": "6 hrs"
             },
             {
-              "date": "Sep 13",
+              "date": "Oct 18",
               "sub": "REST",
               "hours": "Rest"
             }
@@ -626,241 +626,41 @@
     {
       "id": 3,
       "title": "Phase 3 — Advanced topics & deeper PYQ",
-      "dates": "Sep 14 – Nov 2, 2026",
+      "dates": "Oct 19 – Dec 7, 2026",
       "duration": "7 weeks",
       "goal": "Deep PYQ subject-wise (2016–2024) + Weak areas + Advanced problem solving",
       "weeks": [
         {
-          "label": "Week 16 (Sep 14–20)",
+          "label": "Week 16 (Oct 19–Oct 25)",
           "days": [
             {
-              "date": "Sep 14",
+              "date": "Oct 19",
               "sub": "Deep PYQ: Engineering Mathematics (2016–2024)",
               "hours": "7 hrs"
             },
             {
-              "date": "Sep 15",
+              "date": "Oct 20",
               "sub": "Deep PYQ: Engineering Mechanics + SOM (2016–2024)",
               "hours": "7 hrs"
             },
             {
-              "date": "Sep 16",
+              "date": "Oct 21",
               "sub": "Deep PYQ: Theory of Machines + Vibrations (2016–2024)",
               "hours": "7 hrs"
             },
             {
-              "date": "Sep 17",
+              "date": "Oct 22",
               "sub": "Deep PYQ: Thermodynamics (2016–2024)",
               "hours": "7 hrs"
             },
             {
-              "date": "Sep 18",
+              "date": "Oct 23",
               "sub": "Deep PYQ: Fluid Mechanics (2016–2024)",
               "hours": "7 hrs"
             },
             {
-              "date": "Sep 19",
-              "sub": "Deep PYQ: Heat Transfer (2016–2024)",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 20",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 17 (Sep 21–27)",
-          "days": [
-            {
-              "date": "Sep 21",
-              "sub": "Deep PYQ: Machine Design (2016–2024)",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 22",
-              "sub": "Deep PYQ: Manufacturing (2016–2024)",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 23",
-              "sub": "Deep PYQ: Industrial Engineering + OR (2016–2024)",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 24",
-              "sub": "Weak area 1 — identify from mock & revise deeply",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 25",
-              "sub": "Weak area 2 revision",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 26",
-              "sub": "Weak area 3 revision",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 27",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 18 (Sep 28–Oct 4)",
-          "days": [
-            {
-              "date": "Sep 28",
-              "sub": "Full-length mock test 1 (3 hrs, GATE pattern)",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 29",
-              "sub": "Mock 1 analysis — section-wise error review",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Sep 30",
-              "sub": "Thermodynamics: Advanced problems — property tables, real cycles",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 1",
-              "sub": "Fluid Mechanics: Advanced — compressible flow, normal shocks",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 2",
-              "sub": "Heat Transfer: Advanced — combined modes, fins with convection",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 3",
-              "sub": "SOM Advanced: Curved beams, unsymmetrical bending, springs",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 4",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 19 (Oct 5–11)",
-          "days": [
-            {
-              "date": "Oct 5",
-              "sub": "Theory of Machines: Advanced — equivalent mechanisms, vibration absorbers",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 6",
-              "sub": "Machine Design: Advanced — fatigue under combined loading, bearings life",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 7",
-              "sub": "Manufacturing: Advanced — economics of machining, Taylor tool life",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 8",
-              "sub": "Full-length mock test 2",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 9",
-              "sub": "Mock 2 analysis — identify and fix errors",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 10",
-              "sub": "Revision: Thermodynamics + Applications",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 11",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 20 (Oct 12–18)",
-          "days": [
-            {
-              "date": "Oct 12",
-              "sub": "Revision: Fluid Mechanics + Heat Transfer",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 13",
-              "sub": "Revision: Engg Mechanics + SOM + TOM + Vibrations",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 14",
-              "sub": "Revision: Machine Design + Engg Materials",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 15",
-              "sub": "Revision: Manufacturing + Metrology",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 16",
-              "sub": "Revision: IE + OR + CAD/CAM",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 17",
-              "sub": "Full-length mock test 3",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 18",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 21 (Oct 19–25)",
-          "days": [
-            {
-              "date": "Oct 19",
-              "sub": "Mock 3 analysis + weak section deep dive",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 20",
-              "sub": "Engineering Mathematics — complete revision sprint",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 21",
-              "sub": "Thermodynamics — complete revision sprint",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 22",
-              "sub": "Fluid Mechanics — complete revision sprint",
-              "hours": "7 hrs"
-            },
-            {
-              "date": "Oct 23",
-              "sub": "Heat Transfer — complete revision sprint",
-              "hours": "7 hrs"
-            },
-            {
               "date": "Oct 24",
-              "sub": "Full-length mock test 4",
+              "sub": "Deep PYQ: Heat Transfer (2016–2024)",
               "hours": "7 hrs"
             },
             {
@@ -871,45 +671,245 @@
           ]
         },
         {
-          "label": "Week 22 (Oct 26–Nov 2)",
+          "label": "Week 17 (Oct 26–Nov 1)",
           "days": [
             {
               "date": "Oct 26",
-              "sub": "Mock 4 analysis + formula sheet building (Maths, Thermo, FM)",
+              "sub": "Deep PYQ: Machine Design (2016–2024)",
               "hours": "7 hrs"
             },
             {
               "date": "Oct 27",
-              "sub": "SOM + TOM + Vibrations — formula sheet + revision",
+              "sub": "Deep PYQ: Manufacturing (2016–2024)",
               "hours": "7 hrs"
             },
             {
               "date": "Oct 28",
-              "sub": "Manufacturing + Metrology — formula sheet + revision",
+              "sub": "Deep PYQ: Industrial Engineering + OR (2016–2024)",
               "hours": "7 hrs"
             },
             {
               "date": "Oct 29",
-              "sub": "Machine Design + Materials — formula sheet + revision",
+              "sub": "Weak area 1 — identify from mock & revise deeply",
               "hours": "7 hrs"
             },
             {
               "date": "Oct 30",
-              "sub": "IE + OR — formula sheet + revision",
+              "sub": "Weak area 2 revision",
               "hours": "7 hrs"
             },
             {
               "date": "Oct 31",
-              "sub": "Full-length mock test 5",
+              "sub": "Weak area 3 revision",
               "hours": "7 hrs"
             },
             {
               "date": "Nov 1",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 18 (Nov 2–Nov 8)",
+          "days": [
+            {
+              "date": "Nov 2",
+              "sub": "Full-length mock test 1 (3 hrs, GATE pattern)",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 3",
+              "sub": "Mock 1 analysis — section-wise error review",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 4",
+              "sub": "Thermodynamics: Advanced problems — property tables, real cycles",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 5",
+              "sub": "Fluid Mechanics: Advanced — compressible flow, normal shocks",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 6",
+              "sub": "Heat Transfer: Advanced — combined modes, fins with convection",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 7",
+              "sub": "SOM Advanced: Curved beams, unsymmetrical bending, springs",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 8",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 19 (Nov 9–Nov 15)",
+          "days": [
+            {
+              "date": "Nov 9",
+              "sub": "Theory of Machines: Advanced — equivalent mechanisms, vibration absorbers",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 10",
+              "sub": "Machine Design: Advanced — fatigue under combined loading, bearings life",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 11",
+              "sub": "Manufacturing: Advanced — economics of machining, Taylor tool life",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 12",
+              "sub": "Full-length mock test 2",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 13",
+              "sub": "Mock 2 analysis — identify and fix errors",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 14",
+              "sub": "Revision: Thermodynamics + Applications",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 15",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 20 (Nov 16–Nov 22)",
+          "days": [
+            {
+              "date": "Nov 16",
+              "sub": "Revision: Fluid Mechanics + Heat Transfer",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 17",
+              "sub": "Revision: Engg Mechanics + SOM + TOM + Vibrations",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 18",
+              "sub": "Revision: Machine Design + Engg Materials",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 19",
+              "sub": "Revision: Manufacturing + Metrology",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 20",
+              "sub": "Revision: IE + OR + CAD/CAM",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 21",
+              "sub": "Full-length mock test 3",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 22",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 21 (Nov 23–Nov 29)",
+          "days": [
+            {
+              "date": "Nov 23",
+              "sub": "Mock 3 analysis + weak section deep dive",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 24",
+              "sub": "Engineering Mathematics — complete revision sprint",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 25",
+              "sub": "Thermodynamics — complete revision sprint",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 26",
+              "sub": "Fluid Mechanics — complete revision sprint",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 27",
+              "sub": "Heat Transfer — complete revision sprint",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 28",
+              "sub": "Full-length mock test 4",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Nov 29",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 22 (Nov 30–Dec 7)",
+          "days": [
+            {
+              "date": "Nov 30",
+              "sub": "Mock 4 analysis + formula sheet building (Maths, Thermo, FM)",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 1",
+              "sub": "SOM + TOM + Vibrations — formula sheet + revision",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 2",
+              "sub": "Manufacturing + Metrology — formula sheet + revision",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 3",
+              "sub": "Machine Design + Materials — formula sheet + revision",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 4",
+              "sub": "IE + OR — formula sheet + revision",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 5",
+              "sub": "Full-length mock test 5",
+              "hours": "7 hrs"
+            },
+            {
+              "date": "Dec 6",
               "sub": "Mock 5 analysis",
               "hours": "7 hrs"
             },
             {
-              "date": "Nov 2",
+              "date": "Dec 7",
               "sub": "REST",
               "hours": "Rest"
             }
@@ -920,241 +920,41 @@
     {
       "id": 4,
       "title": "Phase 4 — Integration & mock series",
-      "dates": "Nov 3 – Dec 21, 2026",
+      "dates": "Dec 8, 2026 – Jan 25, 2027",
       "duration": "7 weeks",
       "goal": "2 full mocks/week + subject-wise rapid revision + speed & accuracy drills",
       "weeks": [
         {
-          "label": "Week 23 (Nov 3–9)",
+          "label": "Week 23 (Dec 8–Dec 14)",
           "days": [
             {
-              "date": "Nov 3",
+              "date": "Dec 8",
               "sub": "Speed drill: Maths 30 questions in 30 min",
               "hours": "8 hrs"
             },
             {
-              "date": "Nov 4",
+              "date": "Dec 9",
               "sub": "Speed drill: Thermodynamics 30 questions",
               "hours": "8 hrs"
             },
             {
-              "date": "Nov 5",
+              "date": "Dec 10",
               "sub": "Speed drill: Fluid Mechanics 30 questions",
               "hours": "8 hrs"
             },
             {
-              "date": "Nov 6",
+              "date": "Dec 11",
               "sub": "Full-length mock test 6 (timed, GATE conditions)",
               "hours": "8 hrs"
             },
             {
-              "date": "Nov 7",
+              "date": "Dec 12",
               "sub": "Mock 6 analysis — mark scoring patterns",
               "hours": "8 hrs"
             },
             {
-              "date": "Nov 8",
-              "sub": "Speed drill: Heat Transfer + SOM 30 questions each",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 9",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 24 (Nov 10–16)",
-          "days": [
-            {
-              "date": "Nov 10",
-              "sub": "Speed drill: TOM + Vibrations + Machine Design",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 11",
-              "sub": "Full-length mock test 7",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 12",
-              "sub": "Mock 7 analysis",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 13",
-              "sub": "Revision: All formula sheets review (full day)",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 14",
-              "sub": "Speed drill: Manufacturing + Metrology + IE + OR",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 15",
-              "sub": "Full-length mock test 8",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 16",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 25 (Nov 17–23)",
-          "days": [
-            {
-              "date": "Nov 17",
-              "sub": "Mock 8 analysis + error log review",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 18",
-              "sub": "Targeted revision: Top 3 weak topics from error log",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 19",
-              "sub": "Full-length mock test 9",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 20",
-              "sub": "Mock 9 analysis",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 21",
-              "sub": "Thermodynamics: All PYQ numeric problems reattempt",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 22",
-              "sub": "Fluid Mechanics: All PYQ numeric problems reattempt",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 23",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 26 (Nov 24–30)",
-          "days": [
-            {
-              "date": "Nov 24",
-              "sub": "Heat Transfer: All PYQ numeric problems reattempt",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 25",
-              "sub": "SOM + TOM: All PYQ numeric problems reattempt",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 26",
-              "sub": "Full-length mock test 10",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 27",
-              "sub": "Mock 10 analysis",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 28",
-              "sub": "Manufacturing: All PYQ reattempt",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 29",
-              "sub": "IE + OR: All PYQ reattempt + formula sheet final polish",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Nov 30",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 27 (Dec 1–7)",
-          "days": [
-            {
-              "date": "Dec 1",
-              "sub": "Full-length mock test 11 (aim: 55+ marks)",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 2",
-              "sub": "Mock 11 analysis — check if on track",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 3",
-              "sub": "Revision sprint: Engg Maths full",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 4",
-              "sub": "Revision sprint: Thermodynamics + Fluid Mechanics",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 5",
-              "sub": "Revision sprint: Heat Transfer + Engg Mechanics",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 6",
-              "sub": "Full-length mock test 12",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 7",
-              "sub": "REST",
-              "hours": "Rest"
-            }
-          ]
-        },
-        {
-          "label": "Week 28 (Dec 8–14)",
-          "days": [
-            {
-              "date": "Dec 8",
-              "sub": "Mock 12 analysis",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 9",
-              "sub": "Revision sprint: SOM + TOM + Vibrations",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 10",
-              "sub": "Revision sprint: Machine Design + Materials",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 11",
-              "sub": "Revision sprint: Manufacturing + Metrology",
-              "hours": "8 hrs"
-            },
-            {
-              "date": "Dec 12",
-              "sub": "Revision sprint: IE + OR + CAD/CAM",
-              "hours": "8 hrs"
-            },
-            {
               "date": "Dec 13",
-              "sub": "Full-length mock test 13",
+              "sub": "Speed drill: Heat Transfer + SOM 30 questions each",
               "hours": "8 hrs"
             },
             {
@@ -1165,36 +965,36 @@
           ]
         },
         {
-          "label": "Week 29 (Dec 15–21)",
+          "label": "Week 24 (Dec 15–Dec 21)",
           "days": [
             {
               "date": "Dec 15",
-              "sub": "Mock 13 analysis + final weak area list",
+              "sub": "Speed drill: TOM + Vibrations + Machine Design",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 16",
-              "sub": "Full-length mock test 14",
+              "sub": "Full-length mock test 7",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 17",
-              "sub": "Mock 14 analysis",
+              "sub": "Mock 7 analysis",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 18",
-              "sub": "All formula sheets — consolidate into one master sheet",
+              "sub": "Revision: All formula sheets review (full day)",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 19",
-              "sub": "Full-length mock test 15 (final integration test)",
+              "sub": "Speed drill: Manufacturing + Metrology + IE + OR",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 20",
-              "sub": "Mock 15 analysis — benchmark score check",
+              "sub": "Full-length mock test 8",
               "hours": "8 hrs"
             },
             {
@@ -1203,47 +1003,38 @@
               "hours": "Rest"
             }
           ]
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "title": "Phase 5 — Final revision",
-      "dates": "Dec 22, 2026 – Feb 1, 2027",
-      "duration": "6 weeks",
-      "goal": "Master sheet revision, 1 mock/day, maintain sharpness, exam strategy",
-      "weeks": [
+        },
         {
-          "label": "Week 30 (Dec 22–28)",
+          "label": "Week 25 (Dec 22–Dec 28)",
           "days": [
             {
               "date": "Dec 22",
-              "sub": "Master sheet: Engg Maths revision (3 hrs) + Mini mock",
+              "sub": "Mock 8 analysis + error log review",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 23",
-              "sub": "Master sheet: Thermodynamics (3 hrs) + Mini mock",
+              "sub": "Targeted revision: Top 3 weak topics from error log",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 24",
-              "sub": "Master sheet: Fluid Mechanics (3 hrs) + Mini mock",
+              "sub": "Full-length mock test 9",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 25",
-              "sub": "Master sheet: Heat Transfer (3 hrs) + Mini mock",
+              "sub": "Mock 9 analysis",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 26",
-              "sub": "Master sheet: SOM + TOM (3 hrs) + Mini mock",
+              "sub": "Thermodynamics: All PYQ numeric problems reattempt",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 27",
-              "sub": "Full-length mock test 16",
+              "sub": "Fluid Mechanics: All PYQ numeric problems reattempt",
               "hours": "8 hrs"
             },
             {
@@ -1254,36 +1045,36 @@
           ]
         },
         {
-          "label": "Week 31 (Dec 29–Jan 4)",
+          "label": "Week 26 (Dec 29–Jan 4)",
           "days": [
             {
               "date": "Dec 29",
-              "sub": "Mock 16 analysis + Master sheet: Machine Design",
+              "sub": "Heat Transfer: All PYQ numeric problems reattempt",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 30",
-              "sub": "Master sheet: Manufacturing + Metrology",
+              "sub": "SOM + TOM: All PYQ numeric problems reattempt",
               "hours": "8 hrs"
             },
             {
               "date": "Dec 31",
-              "sub": "Master sheet: IE + OR (half day) + Rest (half day)",
-              "hours": "4 hrs"
+              "sub": "Full-length mock test 10",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 1",
-              "sub": "REST (New Year)",
-              "hours": "Rest"
+              "sub": "Mock 10 analysis",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 2",
-              "sub": "Full-length mock test 17",
+              "sub": "Manufacturing: All PYQ reattempt",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 3",
-              "sub": "Mock 17 analysis",
+              "sub": "IE + OR: All PYQ reattempt + formula sheet final polish",
               "hours": "8 hrs"
             },
             {
@@ -1294,36 +1085,36 @@
           ]
         },
         {
-          "label": "Week 32 (Jan 5–11)",
+          "label": "Week 27 (Jan 5–Jan 11)",
           "days": [
             {
               "date": "Jan 5",
-              "sub": "Full revision: Thermodynamics all topics rapid fire",
+              "sub": "Full-length mock test 11 (aim: 55+ marks)",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 6",
-              "sub": "Full revision: Fluid Mechanics all topics rapid fire",
+              "sub": "Mock 11 analysis — check if on track",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 7",
-              "sub": "Full-length mock test 18",
+              "sub": "Revision sprint: Engg Maths full",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 8",
-              "sub": "Mock 18 analysis + Full revision: Heat Transfer rapid fire",
+              "sub": "Revision sprint: Thermodynamics + Fluid Mechanics",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 9",
-              "sub": "Full revision: SOM + TOM + Vibrations rapid fire",
+              "sub": "Revision sprint: Heat Transfer + Engg Mechanics",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 10",
-              "sub": "Full-length mock test 19",
+              "sub": "Full-length mock test 12",
               "hours": "8 hrs"
             },
             {
@@ -1334,36 +1125,36 @@
           ]
         },
         {
-          "label": "Week 33 (Jan 12–18)",
+          "label": "Week 28 (Jan 12–Jan 18)",
           "days": [
             {
               "date": "Jan 12",
-              "sub": "Mock 19 analysis + Machine Design rapid fire",
+              "sub": "Mock 12 analysis",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 13",
-              "sub": "Manufacturing + Metrology rapid fire",
+              "sub": "Revision sprint: SOM + TOM + Vibrations",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 14",
-              "sub": "Full-length mock test 20",
+              "sub": "Revision sprint: Machine Design + Materials",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 15",
-              "sub": "Mock 20 analysis + IE + OR rapid fire",
+              "sub": "Revision sprint: Manufacturing + Metrology",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 16",
-              "sub": "Engg Maths rapid fire",
+              "sub": "Revision sprint: IE + OR + CAD/CAM",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 17",
-              "sub": "Full-length mock test 21",
+              "sub": "Full-length mock test 13",
               "hours": "8 hrs"
             },
             {
@@ -1374,37 +1165,37 @@
           ]
         },
         {
-          "label": "Week 34 (Jan 19–25)",
+          "label": "Week 29 (Jan 19–Jan 25)",
           "days": [
             {
               "date": "Jan 19",
-              "sub": "Mock 21 analysis + All master sheets final read",
+              "sub": "Mock 13 analysis + final weak area list",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 20",
-              "sub": "Full-length mock test 22 (last intensive mock)",
+              "sub": "Full-length mock test 14",
               "hours": "8 hrs"
             },
             {
               "date": "Jan 21",
-              "sub": "Mock 22 analysis",
-              "hours": "6 hrs"
+              "sub": "Mock 14 analysis",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 22",
-              "sub": "Light revision: Thermodynamics + Fluid Mechanics formula sheets",
-              "hours": "4 hrs"
+              "sub": "All formula sheets — consolidate into one master sheet",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 23",
-              "sub": "Light revision: SOM + TOM + Machine Design formula sheets",
-              "hours": "4 hrs"
+              "sub": "Full-length mock test 15 (final integration test)",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 24",
-              "sub": "Light revision: Manufacturing + IE + OR formula sheets",
-              "hours": "4 hrs"
+              "sub": "Mock 15 analysis — benchmark score check",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 25",
@@ -1412,43 +1203,252 @@
               "hours": "Rest"
             }
           ]
-        },
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Phase 5 — Final revision",
+      "dates": "Jan 26 – Mar 8, 2027",
+      "duration": "6 weeks",
+      "goal": "Master sheet revision, 1 mock/day, maintain sharpness, exam strategy",
+      "weeks": [
         {
-          "label": "Week 35 (Jan 26–Feb 1)",
+          "label": "Week 30 (Jan 26–Feb 1)",
           "days": [
             {
               "date": "Jan 26",
-              "sub": "REST (Republic Day) — light reading only",
-              "hours": "Light"
+              "sub": "Master sheet: Engg Maths revision (3 hrs) + Mini mock",
+              "hours": "8 hrs"
             },
             {
               "date": "Jan 27",
+              "sub": "Master sheet: Thermodynamics (3 hrs) + Mini mock",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Jan 28",
+              "sub": "Master sheet: Fluid Mechanics (3 hrs) + Mini mock",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Jan 29",
+              "sub": "Master sheet: Heat Transfer (3 hrs) + Mini mock",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Jan 30",
+              "sub": "Master sheet: SOM + TOM (3 hrs) + Mini mock",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Jan 31",
+              "sub": "Full-length mock test 16",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 1",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 31 (Feb 2–Feb 8)",
+          "days": [
+            {
+              "date": "Feb 2",
+              "sub": "Mock 16 analysis + Master sheet: Machine Design",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 3",
+              "sub": "Master sheet: Manufacturing + Metrology",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 4",
+              "sub": "Master sheet: IE + OR (half day) + Rest (half day)",
+              "hours": "4 hrs"
+            },
+            {
+              "date": "Feb 5",
+              "sub": "REST",
+              "hours": "Rest"
+            },
+            {
+              "date": "Feb 6",
+              "sub": "Full-length mock test 17",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 7",
+              "sub": "Mock 17 analysis",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 8",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 32 (Feb 9–Feb 15)",
+          "days": [
+            {
+              "date": "Feb 9",
+              "sub": "Full revision: Thermodynamics all topics rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 10",
+              "sub": "Full revision: Fluid Mechanics all topics rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 11",
+              "sub": "Full-length mock test 18",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 12",
+              "sub": "Mock 18 analysis + Full revision: Heat Transfer rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 13",
+              "sub": "Full revision: SOM + TOM + Vibrations rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 14",
+              "sub": "Full-length mock test 19",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 15",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 33 (Feb 16–Feb 22)",
+          "days": [
+            {
+              "date": "Feb 16",
+              "sub": "Mock 19 analysis + Machine Design rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 17",
+              "sub": "Manufacturing + Metrology rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 18",
+              "sub": "Full-length mock test 20",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 19",
+              "sub": "Mock 20 analysis + IE + OR rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 20",
+              "sub": "Engg Maths rapid fire",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 21",
+              "sub": "Full-length mock test 21",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 22",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 34 (Feb 23–Mar 1)",
+          "days": [
+            {
+              "date": "Feb 23",
+              "sub": "Mock 21 analysis + All master sheets final read",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 24",
+              "sub": "Full-length mock test 22 (last intensive mock)",
+              "hours": "8 hrs"
+            },
+            {
+              "date": "Feb 25",
+              "sub": "Mock 22 analysis",
+              "hours": "6 hrs"
+            },
+            {
+              "date": "Feb 26",
+              "sub": "Light revision: Thermodynamics + Fluid Mechanics formula sheets",
+              "hours": "4 hrs"
+            },
+            {
+              "date": "Feb 27",
+              "sub": "Light revision: SOM + TOM + Machine Design formula sheets",
+              "hours": "4 hrs"
+            },
+            {
+              "date": "Feb 28",
+              "sub": "Light revision: Manufacturing + IE + OR formula sheets",
+              "hours": "4 hrs"
+            },
+            {
+              "date": "Mar 1",
+              "sub": "REST",
+              "hours": "Rest"
+            }
+          ]
+        },
+        {
+          "label": "Week 35 (Mar 2–Mar 8)",
+          "days": [
+            {
+              "date": "Mar 2",
+              "sub": "REST — light reading only",
+              "hours": "Light"
+            },
+            {
+              "date": "Mar 3",
               "sub": "Light revision: Engg Maths + important formulas",
               "hours": "3 hrs"
             },
             {
-              "date": "Jan 28",
+              "date": "Mar 4",
               "sub": "Light revision: Thermodynamics key concepts + past 1-mark questions",
               "hours": "3 hrs"
             },
             {
-              "date": "Jan 29",
+              "date": "Mar 5",
               "sub": "Light revision: Fluid Mechanics + Heat Transfer key concepts",
               "hours": "3 hrs"
             },
             {
-              "date": "Jan 30",
+              "date": "Mar 6",
               "sub": "Light revision: SOM + TOM + Manufacturing key points",
               "hours": "3 hrs"
             },
             {
-              "date": "Jan 31",
+              "date": "Mar 7",
               "sub": "EXAM EVE — light formula sheet read, sleep early",
               "hours": "2 hrs"
             },
             {
-              "date": "Feb 1",
-              "sub": "GATE EXAM DAY 🎯",
+              "date": "Mar 8",
+              "sub": "GATE EXAM DAY",
               "hours": "Exam"
             }
           ]
