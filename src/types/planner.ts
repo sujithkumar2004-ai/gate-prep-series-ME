@@ -27,6 +27,14 @@ export type EmergencyMode = "Normal Mode" | "Backlog Mode" | "Crash Mode" | "Moc
 
 export type DailyScoreLabel = "Failed Day" | "Acceptable Day" | "Strong Day" | "Superhuman Day";
 
+export type QuestionDifficulty = "Easy" | "Medium" | "Hard";
+
+export type RecallRating = "forgot" | "partial" | "perfect";
+
+export type TimerMode = "Pomodoro" | "Deep Work 90";
+
+export type ReminderType = "Daily Study Start" | "Revision Due" | "Mock Test" | "Backlog Warning" | "Weekly Review";
+
 export type PlannerUser = {
   id: string;
   username: string;
@@ -60,6 +68,13 @@ export type DailyProgress = {
   mistakeType?: MistakeType;
 };
 
+export type TargetScoreSystem = {
+  targetMarks: number;
+  targetRank: number;
+  targetPercentile: number;
+  subjectTargets: Record<string, number>;
+};
+
 export type TopicProgress = {
   subject: string;
   topic: string;
@@ -91,6 +106,14 @@ export type MockTestRecord = {
   topMistakes?: string[];
   actionPlan?: string;
   retryTopics?: string[];
+  questionsSeen?: number;
+  skipped?: number;
+  guessed?: number;
+  negativeMarksLost?: number;
+  timePerQuestion?: number;
+  easyAccuracy?: number;
+  mediumAccuracy?: number;
+  hardAccuracy?: number;
   analysisDone?: boolean;
   weaknessNotes?: string;
 };
@@ -126,6 +149,95 @@ export type BacklogItem = {
   reason: string;
   recoveryDate: string;
   status: "Open" | "Scheduled" | "Recovered";
+};
+
+export type QuestionBankItem = {
+  id: string;
+  subject: string;
+  topic: string;
+  difficulty: QuestionDifficulty;
+  source: string;
+  solved: boolean;
+  accuracy: number;
+  retryNeeded: boolean;
+  bookmarked: boolean;
+  confidenceBefore?: number;
+  correctAfter?: boolean;
+};
+
+export type Flashcard = {
+  id: string;
+  kind: "Concept" | "Formula" | "Mistake";
+  subject: string;
+  topic: string;
+  front: string;
+  back: string;
+  selfRating?: RecallRating;
+  nextRevisionDate: string;
+};
+
+export type DeepWorkSession = {
+  id: string;
+  date: string;
+  mode: TimerMode;
+  subject: string;
+  task: string;
+  distractionCount: number;
+  pauseReason: string;
+  completedMinutes: number;
+};
+
+export type EnergyLog = {
+  id: string;
+  date: string;
+  sleepHours: number;
+  energyLevel: number;
+  focusLevel: number;
+  stressLevel: number;
+  workoutDone: boolean;
+  linkedMockScore?: number;
+};
+
+export type Reminder = {
+  id: string;
+  type: ReminderType;
+  title: string;
+  dueAt: string;
+  enabled: boolean;
+};
+
+export type WeeklyReview = {
+  week: string;
+  topicsCompleted: number;
+  pyqSolved: number;
+  mockAverage: number;
+  repeatedMistakes: string[];
+  backlogAdded: number;
+  backlogCleared: number;
+  nextWeekTarget: string;
+  weeklyScore: number;
+};
+
+export type MonthlyReview = {
+  month: string;
+  syllabusCompletion: number;
+  subjectReadiness: Record<string, number>;
+  mockAverage: number;
+  strongestTopics: string[];
+  weakestTopics: string[];
+  revisionDelay: number;
+  expectedExamReadiness: number;
+  nextMonthBattlePlan: string;
+};
+
+export type ExamSimulation = {
+  id: string;
+  date: string;
+  fullLengthMinutes: number;
+  sectionTimers: Record<string, number>;
+  negativeMarkingLost: number;
+  attemptStrategy: string;
+  postExamAnalysis: string;
 };
 
 export type SalaryProfile = {
@@ -244,7 +356,12 @@ export type PlannerData = {
     mistakeCategories: MistakeType[];
     financeCategories: Expense["category"][];
     gymCategories: string[];
+    questionSources?: string[];
+    reminderTypes?: ReminderType[];
   };
+  defaultTargets: TargetScoreSystem;
+  defaultQuestionBank: QuestionBankItem[];
+  defaultFlashcards: Flashcard[];
 };
 
 export type PlannerState = {
@@ -257,6 +374,13 @@ export type PlannerState = {
   salary: SalaryProfile;
   gymRoutine: GymRoutine;
   gymLogs: GymLog[];
+  targets: TargetScoreSystem;
+  questionBank: QuestionBankItem[];
+  flashcards: Flashcard[];
+  deepWorkSessions: DeepWorkSession[];
+  energyLogs: EnergyLog[];
+  reminders: Reminder[];
+  examSimulations: ExamSimulation[];
 };
 
 export type PYQSession = {

@@ -34,23 +34,36 @@ import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { loginWithBackendFallback } from "../services/authService";
 import {
   autoBacklog,
+  confidenceAccuracyInsights,
   createInitialState,
   dailyScore,
   emergencyMode,
+  energyCorrelation,
   examDate,
+  examStrategyEngine,
   formatDate,
   mockTrend,
+  monthlyReview,
+  needsRecoveryPlan,
   plannerData,
   planStartDate,
+  priorityEngine,
   readinessScore,
+  resistanceTopics,
+  restartTask,
+  revisionDebt,
   spacedRevisionSchedule,
   statuses,
   subjectCompletion,
   syllabusCompletionDate,
+  targetScoreMetrics,
   topicMastery,
+  updateFlashcardRecall,
+  weeklyReview,
   weakTopics
 } from "../services/plannerService";
 import { loadProgress, saveProgress } from "../services/progressService";
+import { requestReminderPermission, saveReminderEvents } from "../services/reminderService";
 import type {
   AuthSession,
   DailyProgress,
@@ -266,6 +279,17 @@ export default function PlannerPage() {
   const mockRows = useMemo(() => Object.values(plannerState.mockTests), [plannerState.mockTests]);
   const mockTrendRows = useMemo(() => mockTrend(plannerState), [plannerState]);
   const currentMode = useMemo(() => emergencyMode(plannerState), [plannerState]);
+  const targetMetrics = useMemo(() => targetScoreMetrics(plannerState), [plannerState]);
+  const priorityRows = useMemo(() => priorityEngine(plannerState), [plannerState]);
+  const debtRows = useMemo(() => revisionDebt(plannerState), [plannerState]);
+  const confidenceRows = useMemo(() => confidenceAccuracyInsights(plannerState), [plannerState]);
+  const weekly = useMemo(() => weeklyReview(plannerState), [plannerState]);
+  const monthly = useMemo(() => monthlyReview(plannerState), [plannerState]);
+  const energySummary = useMemo(() => energyCorrelation(plannerState), [plannerState]);
+  const strategyRows = useMemo(() => examStrategyEngine(plannerState), [plannerState]);
+  const resistanceRows = useMemo(() => resistanceTopics(plannerState), [plannerState]);
+  const recoveryNeeded = useMemo(() => needsRecoveryPlan(plannerState), [plannerState]);
+  const restartDay = useMemo(() => restartTask(plannerState), [plannerState]);
 
   const nextDay =
     plannerData.daywisePlan.find((day) => plannerState.dailyProgress[day.id]?.status !== "Done") ??
@@ -273,6 +297,17 @@ export default function PlannerPage() {
 
   function updateDay(day: PlannerDay, patch: Partial<DailyProgress>) {
     setPlannerState((current) => patchDailyProgress(current, day, patch));
+  }
+
+  function setDayStatus(day: PlannerDay, status: ProgressStatus) {
+    const progress = plannerState.dailyProgress[day.id] ?? defaultProgress(day);
+    if (status === "Backlog" && !progress.skipReason.trim()) {
+      const reason = window.prompt("Reason required before marking this task as backlog");
+      if (!reason?.trim()) return;
+      updateDay(day, { status, skipReason: reason.trim() });
+      return;
+    }
+    updateDay(day, { status });
   }
 
   function toggleWorkItem(day: PlannerDay, index: number) {
@@ -421,6 +456,8 @@ export default function PlannerPage() {
         <Metric icon={<AlertTriangle />} label="Backlog" value={metrics.backlog.toString()} />
         <Metric icon={<Activity />} label="Daily Avg" value={`${metrics.dailyAverage}/100`} />
         <Metric icon={<ShieldCheck />} label="Mode" value={currentMode} />
+        <Metric icon={<Target />} label="Target" value={`${targetMetrics.targetMarks} marks`} />
+        <Metric icon={<LineChart />} label="Score Gap" value={`${targetMetrics.scoreGap}`} />
         <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Fallback"} />
       </section>
 
@@ -484,12 +521,39 @@ export default function PlannerPage() {
           <Panel title="Mock Trend" icon={<LineChart />}>
             <TrendList rows={mockTrendRows} />
           </Panel>
+          <Panel title="Target Score System" icon={<Target />}>
+            <CompactList
+              rows={[
+                `Target marks: ${targetMetrics.targetMarks}`,
+                `Target rank: ${targetMetrics.targetRank}`,
+                `Target percentile: ${targetMetrics.targetPercentile}`,
+                `Current mock average: ${targetMetrics.currentMockAverage}`,
+                `Required weekly improvement: ${targetMetrics.requiredWeeklyImprovement} mark(s)`
+              ]}
+            />
+          </Panel>
+          <Panel title="Priority Engine" icon={<Flame />}>
+            <CompactList
+              rows={priorityRows
+                .slice(0, 6)
+                .map((row) => `${row.priorityScore}: ${row.subject} - ${row.topic} (${row.mastery})`)}
+            />
+          </Panel>
           <Panel title="Critical Weak Topics" icon={<Brain />}>
             <CompactList rows={weakRows.map((row) => `${row.subject}: ${row.topic}`)} empty="No weak topics detected yet." />
           </Panel>
           <Panel title="Current Mode" icon={<ShieldCheck />}>
             <div className="bigScore modeScore">{currentMode}</div>
             <p className="panelText">Backlog &gt; 3 triggers Backlog Mode, backlog &gt; 7 triggers Crash Mode, and after Dec 31 the app enters Mock-Only Mode.</p>
+          </Panel>
+          <Panel title="Anti-Procrastination" icon={<AlertTriangle />}>
+            <CompactList
+              rows={[
+                recoveryNeeded ? "Recovery plan triggered: two consecutive failed days." : "Recovery trigger clear.",
+                restartDay ? `Restart task: ${restartDay.subject} - ${restartDay.topic}` : "Progress has started.",
+                ...resistanceRows.slice(0, 4).map((row) => `Resistance topic: ${row.topic} skipped ${row.skipped} times`)
+              ]}
+            />
           </Panel>
         </section>
       )}
@@ -543,7 +607,7 @@ export default function PlannerPage() {
                         <select
                           className={`statusSelect ${statusClass[progress.status]}`}
                           value={progress.status}
-                          onChange={(event) => updateDay(day, { status: event.target.value as ProgressStatus })}
+                          onChange={(event) => setDayStatus(day, event.target.value as ProgressStatus)}
                         >
                           {statuses.map((item) => (
                             <option key={item} value={item}>
@@ -654,6 +718,25 @@ export default function PlannerPage() {
                 .map((row) => `${row.subject}: ${row.pyqSolved} solved`)}
             />
           </Panel>
+          <Panel title="Question Bank" icon={<ClipboardList />}>
+            <CompactList
+              rows={plannerState.questionBank
+                .slice(0, 12)
+                .map(
+                  (item) =>
+                    `${item.subject}: ${item.topic} | ${item.difficulty} | ${item.source} | ${item.solved ? "solved" : "open"} | ${item.bookmarked ? "bookmarked" : "normal"}`
+                )}
+            />
+          </Panel>
+          <Panel title="Confidence vs Accuracy" icon={<Target />}>
+            <CompactList
+              rows={[
+                `Overconfidence errors: ${confidenceRows.overconfidence.length}`,
+                `Underconfidence topics: ${confidenceRows.underconfidence.length}`,
+                `Low-confidence high-accuracy topics: ${confidenceRows.lowConfidenceHighAccuracy.length}`
+              ]}
+            />
+          </Panel>
         </section>
       )}
 
@@ -668,8 +751,13 @@ export default function PlannerPage() {
                   <th>Target</th>
                   <th>Score</th>
                   <th>Accuracy</th>
+                  <th>Attempted</th>
+                  <th>Correct</th>
                   <th>Wrong</th>
+                  <th>Time</th>
+                  <th>Negative</th>
                   <th>Analysis</th>
+                  <th>Action Plan</th>
                   <th>Weakness Notes</th>
                 </tr>
               </thead>
@@ -686,10 +774,25 @@ export default function PlannerPage() {
                       <input className="hourInput" value={mock.accuracy ?? ""} onChange={(event) => updateMock(mock.id, { accuracy: Number(event.target.value) })} />
                     </td>
                     <td>
+                      <input className="hourInput" value={mock.attempted ?? ""} onChange={(event) => updateMock(mock.id, { attempted: Number(event.target.value) })} />
+                    </td>
+                    <td>
+                      <input className="hourInput" value={mock.correct ?? ""} onChange={(event) => updateMock(mock.id, { correct: Number(event.target.value) })} />
+                    </td>
+                    <td>
                       <input className="hourInput" value={mock.wrong ?? ""} onChange={(event) => updateMock(mock.id, { wrong: Number(event.target.value) })} />
                     </td>
                     <td>
+                      <input className="hourInput" value={mock.timeSpentMinutes ?? ""} onChange={(event) => updateMock(mock.id, { timeSpentMinutes: Number(event.target.value) })} />
+                    </td>
+                    <td>
+                      <input className="hourInput" value={mock.negativeMarksLost ?? ""} onChange={(event) => updateMock(mock.id, { negativeMarksLost: Number(event.target.value) })} />
+                    </td>
+                    <td>
                       <input type="checkbox" checked={mock.analysisDone ?? false} onChange={(event) => updateMock(mock.id, { analysisDone: event.target.checked })} />
+                    </td>
+                    <td>
+                      <textarea value={mock.actionPlan ?? ""} onChange={(event) => updateMock(mock.id, { actionPlan: event.target.value })} />
                     </td>
                     <td>
                       <textarea value={mock.weaknessNotes ?? ""} onChange={(event) => updateMock(mock.id, { weaknessNotes: event.target.value })} />
@@ -743,22 +846,45 @@ export default function PlannerPage() {
           <Panel title="Revision Offsets" icon={<CalendarDays />}>
             <CompactList rows={plannerData.intelligenceRules.spacedRevisionOffsets.map((offset) => `Revise after ${offset} day(s)`).map(String)} />
           </Panel>
+          <Panel title="Revision Debt" icon={<AlertTriangle />}>
+            <CompactList
+              rows={debtRows
+                .slice(0, 12)
+                .map((row) => `${row.riskLevel}: ${row.subject} - ${row.topic}, ${row.daysOverdue} day(s) overdue, debt ${row.debtScore}`)}
+              empty="No overdue revision debt."
+            />
+          </Panel>
         </section>
       )}
 
       {activeTab === "formula" && (
-        <section className="syllabusGrid">
-          {subjectRows.map((row) => (
-            <article className="syllabusCard" key={row.id}>
-              <p>Formula Book</p>
-              <h3>{row.subject}</h3>
-              <ul>
-                {row.topics.slice(0, 5).map((topic) => (
-                  <li key={topic.id}>{topic.title}</li>
-                ))}
-              </ul>
-            </article>
-          ))}
+        <section className="contentGrid">
+          <Panel title="Formula Book" icon={<ShieldCheck />}>
+            <CompactList rows={subjectRows.flatMap((row) => row.topics.slice(0, 2).map((topic) => `${row.subject}: ${topic.title}`))} />
+          </Panel>
+          <Panel title="Active Recall" icon={<Brain />}>
+            <CompactList
+              rows={plannerState.flashcards
+                .slice(0, 12)
+                .map((card) => `${card.kind}: ${card.subject} - ${card.topic} | next ${formatDate(card.nextRevisionDate)} | ${card.selfRating ?? "unrated"}`)}
+            />
+          </Panel>
+          <Panel title="Recall Update Rule" icon={<RotateCcw />}>
+            <p className="panelText">
+              Flashcards move by recall rating: forgot creates a D1 review, partial creates D3, and perfect creates D7. This service is wired for backend sync.
+            </p>
+            <button
+              className="iconTextButton"
+              onClick={() =>
+                setPlannerState((current) => ({
+                  ...current,
+                  flashcards: current.flashcards.map((card, index) => (index === 0 ? updateFlashcardRecall(card, "partial") : card))
+                }))
+              }
+            >
+              Rate First Card Partial
+            </button>
+          </Panel>
         </section>
       )}
 
@@ -775,6 +901,39 @@ export default function PlannerPage() {
           </Panel>
           <Panel title="Weak Topic Heatmap" icon={<AlertTriangle />}>
             <CompactList rows={weakRows.map((row) => `${row.subject}: ${row.backlogDays} backlog day(s)`)} empty="No heatmap pressure yet." />
+          </Panel>
+          <Panel title="Weekly Review" icon={<CalendarDays />}>
+            <CompactList
+              rows={[
+                `Topics completed: ${weekly.topicsCompleted}`,
+                `PYQs solved: ${weekly.pyqSolved}`,
+                `Mock average: ${weekly.mockAverage}`,
+                `Backlog added: ${weekly.backlogAdded}`,
+                `Backlog cleared: ${weekly.backlogCleared}`,
+                `Next week target: ${weekly.nextWeekTarget}`,
+                `Weekly score: ${weekly.weeklyScore}`
+              ]}
+            />
+          </Panel>
+          <Panel title="Monthly Review" icon={<BarChart3 />}>
+            <CompactList
+              rows={[
+                `Syllabus completion: ${monthly.syllabusCompletion}%`,
+                `Mock average: ${monthly.mockAverage}`,
+                `Revision delay: ${monthly.revisionDelay}`,
+                `Expected readiness: ${monthly.expectedExamReadiness}%`,
+                `Battle plan: ${monthly.nextMonthBattlePlan || "Build more progress data"}`
+              ]}
+            />
+          </Panel>
+          <Panel title="Energy Tracker" icon={<Activity />}>
+            <p className="panelText">{energySummary}</p>
+            <CompactList
+              rows={plannerState.energyLogs.map(
+                (log) => `${formatDate(log.date)}: sleep ${log.sleepHours}h, energy ${log.energyLevel}/10, focus ${log.focusLevel}/10, stress ${log.stressLevel}/10`
+              )}
+              empty="Add energy logs through the backend-ready API to connect sleep, focus, gym, and mock score."
+            />
           </Panel>
         </section>
       )}
@@ -841,6 +1000,31 @@ export default function PlannerPage() {
             <div className={`bigScore ${scoreClass(metrics.readiness)}`}>{metrics.readiness}%</div>
             <p className="panelText">Exam day: {formatDate(examDate)}. Last week is light revision, formula recall, calculator rhythm, and sleep discipline.</p>
           </Panel>
+          <Panel title="Exam Simulation" icon={<TimerReset />}>
+            <CompactList
+              rows={[
+                "Full-length mock timer: 180 minutes",
+                "Section timers: GA, Maths, Technical, Review",
+                "Negative marking calculation: track wrong MCQ loss after every mock",
+                "Virtual exam interface: backend-ready endpoint /api/exam-simulation",
+                ...plannerState.examSimulations.map((item) => `${formatDate(item.date)}: ${item.attemptStrategy}`)
+              ]}
+            />
+          </Panel>
+          <Panel title="Attempt Strategy" icon={<Target />}>
+            <CompactList rows={strategyRows} />
+          </Panel>
+          <Panel title="Deep Work Timer" icon={<TimerReset />}>
+            <CompactList
+              rows={[
+                "Pomodoro mode: 25 minutes",
+                "Deep Work 90 mode: 90 minutes",
+                `Completed sessions: ${plannerState.deepWorkSessions.length}`,
+                `Completed minutes: ${plannerState.deepWorkSessions.reduce((sum, row) => sum + row.completedMinutes, 0)}`,
+                "Track selected subject, selected task, distractions, pause reason, and completed minutes."
+              ]}
+            />
+          </Panel>
           <Panel title="Final Rules" icon={<ShieldCheck />}>
             <CompactList
               rows={[
@@ -869,6 +1053,29 @@ export default function PlannerPage() {
                 "Export mock analysis as PDF: backend hook ready",
                 "Export mistake notebook as CSV: backend hook ready",
                 "Export daily report as PDF: backend hook ready"
+              ]}
+            />
+          </Panel>
+          <Panel title="Reminder System" icon={<CalendarDays />}>
+            <CompactList rows={plannerState.reminders.map((reminder) => `${reminder.enabled ? "On" : "Off"}: ${reminder.type} - ${reminder.title} at ${reminder.dueAt}`)} />
+            <button
+              className="iconTextButton"
+              onClick={async () => {
+                await requestReminderPermission();
+                saveReminderEvents(plannerState.reminders);
+              }}
+            >
+              Enable Local Reminders
+            </button>
+          </Panel>
+          <Panel title="AI Coach-ready Layer" icon={<Brain />}>
+            <CompactList
+              rows={[
+                "Daily plan summary: /api/ai-coach/daily-plan-summary",
+                "Weak topic explanation: /api/ai-coach/weak-topic-explanation",
+                "Recovery plan: /api/ai-coach/recovery-plan",
+                "Mock analysis summary: /api/ai-coach/mock-analysis-summary",
+                "Next-week strategy: /api/ai-coach/next-week-strategy"
               ]}
             />
           </Panel>

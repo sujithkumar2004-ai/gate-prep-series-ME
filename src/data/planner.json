@@ -8605,6 +8605,675 @@
       "Cardio",
       "Mobility",
       "Recovery"
+    ],
+    "questionSources": [
+      "GATE 2010-2026 PYQ",
+      "Made Easy workbook",
+      "Test series",
+      "Class notes",
+      "Custom practice"
+    ],
+    "reminderTypes": [
+      "Daily Study Start",
+      "Revision Due",
+      "Mock Test",
+      "Backlog Warning",
+      "Weekly Review"
     ]
-  }
+  },
+  "defaultTargets": {
+    "targetMarks": 85,
+    "targetRank": 500,
+    "targetPercentile": 99,
+    "subjectTargets": {
+      "Engineering Mathematics": 11,
+      "General Aptitude": 13,
+      "Engineering Mechanics": 6,
+      "Mechanics of Materials": 6,
+      "Theory of Machines": 6,
+      "Vibrations": 6,
+      "Machine Design": 6,
+      "Fluid Mechanics": 6,
+      "Heat Transfer": 6,
+      "Thermodynamics": 6,
+      "Applications": 6,
+      "Engineering Materials": 6,
+      "Manufacturing": 6,
+      "Industrial Engineering/OR": 6
+    }
+  },
+  "defaultQuestionBank": [
+    {
+      "id": "qb-subject-1-1",
+      "subject": "Engineering Mathematics",
+      "topic": "Matrix algebra, systems of linear equations, eigenvalues/eigenvectors",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-1-2",
+      "subject": "Engineering Mathematics",
+      "topic": "Limits, continuity, differentiability, mean value theorem, indeterminate forms",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-1-3",
+      "subject": "Engineering Mathematics",
+      "topic": "Definite/improper integrals; double/triple integrals",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-2-1",
+      "subject": "General Aptitude",
+      "topic": "Verbal aptitude: grammar, vocabulary, sentence completion, critical reasoning",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-2-2",
+      "subject": "General Aptitude",
+      "topic": "Numerical aptitude: percentages, ratios, averages, time-work, speed-distance",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-2-3",
+      "subject": "General Aptitude",
+      "topic": "Data interpretation and logical reasoning practice",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-3-1",
+      "subject": "Engineering Mechanics",
+      "topic": "FBD, equilibrium, friction applications, trusses/frames",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-3-2",
+      "subject": "Engineering Mechanics",
+      "topic": "Kinematics/dynamics of rigid bodies, impulse/momentum, energy methods, virtual work",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-4-1",
+      "subject": "Mechanics of Materials",
+      "topic": "Stress-strain, elastic constants, Poisson's ratio, Mohr's circle",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-4-2",
+      "subject": "Mechanics of Materials",
+      "topic": "Thin cylinders, SFD/BMD, bending/shear stress, shear centre",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-4-3",
+      "subject": "Mechanics of Materials",
+      "topic": "Beam deflection, torsion of shafts, Euler columns, energy methods",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-5-1",
+      "subject": "Theory of Machines",
+      "topic": "Mechanism displacement/velocity/acceleration analysis",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-5-2",
+      "subject": "Theory of Machines",
+      "topic": "Dynamic analysis, cams, gears and gear trains",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-5-3",
+      "subject": "Theory of Machines",
+      "topic": "Flywheels/governors, balancing, gyroscope",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-6-1",
+      "subject": "Vibrations",
+      "topic": "Free/forced vibration SDOF, damping, isolation, resonance, critical speed",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-7-1",
+      "subject": "Machine Design",
+      "topic": "Static/dynamic loading, failure theories, fatigue, S-N diagram",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-7-2",
+      "subject": "Machine Design",
+      "topic": "Bolted/riveted/welded joints; shafts, gears, bearings, brakes/clutches, springs",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-8-1",
+      "subject": "Fluid Mechanics",
+      "topic": "Fluid properties, statics, submerged/floating bodies",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-8-2",
+      "subject": "Fluid Mechanics",
+      "topic": "Control-volume mass/momentum/energy, Bernoulli equation",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-8-3",
+      "subject": "Fluid Mechanics",
+      "topic": "Continuity/momentum differential equations, dimensional analysis",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-9-1",
+      "subject": "Heat Transfer",
+      "topic": "Modes, 1D conduction, resistance analogy, fins",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-9-2",
+      "subject": "Heat Transfer",
+      "topic": "Unsteady conduction, lumped system, Heisler charts",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-9-3",
+      "subject": "Heat Transfer",
+      "topic": "Convective heat transfer, boundary layers, correlations over plates/pipes",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-10-1",
+      "subject": "Thermodynamics",
+      "topic": "Systems/processes, pure substances, ideal/real gases",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-10-2",
+      "subject": "Thermodynamics",
+      "topic": "Zeroth/first law, work/heat calculations",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-10-3",
+      "subject": "Thermodynamics",
+      "topic": "Second law, entropy, property charts/tables",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-11-1",
+      "subject": "Applications",
+      "topic": "Compressors, vapor/gas power cycles, regeneration and reheat",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-11-2",
+      "subject": "Applications",
+      "topic": "IC engines: Otto, Diesel and dual cycles",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-11-3",
+      "subject": "Applications",
+      "topic": "Refrigeration/AC: vapor/gas refrigeration, heat pumps, psychrometrics",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-12-1",
+      "subject": "Engineering Materials",
+      "topic": "Structure/properties, phase diagrams, heat treatment, stress-strain diagrams",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-13-1",
+      "subject": "Manufacturing",
+      "topic": "Casting: patterns/moulds/cores, solidification, riser/gating design",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-13-2",
+      "subject": "Manufacturing",
+      "topic": "Forming: yield criteria, hot/cold working, forging/rolling/extrusion/drawing/sheet forming",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-13-3",
+      "subject": "Manufacturing",
+      "topic": "Joining: welding, brazing, soldering, adhesive bonding, powder metallurgy",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    },
+    {
+      "id": "qb-subject-14-1",
+      "subject": "Industrial Engineering/OR",
+      "topic": "PPC: forecasting, aggregate planning, scheduling, MRP, lean manufacturing",
+      "difficulty": "Easy",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-14-2",
+      "subject": "Industrial Engineering/OR",
+      "topic": "Inventory: deterministic models, safety stock",
+      "difficulty": "Medium",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": false
+    },
+    {
+      "id": "qb-subject-14-3",
+      "subject": "Industrial Engineering/OR",
+      "topic": "OR: linear programming/simplex, transportation, assignment",
+      "difficulty": "Hard",
+      "source": "GATE 2010-2026 PYQ",
+      "solved": false,
+      "accuracy": 0,
+      "retryNeeded": false,
+      "bookmarked": true
+    }
+  ],
+  "defaultFlashcards": [
+    {
+      "id": "fc-subject-1-1",
+      "kind": "Concept",
+      "subject": "Engineering Mathematics",
+      "topic": "Matrix algebra, systems of linear equations, eigenvalues/eigenvectors",
+      "front": "Recall key point: Matrix algebra, systems of linear equations, eigenvalues/eigenvectors",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-1-2",
+      "kind": "Formula",
+      "subject": "Engineering Mathematics",
+      "topic": "Limits, continuity, differentiability, mean value theorem, indeterminate forms",
+      "front": "Recall key point: Limits, continuity, differentiability, mean value theorem, indeterminate forms",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-2-1",
+      "kind": "Concept",
+      "subject": "General Aptitude",
+      "topic": "Verbal aptitude: grammar, vocabulary, sentence completion, critical reasoning",
+      "front": "Recall key point: Verbal aptitude: grammar, vocabulary, sentence completion, critical reasoning",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-2-2",
+      "kind": "Formula",
+      "subject": "General Aptitude",
+      "topic": "Numerical aptitude: percentages, ratios, averages, time-work, speed-distance",
+      "front": "Recall key point: Numerical aptitude: percentages, ratios, averages, time-work, speed-distance",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-3-1",
+      "kind": "Concept",
+      "subject": "Engineering Mechanics",
+      "topic": "FBD, equilibrium, friction applications, trusses/frames",
+      "front": "Recall key point: FBD, equilibrium, friction applications, trusses/frames",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-3-2",
+      "kind": "Formula",
+      "subject": "Engineering Mechanics",
+      "topic": "Kinematics/dynamics of rigid bodies, impulse/momentum, energy methods, virtual work",
+      "front": "Recall key point: Kinematics/dynamics of rigid bodies, impulse/momentum, energy methods, virtual work",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-4-1",
+      "kind": "Concept",
+      "subject": "Mechanics of Materials",
+      "topic": "Stress-strain, elastic constants, Poisson's ratio, Mohr's circle",
+      "front": "Recall key point: Stress-strain, elastic constants, Poisson's ratio, Mohr's circle",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-4-2",
+      "kind": "Formula",
+      "subject": "Mechanics of Materials",
+      "topic": "Thin cylinders, SFD/BMD, bending/shear stress, shear centre",
+      "front": "Recall key point: Thin cylinders, SFD/BMD, bending/shear stress, shear centre",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-5-1",
+      "kind": "Concept",
+      "subject": "Theory of Machines",
+      "topic": "Mechanism displacement/velocity/acceleration analysis",
+      "front": "Recall key point: Mechanism displacement/velocity/acceleration analysis",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-5-2",
+      "kind": "Formula",
+      "subject": "Theory of Machines",
+      "topic": "Dynamic analysis, cams, gears and gear trains",
+      "front": "Recall key point: Dynamic analysis, cams, gears and gear trains",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-6-1",
+      "kind": "Concept",
+      "subject": "Vibrations",
+      "topic": "Free/forced vibration SDOF, damping, isolation, resonance, critical speed",
+      "front": "Recall key point: Free/forced vibration SDOF, damping, isolation, resonance, critical speed",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-7-1",
+      "kind": "Concept",
+      "subject": "Machine Design",
+      "topic": "Static/dynamic loading, failure theories, fatigue, S-N diagram",
+      "front": "Recall key point: Static/dynamic loading, failure theories, fatigue, S-N diagram",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-7-2",
+      "kind": "Formula",
+      "subject": "Machine Design",
+      "topic": "Bolted/riveted/welded joints; shafts, gears, bearings, brakes/clutches, springs",
+      "front": "Recall key point: Bolted/riveted/welded joints; shafts, gears, bearings, brakes/clutches, springs",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-8-1",
+      "kind": "Concept",
+      "subject": "Fluid Mechanics",
+      "topic": "Fluid properties, statics, submerged/floating bodies",
+      "front": "Recall key point: Fluid properties, statics, submerged/floating bodies",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-8-2",
+      "kind": "Formula",
+      "subject": "Fluid Mechanics",
+      "topic": "Control-volume mass/momentum/energy, Bernoulli equation",
+      "front": "Recall key point: Control-volume mass/momentum/energy, Bernoulli equation",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-9-1",
+      "kind": "Concept",
+      "subject": "Heat Transfer",
+      "topic": "Modes, 1D conduction, resistance analogy, fins",
+      "front": "Recall key point: Modes, 1D conduction, resistance analogy, fins",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-9-2",
+      "kind": "Formula",
+      "subject": "Heat Transfer",
+      "topic": "Unsteady conduction, lumped system, Heisler charts",
+      "front": "Recall key point: Unsteady conduction, lumped system, Heisler charts",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-10-1",
+      "kind": "Concept",
+      "subject": "Thermodynamics",
+      "topic": "Systems/processes, pure substances, ideal/real gases",
+      "front": "Recall key point: Systems/processes, pure substances, ideal/real gases",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-10-2",
+      "kind": "Formula",
+      "subject": "Thermodynamics",
+      "topic": "Zeroth/first law, work/heat calculations",
+      "front": "Recall key point: Zeroth/first law, work/heat calculations",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-11-1",
+      "kind": "Concept",
+      "subject": "Applications",
+      "topic": "Compressors, vapor/gas power cycles, regeneration and reheat",
+      "front": "Recall key point: Compressors, vapor/gas power cycles, regeneration and reheat",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-11-2",
+      "kind": "Formula",
+      "subject": "Applications",
+      "topic": "IC engines: Otto, Diesel and dual cycles",
+      "front": "Recall key point: IC engines: Otto, Diesel and dual cycles",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-12-1",
+      "kind": "Concept",
+      "subject": "Engineering Materials",
+      "topic": "Structure/properties, phase diagrams, heat treatment, stress-strain diagrams",
+      "front": "Recall key point: Structure/properties, phase diagrams, heat treatment, stress-strain diagrams",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-13-1",
+      "kind": "Concept",
+      "subject": "Manufacturing",
+      "topic": "Casting: patterns/moulds/cores, solidification, riser/gating design",
+      "front": "Recall key point: Casting: patterns/moulds/cores, solidification, riser/gating design",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-13-2",
+      "kind": "Formula",
+      "subject": "Manufacturing",
+      "topic": "Forming: yield criteria, hot/cold working, forging/rolling/extrusion/drawing/sheet forming",
+      "front": "Recall key point: Forming: yield criteria, hot/cold working, forging/rolling/extrusion/drawing/sheet forming",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-14-1",
+      "kind": "Concept",
+      "subject": "Industrial Engineering/OR",
+      "topic": "PPC: forecasting, aggregate planning, scheduling, MRP, lean manufacturing",
+      "front": "Recall key point: PPC: forecasting, aggregate planning, scheduling, MRP, lean manufacturing",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    },
+    {
+      "id": "fc-subject-14-2",
+      "kind": "Formula",
+      "subject": "Industrial Engineering/OR",
+      "topic": "Inventory: deterministic models, safety stock",
+      "front": "Recall key point: Inventory: deterministic models, safety stock",
+      "back": "Write the core formula/concept, one trap, and one PYQ pattern.",
+      "nextRevisionDate": "2026-07-06"
+    }
+  ]
 }
