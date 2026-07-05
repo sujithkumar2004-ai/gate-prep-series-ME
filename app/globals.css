@@ -172,7 +172,7 @@ main {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 280px;
   gap: 36px;
-  align-items: end;
+  align-items: flex-end;
   padding: 62px clamp(20px, 5vw, 72px) 42px;
   color: #fff;
   background:
@@ -391,7 +391,7 @@ h1 {
   display: grid;
   grid-template-columns: minmax(260px, 1fr) 220px 220px 170px 50px 50px;
   gap: 10px;
-  align-items: end;
+  align-items: flex-end;
   padding: 22px clamp(20px, 5vw, 72px) 12px;
 }
 
@@ -674,6 +674,179 @@ h1 {
   font-weight: 700;
 }
 
+.coreGrid,
+.coreStack {
+  padding: 8px clamp(20px, 5vw, 72px) 48px;
+}
+
+.coreGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.coreStack {
+  display: grid;
+  gap: 16px;
+}
+
+.widePanel,
+.taskCard {
+  min-width: 0;
+  border: 1px solid rgba(216, 223, 212, 0.92);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #fbfcf8);
+  box-shadow: var(--shadow-soft);
+  padding: 18px;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--blue);
+}
+
+.panelTitle h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.widePanel p {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.modeText {
+  display: block;
+  margin-top: 14px;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  line-height: 1.05;
+}
+
+.dailyHeader {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-end;
+}
+
+.fieldLine {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 820;
+}
+
+.fieldLine input {
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  padding: 0 12px;
+  outline: 0;
+}
+
+.summaryStrip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.summaryStrip span,
+.taskType,
+.taskStatus {
+  width: fit-content;
+  border-radius: 999px;
+  background: #eef5fb;
+  color: var(--blue);
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-transform: capitalize;
+}
+
+.taskList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 14px;
+}
+
+.taskCard {
+  display: grid;
+  gap: 14px;
+}
+
+.taskCard h3 {
+  margin: 8px 0;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.taskCard p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.taskActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dangerAction {
+  color: var(--red);
+}
+
+.status-completed {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.status-skipped {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.status-in_progress {
+  color: var(--blue);
+  background: var(--blue-soft);
+}
+
+.coreList {
+  display: grid;
+  gap: 10px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.coreList li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.coreList span {
+  color: #35404a;
+  line-height: 1.45;
+}
+
+.emptyState {
+  margin: 0;
+  color: var(--muted);
+}
+
 .tableScroll {
   overflow: auto;
   max-height: 72vh;
@@ -689,6 +862,10 @@ h1 {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.88rem;
+}
+
+.coreTable {
+  min-width: 1380px;
 }
 
 .plannerTable th,
@@ -927,9 +1104,18 @@ dd {
   .metricGrid,
   .strategyStrip,
   .toolbar,
+  .coreGrid,
+  .taskList,
   .weekGrid,
   .syllabusGrid {
     grid-template-columns: 1fr;
+  }
+
+  .dailyHeader,
+  .taskActions,
+  .coreList li {
+    align-items: stretch;
+    flex-direction: column;
   }
 
   .iconButton {

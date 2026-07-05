@@ -6,9 +6,11 @@ import type {
   PlannerPhase,
   PlannerWeek,
   RowEdit,
+  Subject,
   Status,
   StoredState,
-  SyllabusSubject
+  SyllabusSubject,
+  Topic
 } from "../types/planner";
 
 type RawDay = {
@@ -50,6 +52,8 @@ type RawPlanner = {
 const rawPlanner = plannerJson as RawPlanner;
 
 export const statuses: Status[] = ["Not Started", "In Progress", "Done", "Backlog"];
+export const finalExamDate = "2027-02-07";
+export const syllabusLockDate = "2026-12-31";
 
 function slug(value: string) {
   return value
@@ -74,25 +78,22 @@ function buildWorkItems(row: RawDay) {
   ].filter((item) => item && item !== "-");
 }
 
-function normalizeDays(): PlannerDay[] {
-  return rawPlanner["Daywise Plan"].map((row, index) => ({
-    id: `${row.Date}-${index}`,
-    date: row.Date,
-    day: row.Day,
-    phase: row.Phase,
-    week: `Week ${Math.floor(index / 7) + 1}`,
-    mainSubject: row["Main Subject"],
-    topic: row.Topic,
-    dailyTask: row["Daily Task"],
-    workItems: buildWorkItems(row),
-    targetHours: row["Target Hours"],
-    status: row.Status,
-    notes: row.Notes,
-    kind: inferKind(row)
+function normalizeSubjects(): Subject[] {
+  const rows = rawPlanner["Syllabus Map"].map((row) => ({
+    id: slug(row.Subject),
+    name: row.Subject,
+    section: row.Section
   }));
+  rawPlanner["Daywise Plan"].forEach((row) => {
+    const id = slug(row["Main Subject"]);
+    if (!rows.some((subject) => subject.id === id)) {
+      rows.push({ id, name: row["Main Subject"], section: "Planner" });
+    }
+  });
+  return rows;
 }
 
-function normalizeSyllabus(): SyllabusSubject[] {
+function normalizeSyllabus(subjects: Subject[]): SyllabusSubject[] {
   return rawPlanner["Syllabus Map"].map((row, index) => ({
     id: `${slug(row.Subject)}-${index}`,
     section: row.Section,
@@ -101,8 +102,87 @@ function normalizeSyllabus(): SyllabusSubject[] {
       .split("\n")
       .map((topic) => topic.trim())
       .filter(Boolean)
-      .map((topic, topicIndex) => ({ id: `${slug(row.Subject)}-${topicIndex}`, title: topic }))
+      .map((topic, topicIndex) => ({
+        id: `${slug(row.Subject)}-${topicIndex}`,
+        topicId: topicIdFor(subjects.find((subject) => subject.name === row.Subject)?.id ?? slug(row.Subject), topic),
+        title: topic,
+        weightage: defaultWeightage(topicIndex)
+      }))
   }));
+}
+
+function defaultWeightage(index: number) {
+  return Math.max(1, 5 - (index % 5));
+}
+
+function topicIdFor(subjectId: string, title: string) {
+  return `${subjectId}-${slug(title).slice(0, 60)}`;
+}
+
+function normalizeTopics(subjects: Subject[], syllabus: SyllabusSubject[]): Topic[] {
+  const topics = new Map<string, Topic>();
+  syllabus.forEach((subjectRow) => {
+    const subject = subjects.find((item) => item.name === subjectRow.subject);
+    subjectRow.topics.forEach((topic) => {
+      topics.set(topic.topicId, {
+        id: topic.topicId,
+        subjectId: subject?.id ?? slug(subjectRow.subject),
+        title: topic.title,
+        weightage: topic.weightage,
+        source: "syllabus"
+      });
+    });
+  });
+  rawPlanner["Daywise Plan"].forEach((row) => {
+    const subjectId = subjects.find((subject) => subject.name === row["Main Subject"])?.id ?? slug(row["Main Subject"]);
+    const id = findBestTopicId(subjectId, row.Topic, Array.from(topics.values())) ?? topicIdFor(subjectId, row.Topic);
+    if (!topics.has(id)) {
+      topics.set(id, {
+        id,
+        subjectId,
+        title: row.Topic,
+        weightage: 2,
+        source: "planner"
+      });
+    }
+  });
+  return Array.from(topics.values());
+}
+
+function findBestTopicId(subjectId: string, title: string, topics: Topic[]) {
+  const normalizedTitle = slug(title);
+  const sameSubject = topics.filter((topic) => topic.subjectId === subjectId);
+  const exact = sameSubject.find((topic) => slug(topic.title) === normalizedTitle);
+  if (exact) return exact.id;
+  const partial = sameSubject.find((topic) => {
+    const topicSlug = slug(topic.title);
+    return normalizedTitle.includes(topicSlug.slice(0, 18)) || topicSlug.includes(normalizedTitle.slice(0, 18));
+  });
+  return partial?.id;
+}
+
+function normalizeDays(subjects: Subject[], topics: Topic[]): PlannerDay[] {
+  return rawPlanner["Daywise Plan"].map((row, index) => {
+    const subjectId = subjects.find((subject) => subject.name === row["Main Subject"])?.id ?? slug(row["Main Subject"]);
+    const topicId = findBestTopicId(subjectId, row.Topic, topics) ?? topicIdFor(subjectId, row.Topic);
+    return {
+      id: `${row.Date}-${index}`,
+      date: row.Date,
+      day: row.Day,
+      phase: row.Phase,
+      week: `Week ${Math.floor(index / 7) + 1}`,
+      subjectId,
+      topicId,
+      mainSubject: row["Main Subject"],
+      topic: row.Topic,
+      dailyTask: row["Daily Task"],
+      workItems: buildWorkItems(row),
+      targetHours: row["Target Hours"],
+      status: row.Status,
+      notes: row.Notes,
+      kind: inferKind(row)
+    };
+  });
 }
 
 function normalizeWeeks(): PlannerWeek[] {
@@ -133,17 +213,23 @@ function normalizePhases(weeks: PlannerWeek[]): PlannerPhase[] {
   });
 }
 
-const days = normalizeDays();
 const weeks = normalizeWeeks();
+const subjects = normalizeSubjects();
+const syllabus = normalizeSyllabus(subjects);
+const topics = normalizeTopics(subjects, syllabus);
+const days = normalizeDays(subjects, topics);
 
 export const plannerData: PlannerData = {
   days,
   weeks,
   phases: normalizePhases(weeks),
-  syllabus: normalizeSyllabus(),
+  subjects,
+  topics,
+  syllabus,
   planStartDate: days[0]?.date ?? "2026-06-01",
-  planEndDate: days[days.length - 1]?.date ?? "2027-02-01",
-  syllabusCompletionDate: "2026-12-31"
+  planEndDate: finalExamDate,
+  examDate: finalExamDate,
+  syllabusCompletionDate: syllabusLockDate
 };
 
 export function rowKey(row: PlannerDay) {

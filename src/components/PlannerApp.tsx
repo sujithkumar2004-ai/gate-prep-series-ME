@@ -3,24 +3,34 @@
 import { BarChart3, BookOpen, CalendarDays, CheckCircle2, ClipboardList, Flame, Server } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { accounts, sessionStorageKey, strategyCards } from "../config/appConfig";
+import { accounts, strategyCards } from "../config/appConfig";
 import {
   computeMetrics,
-  createInitialEdits,
   formatDate,
   plannerData,
   rowKey
 } from "../lib/plannerData";
-import { readUserProgress, saveUserProgress } from "../lib/progressStorage";
-import type { Account, BackendStatus, RowEdit, Status, StoredState } from "../types/planner";
+import { createInitialPlannerState, readUserProgress, saveUserProgress } from "../services/progressService";
+import { createBacklogFromMissedTasks, markBacklogRecovered } from "../services/backlogService";
+import { patchTask, validateTaskStatus } from "../services/dailyPlanService";
+import { syncRowEditFromTaskState } from "../services/plannerService";
+import { ensureRevisionItems, markRevisionCompleted } from "../services/revisionService";
+import { clearSession, readSavedAccount, saveSession } from "../services/sessionService";
+import { updateTopicAccuracy } from "../services/topicService";
+import type { Account, BackendStatus, DailyTask, DailyTaskStatus, PlannerState, RowEdit, Status } from "../types/planner";
+import { BacklogRecovery } from "./planner/BacklogRecovery";
+import { DailyPlanView } from "./planner/DailyPlanView";
+import { DashboardView } from "./planner/DashboardView";
 import { DaywiseTable } from "./planner/DaywiseTable";
 import { LoginPanel } from "./planner/LoginPanel";
 import { PhaseCalendar } from "./planner/PhaseCalendar";
 import { PlannerHero } from "./planner/PlannerHero";
 import { PlannerTabs, type PlannerTab } from "./planner/PlannerTabs";
 import { PlannerToolbar } from "./planner/PlannerToolbar";
+import { RevisionSystem } from "./planner/RevisionSystem";
 import { Metric } from "./planner/Shared";
 import { SyllabusMap } from "./planner/SyllabusMap";
+import { SyllabusTracker } from "./planner/SyllabusTracker";
 import { WeeklyTracker } from "./planner/WeeklyTracker";
 
 export function PlannerApp() {
@@ -29,21 +39,20 @@ export function PlannerApp() {
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const [edits, setEdits] = useState<StoredState>(() => createInitialEdits());
+  const [plannerState, setPlannerState] = useState<PlannerState>(() => createInitialPlannerState());
   const [query, setQuery] = useState("");
   const [phase, setPhase] = useState("All");
   const [subject, setSubject] = useState("All");
   const [status, setStatus] = useState<Status | "All">("All");
-  const [activeTab, setActiveTab] = useState<PlannerTab>("calendar");
+  const [activeTab, setActiveTab] = useState<PlannerTab>("dashboard");
   const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null);
 
   useEffect(() => {
-    const savedUser = window.localStorage.getItem(sessionStorageKey);
-    const account = accounts.find((item) => item.username === savedUser);
+    const account = readSavedAccount();
     if (account) {
       setCurrentUser(account);
-      setEdits(readUserProgress(account.username));
+      setPlannerState(readUserProgress(account.username));
       setHasLoadedProgress(true);
     }
     setIsAuthReady(true);
@@ -51,9 +60,9 @@ export function PlannerApp() {
 
   useEffect(() => {
     if (currentUser && hasLoadedProgress) {
-      saveUserProgress(currentUser.username, edits);
+      saveUserProgress(currentUser.username, plannerState);
     }
-  }, [currentUser, edits, hasLoadedProgress]);
+  }, [currentUser, hasLoadedProgress, plannerState]);
 
   useEffect(() => {
     let isActive = true;
@@ -76,7 +85,7 @@ export function PlannerApp() {
   const filteredRows = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return plannerData.days.filter((row) => {
-      const edit = edits[rowKey(row)];
+      const edit = plannerState.rowEdits[rowKey(row)];
       const matchesQuery =
         !needle ||
         [row.topic, row.dailyTask, row.workItems.join(" "), row.mainSubject, row.phase, row.week]
@@ -90,30 +99,33 @@ export function PlannerApp() {
         (status === "All" || edit?.status === status)
       );
     });
-  }, [edits, phase, query, status, subject]);
+  }, [phase, plannerState.rowEdits, query, status, subject]);
 
-  const metrics = useMemo(() => computeMetrics(edits), [edits]);
+  const metrics = useMemo(() => computeMetrics(plannerState.rowEdits), [plannerState.rowEdits]);
 
   const nextRow = useMemo(() => {
-    return plannerData.days.find((row) => edits[rowKey(row)]?.status !== "Done") ?? plannerData.days[plannerData.days.length - 1];
-  }, [edits]);
+    return plannerData.days.find((row) => plannerState.rowEdits[rowKey(row)]?.status !== "Done") ?? plannerData.days[plannerData.days.length - 1];
+  }, [plannerState.rowEdits]);
 
   function updateRow(key: string, patch: Partial<RowEdit>) {
-    setEdits((current) => ({
+    setPlannerState((current) => ({
       ...current,
-      [key]: {
-        ...current[key],
-        ...patch
+      rowEdits: {
+        ...current.rowEdits,
+        [key]: {
+          ...current.rowEdits[key],
+          ...patch
+        }
       }
     }));
   }
 
   function resetProgress() {
-    setEdits(createInitialEdits());
+    setPlannerState(createInitialPlannerState());
   }
 
   function exportProgress() {
-    const blob = new Blob([JSON.stringify(edits, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(plannerState, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
@@ -136,16 +148,54 @@ export function PlannerApp() {
     setLoginUsername("");
     setLoginPassword("");
     setCurrentUser(account);
-    setEdits(readUserProgress(account.username));
+    setPlannerState(readUserProgress(account.username));
     setHasLoadedProgress(true);
-    window.localStorage.setItem(sessionStorageKey, account.username);
+    saveSession(account.username);
   }
 
   function handleLogout() {
-    window.localStorage.removeItem(sessionStorageKey);
+    clearSession();
     setCurrentUser(null);
     setHasLoadedProgress(false);
-    setEdits(createInitialEdits());
+    setPlannerState(createInitialPlannerState());
+  }
+
+  function updateDailyTask(task: DailyTask, status: DailyTaskStatus, actualMinutes: number, skipReason: string) {
+    if (!validateTaskStatus(status, skipReason)) {
+      window.alert("Skip reason is required when a task is skipped.");
+      return;
+    }
+    setPlannerState((current) => {
+      if (task.id.startsWith("revision-task-")) {
+        const revisionId = task.id.replace("revision-task-", "");
+        return status === "completed" ? markRevisionCompleted(current, revisionId) : current;
+      }
+      if (task.id.startsWith("backlog-task-")) {
+        const backlogId = task.id.replace("backlog-task-", "");
+        return status === "completed" ? markBacklogRecovered(current, backlogId) : current;
+      }
+      let next = patchTask(current, task.id, { status, actualMinutes, skipReason });
+      const updatedTask = next.tasks[task.id];
+      if (updatedTask?.type === "concept" && updatedTask.status === "completed") {
+        next = ensureRevisionItems(next, updatedTask);
+      }
+      if (updatedTask && updatedTask.status === "skipped") {
+        next = createBacklogFromMissedTasks(next, updatedTask, skipReason);
+      }
+      return syncRowEditFromTaskState(next);
+    });
+  }
+
+  function completeRevision(revisionId: string) {
+    setPlannerState((current) => syncRowEditFromTaskState(markRevisionCompleted(current, revisionId)));
+  }
+
+  function recoverBacklog(backlogId: string) {
+    setPlannerState((current) => markBacklogRecovered(current, backlogId));
+  }
+
+  function changeTopicAccuracy(topicId: string, accuracy: number) {
+    setPlannerState((current) => updateTopicAccuracy(current, topicId, accuracy));
   }
 
   if (!isAuthReady) {
@@ -217,12 +267,17 @@ export function PlannerApp() {
 
       <PlannerTabs activeTab={activeTab} onTabChange={setActiveTab} />
 
-      {activeTab === "calendar" && <PhaseCalendar plannerData={plannerData} edits={edits} phaseFilter={phase} />}
+      {activeTab === "dashboard" && <DashboardView state={plannerState} />}
+      {activeTab === "daily" && <DailyPlanView state={plannerState} onTaskUpdate={updateDailyTask} />}
+      {activeTab === "syllabus" && <SyllabusTracker state={plannerState} onAccuracyChange={changeTopicAccuracy} />}
+      {activeTab === "revision" && <RevisionSystem state={plannerState} onCompleteRevision={completeRevision} />}
+      {activeTab === "backlog" && <BacklogRecovery state={plannerState} onRecover={recoverBacklog} />}
+      {activeTab === "calendar" && <PhaseCalendar plannerData={plannerData} edits={plannerState.rowEdits} phaseFilter={phase} />}
       {activeTab === "plan" && (
-        <DaywiseTable rows={filteredRows} edits={edits} totalRows={metrics.total} onUpdateRow={updateRow} />
+        <DaywiseTable rows={filteredRows} edits={plannerState.rowEdits} totalRows={metrics.total} onUpdateRow={updateRow} />
       )}
-      {activeTab === "weeks" && <WeeklyTracker plannerData={plannerData} edits={edits} />}
-      {activeTab === "syllabus" && <SyllabusMap syllabus={plannerData.syllabus} />}
+      {activeTab === "weeks" && <WeeklyTracker plannerData={plannerData} edits={plannerState.rowEdits} />}
+      {activeTab === "syllabus-map" && <SyllabusMap syllabus={plannerData.syllabus} />}
     </main>
   );
 }
