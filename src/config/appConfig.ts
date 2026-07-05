@@ -1,11 +1,4 @@
-import type { Account } from "../types/planner";
-
 export const sessionStorageKey = "gate-me-planner-current-user-v1";
-
-export const accounts: Account[] = [
-  { username: "SK001", password: "SK001@123", name: "SK001" },
-  { username: "AR001", password: "AR001@123", name: "AR001" }
-];
 
 export const phaseColors = [
   "#2c9a74",

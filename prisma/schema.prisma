@@ -1,0 +1,286 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         String   @default("student")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Subject {
+  id        String   @id
+  name      String
+  section   String
+  topics    Topic[]
+  createdAt DateTime @default(now())
+}
+
+model Topic {
+  id        String   @id
+  subjectId String
+  title     String
+  weightage Int
+  source    String
+  subject   Subject  @relation(fields: [subjectId], references: [id])
+}
+
+model DailyTask {
+  id             String   @id
+  userId         String
+  date           DateTime
+  subjectId      String
+  topicId        String
+  type           String
+  title          String
+  plannedMinutes Int
+  actualMinutes  Int      @default(0)
+  status         String
+  skipReason     String?
+  completedAt    DateTime?
+}
+
+model DailyProgress {
+  id                   String   @id @default(cuid())
+  userId               String
+  date                 DateTime
+  totalPlannedTasks    Int
+  completedTasks       Int
+  skippedTasks         Int
+  pendingTasks         Int
+  plannedMinutes       Int
+  actualMinutes        Int
+  completionPercentage Int
+  dailyScore           Int
+}
+
+model RevisionItem {
+  id           String   @id
+  userId       String
+  sourceTaskId String
+  subjectId    String
+  topicId      String
+  dueDate      DateTime
+  cycle        String
+  title        String
+  status       String
+  completedAt  DateTime?
+}
+
+model BacklogItem {
+  id           String   @id
+  userId       String
+  taskId       String
+  date         DateTime
+  subjectId    String
+  topicId      String
+  title        String
+  reason       String
+  recoveryDate DateTime
+  priority     String
+  status       String
+  recoveredAt  DateTime?
+}
+
+model PYQSession {
+  id               String   @id
+  userId           String
+  date             DateTime
+  subjectId        String
+  topicId          String
+  totalQuestions   Int
+  correctQuestions Int
+  wrongQuestions   Int
+  timeSpentMinutes Int
+  sourceYear       String
+  retryNeeded      Boolean
+  bookmarked       Boolean
+  notes            String?
+}
+
+model PYQQuestion {
+  id               String @id
+  sessionId        String
+  topicId          String
+  label            String
+  isCorrect        Boolean
+  timeSpentMinutes Int
+}
+
+model MockTest {
+  id               String   @id
+  userId           String
+  mockNumber       Int
+  date             DateTime
+  totalMarks       Int
+  score            Int
+  attempted        Int
+  correct          Int
+  wrong            Int
+  accuracy         Int
+  timeSpentMinutes Int
+  actionPlan       String
+}
+
+model MockSubjectScore {
+  id        String @id @default(cuid())
+  mockId    String
+  subjectId String
+  score     Int
+  attempted Int
+  correct   Int
+  wrong     Int
+}
+
+model Mistake {
+  id            String   @id
+  userId        String
+  sourceType    String
+  sourceId      String
+  subjectId     String
+  topicId       String
+  mistakeType   String
+  questionLabel String
+  explanation   String
+  correctMethod String
+  retryDate     DateTime
+  isFixed       Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  fixedAt       DateTime?
+}
+
+model QuestionBankItem {
+  id            String @id
+  userId        String
+  subjectId     String
+  topicId       String
+  questionLabel String
+  source        String
+  difficulty    String
+  solved        Boolean
+  accuracy      Int
+  retryNeeded   Boolean
+  bookmarked    Boolean
+  notes         String?
+}
+
+model DeepWorkSession {
+  id               String   @id
+  userId           String
+  date             DateTime
+  mode             String
+  subjectId        String
+  topicId          String
+  taskId           String?
+  plannedMinutes   Int
+  completedMinutes Int
+  status           String
+  startedAt        DateTime?
+  pausedAt         DateTime?
+  completedAt      DateTime?
+  pauseReason      String?
+  notes            String?
+}
+
+model DistractionLog {
+  id        String   @id
+  sessionId String
+  reason    String
+  timestamp DateTime
+}
+
+model WeeklyReview {
+  id             String @id
+  userId         String
+  weekStartDate  DateTime
+  weekEndDate    DateTime
+  weeklyScore    Int
+  reflectionNotes String?
+}
+
+model MonthlyReview {
+  id             String @id
+  userId         String
+  month          String
+  expectedExamReadiness Int
+  reflectionNotes String?
+}
+
+model ActiveRecallCard {
+  id             String   @id
+  userId         String
+  cardType       String
+  subjectId      String
+  topicId        String
+  front          String
+  back           String
+  lastReviewedAt DateTime?
+  nextReviewAt   DateTime
+  rating         String?
+  confidence     Int
+  createdAt      DateTime @default(now())
+}
+
+model EnergyLog {
+  id          String @id
+  userId      String
+  date        DateTime
+  sleepHours  Float
+  energyLevel Int
+  focusLevel  Int
+  stressLevel Int
+  workoutDone Boolean
+  notes       String?
+}
+
+model GymLog {
+  id               String @id
+  userId           String
+  date             DateTime
+  routineTitle     String
+  workoutCompleted Boolean
+  bodyweight       Float?
+  recoveryNotes    String?
+}
+
+model Reminder {
+  id      String @id
+  userId  String
+  type    String
+  title   String
+  time    String
+  enabled Boolean
+}
+
+model SalaryEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  date      DateTime
+  notes     String?
+}
+
+model ExpenseEntry {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Float
+  category  String
+  date      DateTime
+  notes     String?
+}
+
+model AppSetting {
+  id        String @id @default(cuid())
+  userId    String
+  key       String
+  value     Json
+}

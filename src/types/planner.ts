@@ -472,10 +472,22 @@ export type NotificationPreference = {
 };
 
 export type Account = {
-  username: string;
-  password: string;
+  id: string;
   name: string;
+  email: string;
+  role: string;
+  createdAt?: string;
+  updatedAt?: string;
 };
+
+export type AuthSession = {
+  token: string;
+  user: Account;
+};
+
+export type SyncStatus = "synced" | "local only" | "syncing" | "sync failed";
+
+export type ApiErrorCode = "validation_error" | "unauthorized" | "not_found" | "server_error" | "network_error" | "fallback_used";
 
 export type BackendStatus = {
   status: "connected";

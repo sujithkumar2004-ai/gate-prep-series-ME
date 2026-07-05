@@ -3,19 +3,21 @@
 import { BarChart3, BookOpen, CalendarDays, CheckCircle2, ClipboardList, Flame, Server } from "lucide-react";
 import type { FormEvent } from "react";
 import { useEffect, useMemo, useState } from "react";
-import { accounts, strategyCards } from "../config/appConfig";
+import { strategyCards } from "../config/appConfig";
 import {
   computeMetrics,
   formatDate,
   plannerData,
   rowKey
 } from "../lib/plannerData";
-import { createInitialPlannerState, readUserProgress, saveUserProgress } from "../services/progressService";
+import { createInitialPlannerState, loadProgress, persistProgress } from "../services/progressService";
 import { createBacklogFromMissedTasks, markBacklogRecovered } from "../services/backlogService";
 import { patchTask, validateTaskStatus } from "../services/dailyPlanService";
 import { syncRowEditFromTaskState } from "../services/plannerService";
 import { ensureRevisionItems, markRevisionCompleted } from "../services/revisionService";
-import { clearSession, readSavedAccount, saveSession } from "../services/sessionService";
+import { clearSession, readSavedSession, saveSession } from "../services/sessionService";
+import { login, logout } from "../services/authService";
+import { detectLegacyLocalData, migrateLocalStorageData } from "../services/migrationService";
 import { updateTopicAccuracy } from "../services/topicService";
 import { savePYQSession } from "../services/pyqService";
 import { addQuestionBankItem } from "../services/questionBankService";
@@ -27,7 +29,7 @@ import { saveEnergyLog } from "../services/energyService";
 import { saveGymLog } from "../services/gymService";
 import { rateRecallCard } from "../services/activeRecallService";
 import { requestNotificationPermission, updateReminder } from "../services/reminderService";
-import type { Account, AttemptStrategy, BackendStatus, DailyTask, DailyTaskStatus, DeepWorkSession, EnergyLog, GymLog, Mistake, MockTest, PlannerState, PYQSession, QuestionBankItem, RecallRating, Reminder, RowEdit, Status } from "../types/planner";
+import type { Account, AttemptStrategy, AuthSession, BackendStatus, DailyTask, DailyTaskStatus, DeepWorkSession, EnergyLog, GymLog, Mistake, MockTest, PlannerState, PYQSession, QuestionBankItem, RecallRating, Reminder, RowEdit, Status, SyncStatus } from "../types/planner";
 import { ActiveRecallView } from "./planner/ActiveRecallView";
 import { AnalyticsView } from "./planner/AnalyticsView";
 import { AttemptStrategyView } from "./planner/AttemptStrategyView";
@@ -59,8 +61,9 @@ import { WeeklyTracker } from "./planner/WeeklyTracker";
 
 export function PlannerApp() {
   const [currentUser, setCurrentUser] = useState<Account | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
-  const [loginUsername, setLoginUsername] = useState("");
+  const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [plannerState, setPlannerState] = useState<PlannerState>(() => createInitialPlannerState());
@@ -71,22 +74,41 @@ export function PlannerApp() {
   const [activeTab, setActiveTab] = useState<PlannerTab>("dashboard");
   const [hasLoadedProgress, setHasLoadedProgress] = useState(false);
   const [backendStatus, setBackendStatus] = useState<BackendStatus | null>(null);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus>("local only");
+  const [loadError, setLoadError] = useState("");
+  const [hasLegacyData, setHasLegacyData] = useState(false);
 
   useEffect(() => {
-    const account = readSavedAccount();
-    if (account) {
-      setCurrentUser(account);
-      setPlannerState(readUserProgress(account.username));
-      setHasLoadedProgress(true);
+    const saved = readSavedSession();
+    if (saved) {
+      setSession(saved);
+      setCurrentUser(saved.user);
+      setSyncStatus("syncing");
+      loadProgress(saved.user.id ?? saved.user.email, saved.token)
+        .then((result) => {
+          setPlannerState(result.state);
+          setSyncStatus(result.fallbackUsed ? "local only" : "synced");
+          setHasLoadedProgress(true);
+          setHasLegacyData(detectLegacyLocalData(saved.user.id ?? saved.user.email));
+        })
+        .catch((error) => {
+          setLoadError(error instanceof Error ? error.message : "Unable to load progress");
+          setSyncStatus("sync failed");
+        })
+        .finally(() => setIsAuthReady(true));
+      return;
     }
     setIsAuthReady(true);
   }, []);
 
   useEffect(() => {
     if (currentUser && hasLoadedProgress) {
-      saveUserProgress(currentUser.username, plannerState);
+      setSyncStatus("syncing");
+      persistProgress(currentUser.id ?? currentUser.email, plannerState, session?.token)
+        .then((result) => setSyncStatus(result.fallbackUsed ? "local only" : "synced"))
+        .catch(() => setSyncStatus("sync failed"));
     }
-  }, [currentUser, hasLoadedProgress, plannerState]);
+  }, [currentUser, hasLoadedProgress, plannerState, session?.token]);
 
   useEffect(() => {
     let isActive = true;
@@ -160,28 +182,41 @@ export function PlannerApp() {
 
   function handleLogin(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const normalizedUsername = loginUsername.trim().toUpperCase();
-    const account = accounts.find(
-      (item) => item.username === normalizedUsername && item.password === loginPassword
-    );
-    if (!account) {
-      setLoginError("Invalid username or password");
-      return;
-    }
     setLoginError("");
-    setLoginUsername("");
-    setLoginPassword("");
-    setCurrentUser(account);
-    setPlannerState(readUserProgress(account.username));
-    setHasLoadedProgress(true);
-    saveSession(account.username);
+    setSyncStatus("syncing");
+    login(loginEmail.trim().toLowerCase(), loginPassword)
+      .then(async (nextSession) => {
+        setSession(nextSession);
+        setCurrentUser(nextSession.user);
+        saveSession(nextSession);
+        const result = await loadProgress(nextSession.user.id ?? nextSession.user.email, nextSession.token);
+        setPlannerState(result.state);
+        setHasLoadedProgress(true);
+        setHasLegacyData(detectLegacyLocalData(nextSession.user.id ?? nextSession.user.email));
+        setSyncStatus(result.fallbackUsed ? "local only" : "synced");
+        setLoginEmail("");
+        setLoginPassword("");
+      })
+      .catch((error) => {
+        setLoginError(error instanceof Error ? error.message : "Login failed");
+        setSyncStatus("sync failed");
+      });
   }
 
   function handleLogout() {
+    logout(session?.token);
     clearSession();
+    setSession(null);
     setCurrentUser(null);
     setHasLoadedProgress(false);
     setPlannerState(createInitialPlannerState());
+  }
+
+  function migrateLocalData() {
+    if (!currentUser) return;
+    setPlannerState(migrateLocalStorageData(currentUser.id ?? currentUser.email));
+    setHasLegacyData(false);
+    setSyncStatus("local only");
   }
 
   function updateDailyTask(task: DailyTask, status: DailyTaskStatus, actualMinutes: number, skipReason: string) {
@@ -284,10 +319,10 @@ export function PlannerApp() {
   if (!currentUser) {
     return (
       <LoginPanel
-        username={loginUsername}
+        email={loginEmail}
         password={loginPassword}
         error={loginError}
-        onUsernameChange={setLoginUsername}
+        onEmailChange={setLoginEmail}
         onPasswordChange={setLoginPassword}
         onSubmit={handleLogin}
       />
@@ -315,7 +350,14 @@ export function PlannerApp() {
         <Metric icon={<ClipboardList />} label="Backlog" value={metrics.counts.Backlog.toString()} />
         <Metric icon={<BarChart3 />} label="Hours" value={`${metrics.actualHours}/${metrics.targetHours}`} />
         <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Checking"} />
+        <Metric icon={<Server />} label="Sync" value={syncStatus} />
       </section>
+      {(loadError || hasLegacyData) && (
+        <section className="syncBanner">
+          {loadError && <span>{loadError}</span>}
+          {hasLegacyData && <button className="iconTextButton" onClick={migrateLocalData}>Import local planner data</button>}
+        </section>
+      )}
 
       <section className="strategyStrip" aria-label="Topper style strategy">
         {strategyCards.map((item) => (

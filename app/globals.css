@@ -319,6 +319,19 @@ h1 {
   padding: 16px clamp(20px, 5vw, 72px) 4px;
 }
 
+.syncBanner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin: 8px clamp(20px, 5vw, 72px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow-soft);
+  padding: 12px;
+}
+
 .strategyCard {
   border: 1px solid rgba(216, 224, 232, 0.94);
   border-radius: 8px;

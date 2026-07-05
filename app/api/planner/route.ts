@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { plannerData } from "../../../src/lib/plannerData";
+import { getPlannerSource } from "../../../src/server/repository";
 
 export async function GET() {
+  const plannerData = getPlannerSource();
   return NextResponse.json({
     status: "connected",
     framework: "Next.js API route",

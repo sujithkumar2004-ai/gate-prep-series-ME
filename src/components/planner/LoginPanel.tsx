@@ -4,17 +4,17 @@ import { LockKeyhole, UserRound } from "lucide-react";
 import type { FormEvent } from "react";
 
 export function LoginPanel({
-  username,
+  email,
   password,
   error,
-  onUsernameChange,
+  onEmailChange,
   onPasswordChange,
   onSubmit
 }: {
-  username: string;
+  email: string;
   password: string;
   error: string;
-  onUsernameChange: (value: string) => void;
+  onEmailChange: (value: string) => void;
   onPasswordChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 }) {
@@ -32,14 +32,14 @@ export function LoginPanel({
           </div>
           <h2>Login</h2>
           <label>
-            <span>Username</span>
+            <span>Email</span>
             <div>
               <UserRound size={18} />
               <input
-                value={username}
-                onChange={(event) => onUsernameChange(event.target.value)}
-                placeholder="Username"
-                autoComplete="username"
+                value={email}
+                onChange={(event) => onEmailChange(event.target.value)}
+                placeholder="Email"
+                autoComplete="email"
               />
             </div>
           </label>
