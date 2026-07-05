@@ -27,7 +27,12 @@ export function createInitialPlannerState(): PlannerState {
     tasks,
     revisions: {},
     backlog: {},
-    topicProgress
+    topicProgress,
+    pyqSessions: {},
+    questionBank: {},
+    mockTests: {},
+    mistakes: {},
+    attemptStrategies: {}
   };
 }
 
@@ -38,7 +43,12 @@ function normalizeState(saved: Partial<PlannerState> | null): PlannerState {
     tasks: { ...base.tasks, ...(saved?.tasks ?? {}) },
     revisions: { ...base.revisions, ...(saved?.revisions ?? {}) },
     backlog: { ...base.backlog, ...(saved?.backlog ?? {}) },
-    topicProgress: { ...base.topicProgress, ...(saved?.topicProgress ?? {}) }
+    topicProgress: { ...base.topicProgress, ...(saved?.topicProgress ?? {}) },
+    pyqSessions: { ...base.pyqSessions, ...(saved?.pyqSessions ?? {}) },
+    questionBank: { ...base.questionBank, ...(saved?.questionBank ?? {}) },
+    mockTests: { ...base.mockTests, ...(saved?.mockTests ?? {}) },
+    mistakes: { ...base.mistakes, ...(saved?.mistakes ?? {}) },
+    attemptStrategies: { ...base.attemptStrategies, ...(saved?.attemptStrategies ?? {}) }
   };
 }
 

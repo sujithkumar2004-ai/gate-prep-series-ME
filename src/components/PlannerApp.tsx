@@ -17,20 +17,31 @@ import { syncRowEditFromTaskState } from "../services/plannerService";
 import { ensureRevisionItems, markRevisionCompleted } from "../services/revisionService";
 import { clearSession, readSavedAccount, saveSession } from "../services/sessionService";
 import { updateTopicAccuracy } from "../services/topicService";
-import type { Account, BackendStatus, DailyTask, DailyTaskStatus, PlannerState, RowEdit, Status } from "../types/planner";
+import { savePYQSession } from "../services/pyqService";
+import { addQuestionBankItem } from "../services/questionBankService";
+import { addMockTest } from "../services/mockService";
+import { addMistake, markMistakeFixed } from "../services/mistakeService";
+import type { Account, AttemptStrategy, BackendStatus, DailyTask, DailyTaskStatus, Mistake, MockTest, PlannerState, PYQSession, QuestionBankItem, RowEdit, Status } from "../types/planner";
+import { AnalyticsView } from "./planner/AnalyticsView";
+import { AttemptStrategyView } from "./planner/AttemptStrategyView";
 import { BacklogRecovery } from "./planner/BacklogRecovery";
 import { DailyPlanView } from "./planner/DailyPlanView";
 import { DashboardView } from "./planner/DashboardView";
 import { DaywiseTable } from "./planner/DaywiseTable";
 import { LoginPanel } from "./planner/LoginPanel";
+import { MistakeNotebook } from "./planner/MistakeNotebook";
+import { MockAnalysis } from "./planner/MockAnalysis";
 import { PhaseCalendar } from "./planner/PhaseCalendar";
 import { PlannerHero } from "./planner/PlannerHero";
 import { PlannerTabs, type PlannerTab } from "./planner/PlannerTabs";
 import { PlannerToolbar } from "./planner/PlannerToolbar";
+import { PYQTracker } from "./planner/PYQTracker";
+import { QuestionBank } from "./planner/QuestionBank";
 import { RevisionSystem } from "./planner/RevisionSystem";
 import { Metric } from "./planner/Shared";
 import { SyllabusMap } from "./planner/SyllabusMap";
 import { SyllabusTracker } from "./planner/SyllabusTracker";
+import { WeaknessEngine } from "./planner/WeaknessEngine";
 import { WeeklyTracker } from "./planner/WeeklyTracker";
 
 export function PlannerApp() {
@@ -198,6 +209,33 @@ export function PlannerApp() {
     setPlannerState((current) => updateTopicAccuracy(current, topicId, accuracy));
   }
 
+  function savePyq(session: Omit<PYQSession, "id">) {
+    setPlannerState((current) => savePYQSession(current, session));
+  }
+
+  function addQuestion(item: Omit<QuestionBankItem, "id">) {
+    setPlannerState((current) => addQuestionBankItem(current, item));
+  }
+
+  function saveMock(mock: Omit<MockTest, "id" | "accuracy">) {
+    setPlannerState((current) => addMockTest(current, mock));
+  }
+
+  function saveMistake(mistake: Omit<Mistake, "id" | "createdAt" | "isFixed">) {
+    setPlannerState((current) => addMistake(current, mistake));
+  }
+
+  function fixMistake(id: string) {
+    setPlannerState((current) => markMistakeFixed(current, id));
+  }
+
+  function saveAttemptStrategy(strategy: Omit<AttemptStrategy, "id">) {
+    setPlannerState((current) => {
+      const id = `attempt-${Date.now()}`;
+      return { ...current, attemptStrategies: { ...current.attemptStrategies, [id]: { ...strategy, id } } };
+    });
+  }
+
   if (!isAuthReady) {
     return <main className="loginShell" />;
   }
@@ -272,6 +310,12 @@ export function PlannerApp() {
       {activeTab === "syllabus" && <SyllabusTracker state={plannerState} onAccuracyChange={changeTopicAccuracy} />}
       {activeTab === "revision" && <RevisionSystem state={plannerState} onCompleteRevision={completeRevision} />}
       {activeTab === "backlog" && <BacklogRecovery state={plannerState} onRecover={recoverBacklog} />}
+      {activeTab === "pyq" && <PYQTracker state={plannerState} onSave={savePyq} />}
+      {activeTab === "question-bank" && <QuestionBank state={plannerState} onAdd={addQuestion} />}
+      {activeTab === "mocks" && <><MockAnalysis state={plannerState} onAdd={saveMock} /><AttemptStrategyView state={plannerState} onAdd={saveAttemptStrategy} /></>}
+      {activeTab === "mistakes" && <MistakeNotebook state={plannerState} onAdd={saveMistake} onFix={fixMistake} />}
+      {activeTab === "weakness" && <WeaknessEngine state={plannerState} />}
+      {activeTab === "analytics" && <AnalyticsView state={plannerState} />}
       {activeTab === "calendar" && <PhaseCalendar plannerData={plannerData} edits={plannerState.rowEdits} phaseFilter={phase} />}
       {activeTab === "plan" && (
         <DaywiseTable rows={filteredRows} edits={plannerState.rowEdits} totalRows={metrics.total} onUpdateRow={updateRow} />

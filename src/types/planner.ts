@@ -19,6 +19,20 @@ export type TopicMasteryStatus =
 
 export type PlannerMode = "Normal Mode" | "Backlog Mode" | "Crash Mode" | "Mock-Only Mode";
 
+export type MistakeType =
+  | "Concept gap"
+  | "Formula mistake"
+  | "Calculation mistake"
+  | "Silly mistake"
+  | "Time pressure"
+  | "Wrong approach"
+  | "Memory gap"
+  | "Skipped revision";
+
+export type QuestionSource = "PYQ" | "Test Series" | "Textbook" | "Custom";
+
+export type QuestionDifficulty = "Easy" | "Medium" | "Hard";
+
 export type Subject = {
   id: string;
   name: string;
@@ -180,6 +194,138 @@ export type PlannerState = {
   revisions: Record<string, RevisionItem>;
   backlog: Record<string, BacklogItem>;
   topicProgress: Record<string, TopicProgress>;
+  pyqSessions: Record<string, PYQSession>;
+  questionBank: Record<string, QuestionBankItem>;
+  mockTests: Record<string, MockTest>;
+  mistakes: Record<string, Mistake>;
+  attemptStrategies: Record<string, AttemptStrategy>;
+};
+
+export type PYQSession = {
+  id: string;
+  date: string;
+  subjectId: string;
+  topicId: string;
+  totalQuestions: number;
+  correctQuestions: number;
+  wrongQuestions: number;
+  timeSpentMinutes: number;
+  sourceYear: string;
+  retryNeeded: boolean;
+  bookmarked: boolean;
+  notes: string;
+};
+
+export type PYQQuestion = {
+  id: string;
+  sessionId: string;
+  topicId: string;
+  label: string;
+  isCorrect: boolean;
+  timeSpentMinutes: number;
+};
+
+export type MockSubjectScore = {
+  subjectId: string;
+  score: number;
+  attempted: number;
+  correct: number;
+  wrong: number;
+};
+
+export type MockMistake = {
+  mistakeType: MistakeType;
+  count: number;
+};
+
+export type MockTest = {
+  id: string;
+  mockNumber: number;
+  date: string;
+  totalMarks: number;
+  score: number;
+  attempted: number;
+  correct: number;
+  wrong: number;
+  accuracy: number;
+  timeSpentMinutes: number;
+  subjectWiseScore: MockSubjectScore[];
+  weakTopicIds: string[];
+  topMistakes: MockMistake[];
+  actionPlan: string;
+  retryTopicIds: string[];
+};
+
+export type Mistake = {
+  id: string;
+  sourceType: "pyq" | "mock" | "question_bank" | "custom";
+  sourceId: string;
+  subjectId: string;
+  topicId: string;
+  mistakeType: MistakeType;
+  questionLabel: string;
+  explanation: string;
+  correctMethod: string;
+  retryDate: string;
+  isFixed: boolean;
+  createdAt: string;
+  fixedAt?: string;
+};
+
+export type WeakTopic = {
+  subjectId: string;
+  topicId: string;
+  weaknessScore: number;
+  reason: string;
+  recommendedAction: string;
+  priority: "Low" | "Medium" | "High";
+  lastActivityDate?: string;
+};
+
+export type ReadinessScore = {
+  overall: number;
+  syllabusMastery: number;
+  pyqCompletion: number;
+  mockPerformance: number;
+  revisionConsistency: number;
+  disciplineScore: number;
+  requiredScoreImprovement: number;
+};
+
+export type PriorityScore = {
+  subjectId: string;
+  topicId: string;
+  score: number;
+  reason: string;
+};
+
+export type QuestionBankItem = {
+  id: string;
+  subjectId: string;
+  topicId: string;
+  questionLabel: string;
+  source: QuestionSource;
+  difficulty: QuestionDifficulty;
+  solved: boolean;
+  accuracy: number;
+  retryNeeded: boolean;
+  bookmarked: boolean;
+  notes: string;
+};
+
+export type AttemptStrategy = {
+  id: string;
+  mockId?: string;
+  date: string;
+  questionsSeen: number;
+  questionsAttempted: number;
+  questionsSkipped: number;
+  guessedQuestions: number;
+  negativeMarksLost: number;
+  timePerQuestion: number;
+  easyAccuracy: number;
+  mediumAccuracy: number;
+  hardAccuracy: number;
 };
 
 export type Account = {

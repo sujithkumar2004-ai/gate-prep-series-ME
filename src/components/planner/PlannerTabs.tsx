@@ -1,8 +1,23 @@
 "use client";
 
-import { AlertTriangle, BarChart3, BookOpen, CalendarDays, ClipboardList, LayoutDashboard, RotateCcw, Table2 } from "lucide-react";
+import { AlertTriangle, BarChart3, BookOpen, Brain, CalendarDays, ClipboardList, LayoutDashboard, NotebookPen, RotateCcw, Target, Table2 } from "lucide-react";
 
-export type PlannerTab = "dashboard" | "daily" | "syllabus" | "revision" | "backlog" | "calendar" | "plan" | "weeks" | "syllabus-map";
+export type PlannerTab =
+  | "dashboard"
+  | "daily"
+  | "syllabus"
+  | "revision"
+  | "backlog"
+  | "pyq"
+  | "question-bank"
+  | "mocks"
+  | "mistakes"
+  | "weakness"
+  | "analytics"
+  | "calendar"
+  | "plan"
+  | "weeks"
+  | "syllabus-map";
 
 export function PlannerTabs({
   activeTab,
@@ -27,6 +42,24 @@ export function PlannerTabs({
       </button>
       <button className={activeTab === "backlog" ? "active" : ""} onClick={() => onTabChange("backlog")}>
         <AlertTriangle size={17} /> Backlog Recovery
+      </button>
+      <button className={activeTab === "pyq" ? "active" : ""} onClick={() => onTabChange("pyq")}>
+        <ClipboardList size={17} /> PYQ Tracker
+      </button>
+      <button className={activeTab === "question-bank" ? "active" : ""} onClick={() => onTabChange("question-bank")}>
+        <BookOpen size={17} /> Question Bank
+      </button>
+      <button className={activeTab === "mocks" ? "active" : ""} onClick={() => onTabChange("mocks")}>
+        <Target size={17} /> Mock Analysis
+      </button>
+      <button className={activeTab === "mistakes" ? "active" : ""} onClick={() => onTabChange("mistakes")}>
+        <NotebookPen size={17} /> Mistake Notebook
+      </button>
+      <button className={activeTab === "weakness" ? "active" : ""} onClick={() => onTabChange("weakness")}>
+        <Brain size={17} /> Weakness Engine
+      </button>
+      <button className={activeTab === "analytics" ? "active" : ""} onClick={() => onTabChange("analytics")}>
+        <BarChart3 size={17} /> Analytics
       </button>
       <button className={activeTab === "calendar" ? "active" : ""} onClick={() => onTabChange("calendar")}>
         <CalendarDays size={17} /> Phase Calendar

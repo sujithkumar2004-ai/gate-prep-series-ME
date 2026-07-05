@@ -749,6 +749,34 @@ h1 {
   outline: 0;
 }
 
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.formWide {
+  grid-column: 1 / -1;
+}
+
+.compactList {
+  display: grid;
+  gap: 9px;
+  margin: 14px 0 0;
+  padding-left: 18px;
+  color: #35404a;
+  line-height: 1.45;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
 .summaryStrip {
   display: flex;
   flex-wrap: wrap;
