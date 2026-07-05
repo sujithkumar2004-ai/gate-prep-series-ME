@@ -4,7 +4,6 @@ import type {
   BacklogItem,
   DailyProgress,
   EmergencyMode,
-  Flashcard,
   MasteryStatus,
   MockTestRecord,
   PlannerData,
@@ -67,17 +66,7 @@ export function createInitialState(): PlannerState {
       savingsGoal: plannerData.salaryExpense.savingsGoal
     },
     gymRoutine: plannerData.gymRoutine,
-    gymLogs: [],
-    targets: plannerData.defaultTargets,
-    questionBank: plannerData.defaultQuestionBank,
-    flashcards: plannerData.defaultFlashcards,
-    deepWorkSessions: [],
-    energyLogs: [],
-    reminders: [
-      { id: "daily-study", type: "Daily Study Start", title: "Start study block", dueAt: "07:00", enabled: true },
-      { id: "weekly-review", type: "Weekly Review", title: "Weekly review", dueAt: "Sunday 18:00", enabled: true }
-    ],
-    examSimulations: []
+    gymLogs: []
   };
 }
 
@@ -241,150 +230,4 @@ export function subjectCompletion(state: PlannerState) {
     const completion = relatedDays.length ? Math.round((done / relatedDays.length) * 100) : 0;
     return { ...subject, completion, plannedDays: relatedDays.length };
   });
-}
-
-export function currentMockAverage(state: PlannerState) {
-  const scored = Object.values(state.mockTests).filter((mock) => typeof mock.score === "number");
-  if (!scored.length) return 0;
-  return Math.round(scored.reduce((sum, mock) => sum + (mock.score ?? 0), 0) / scored.length);
-}
-
-export function targetScoreMetrics(state: PlannerState) {
-  const mockAverage = currentMockAverage(state);
-  const scoreGap = Math.max(0, state.targets.targetMarks - mockAverage);
-  const remainingWeeks = Math.max(1, Math.ceil((new Date(examDate).getTime() - Date.now()) / 604800000));
-  return {
-    ...state.targets,
-    currentMockAverage: mockAverage,
-    scoreGap,
-    requiredWeeklyImprovement: Math.ceil(scoreGap / remainingWeeks)
-  };
-}
-
-export function priorityEngine(state: PlannerState) {
-  const mastery = topicMastery(state);
-  const revisionDebtRows = revisionDebt(state);
-  return mastery
-    .map((topic) => {
-      const subjectWeight =
-        plannerData.syllabusMap.find((subject) => subject.subject === topic.subject)?.topics.reduce((sum, row) => sum + row.weightage, 0) ?? 1;
-      const weaknessBoost = topic.mastery === "Weak" ? 40 : topic.backlogDays * 10;
-      const revisionBoost = revisionDebtRows.some((debt) => debt.topic === topic.topic) ? 25 : 0;
-      const difficultyBoost = /advanced|compressible|fatigue|numerical|network|thermodynamic/i.test(topic.topic) ? 15 : 5;
-      return {
-        ...topic,
-        priorityScore: subjectWeight + weaknessBoost + revisionBoost + difficultyBoost
-      };
-    })
-    .sort((a, b) => b.priorityScore - a.priorityScore)
-    .slice(0, 20);
-}
-
-export function updateFlashcardRecall(card: Flashcard, rating: "forgot" | "partial" | "perfect"): Flashcard {
-  const date = new Date();
-  date.setDate(date.getDate() + (rating === "perfect" ? 7 : rating === "partial" ? 3 : 1));
-  return { ...card, selfRating: rating, nextRevisionDate: date.toISOString().slice(0, 10) };
-}
-
-export function resistanceTopics(state: PlannerState) {
-  const counts = new Map<string, number>();
-  plannerData.daywisePlan.forEach((day) => {
-    const progress = state.dailyProgress[day.id];
-    if (progress?.skipReason.trim()) {
-      counts.set(`${day.subject}: ${day.topic}`, (counts.get(`${day.subject}: ${day.topic}`) ?? 0) + 1);
-    }
-  });
-  return Array.from(counts.entries())
-    .filter(([, count]) => count >= 2)
-    .map(([topic, count]) => ({ topic, skipped: count }));
-}
-
-export function needsRecoveryPlan(state: PlannerState) {
-  const scores = plannerData.daywisePlan
-    .map((day) => dailyScore(day, state.dailyProgress[day.id] ?? createInitialDailyProgress(day)))
-    .slice(-2);
-  return scores.length === 2 && scores.every((score) => score < 70);
-}
-
-export function restartTask(state: PlannerState) {
-  const touched = plannerData.daywisePlan.some((day) => {
-    const progress = state.dailyProgress[day.id];
-    return progress && (progress.actualMinutes > 0 || progress.pyqSolved > 0 || progress.notes.trim());
-  });
-  return touched ? null : plannerData.daywisePlan[0];
-}
-
-export function weeklyReview(state: PlannerState) {
-  const topicsCompleted = plannerData.daywisePlan.filter((day) => state.dailyProgress[day.id]?.status === "Done").length;
-  const pyqSolved = plannerData.daywisePlan.reduce((sum, day) => sum + (state.dailyProgress[day.id]?.pyqSolved ?? 0), 0);
-  return {
-    week: "Current Week",
-    topicsCompleted,
-    pyqSolved,
-    mockAverage: currentMockAverage(state),
-    repeatedMistakes: resistanceTopics(state).map((item) => item.topic),
-    backlogAdded: autoBacklog(state).length,
-    backlogCleared: state.backlog.filter((item) => item.status === "Recovered").length,
-    nextWeekTarget: priorityEngine(state)[0]?.topic ?? "Continue planned sequence",
-    weeklyScore: Math.round(readinessScore(state) * 0.6 + Math.min(40, pyqSolved / 10))
-  };
-}
-
-export function monthlyReview(state: PlannerState) {
-  const completion = subjectCompletion(state);
-  const readiness = readinessScore(state);
-  const strongest = topicMastery(state).filter((topic) => topic.mastery === "Mastered").slice(0, 5);
-  const weakest = weakTopics(state).slice(0, 5);
-  return {
-    month: "Current Month",
-    syllabusCompletion: Math.round(completion.reduce((sum, row) => sum + row.completion, 0) / Math.max(completion.length, 1)),
-    subjectReadiness: Object.fromEntries(completion.map((row) => [row.subject, row.completion])),
-    mockAverage: currentMockAverage(state),
-    strongestTopics: strongest.map((topic) => `${topic.subject}: ${topic.topic}`),
-    weakestTopics: weakest.map((topic) => `${topic.subject}: ${topic.topic}`),
-    revisionDelay: revisionDebt(state).length,
-    expectedExamReadiness: readiness,
-    nextMonthBattlePlan: priorityEngine(state).slice(0, 5).map((topic) => topic.topic).join("; ")
-  };
-}
-
-export function revisionDebt(state: PlannerState) {
-  const today = new Date().toISOString().slice(0, 10);
-  return spacedRevisionSchedule(state)
-    .filter((item) => item.revisionDate < today && !item.done)
-    .map((item) => {
-      const daysOverdue = Math.ceil((new Date(today).getTime() - new Date(item.revisionDate).getTime()) / 86400000);
-      return {
-        ...item,
-        daysOverdue,
-        riskLevel: daysOverdue > 14 ? "High" : daysOverdue > 7 ? "Medium" : "Low",
-        debtScore: Math.min(100, daysOverdue * 5 + item.offsetDays)
-      };
-    });
-}
-
-export function confidenceAccuracyInsights(state: PlannerState) {
-  const overconfidence = state.questionBank.filter((item) => (item.confidenceBefore ?? 0) >= 80 && item.correctAfter === false);
-  const underconfidence = state.questionBank.filter((item) => (item.confidenceBefore ?? 0) < 50 && item.correctAfter === true);
-  const lowConfidenceHighAccuracy = state.questionBank.filter((item) => item.accuracy >= 75 && (item.confidenceBefore ?? 0) < 50);
-  return { overconfidence, underconfidence, lowConfidenceHighAccuracy };
-}
-
-export function energyCorrelation(state: PlannerState) {
-  const logsWithScores = state.energyLogs.filter((log) => typeof log.linkedMockScore === "number");
-  if (!logsWithScores.length) return "Add energy logs with linked mock scores to see correlation.";
-  const avgSleep = logsWithScores.reduce((sum, log) => sum + log.sleepHours, 0) / logsWithScores.length;
-  const avgScore = logsWithScores.reduce((sum, log) => sum + (log.linkedMockScore ?? 0), 0) / logsWithScores.length;
-  return `Avg sleep ${avgSleep.toFixed(1)}h with linked mock average ${avgScore.toFixed(1)}.`;
-}
-
-export function examStrategyEngine(state: PlannerState) {
-  const weak = weakTopics(state).slice(0, 3).map((topic) => topic.subject);
-  const target = targetScoreMetrics(state);
-  return [
-    `First pass: secure GA, Maths, and strongest subject questions before risky attempts.`,
-    `Avoid over-attempting weak areas: ${weak.join(", ") || "none detected yet"}.`,
-    `Current score gap is ${target.scoreGap}; weekly improvement target is ${target.requiredWeeklyImprovement} marks.`,
-    `Use final 20 minutes for NAT checks, unit checks, and negative-marking protection.`
-  ];
 }

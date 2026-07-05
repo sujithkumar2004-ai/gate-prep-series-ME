@@ -28,14 +28,7 @@ function normalizeState(partial?: Partial<PlannerState>): PlannerState {
     expenses: partial?.expenses ?? base.expenses,
     salary: { ...base.salary, ...(partial?.salary ?? {}) },
     gymRoutine: { ...base.gymRoutine, ...(partial?.gymRoutine ?? {}) },
-    gymLogs: partial?.gymLogs ?? base.gymLogs,
-    targets: { ...base.targets, ...(partial?.targets ?? {}) },
-    questionBank: partial?.questionBank ?? base.questionBank,
-    flashcards: partial?.flashcards ?? base.flashcards,
-    deepWorkSessions: partial?.deepWorkSessions ?? base.deepWorkSessions,
-    energyLogs: partial?.energyLogs ?? base.energyLogs,
-    reminders: partial?.reminders ?? base.reminders,
-    examSimulations: partial?.examSimulations ?? base.examSimulations
+    gymLogs: partial?.gymLogs ?? base.gymLogs
   };
 }
 
