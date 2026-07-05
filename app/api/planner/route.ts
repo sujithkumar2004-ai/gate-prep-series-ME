@@ -6,6 +6,7 @@ type HtmlDay = {
   date: string;
   sub: string;
   hours: string;
+  workItems?: string[];
 };
 
 type HtmlPhase = {
@@ -34,6 +35,7 @@ export async function GET() {
     framework: "Next.js API route",
     totalDays: days.length,
     phases: phases.length,
+    dailyWorkItems: days.reduce((count, day) => count + (day.workItems?.length ?? 0), 0),
     subjectsCovered: syllabusRows.map((row) => row.Subject),
     syllabusCompletionDate: syllabusCheckpoint?.date ?? null,
     examDate: examDay?.date ?? null,

@@ -312,6 +312,40 @@ h1 {
   padding: 28px clamp(20px, 5vw, 72px) 10px;
 }
 
+.strategyStrip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+  padding: 16px clamp(20px, 5vw, 72px) 4px;
+}
+
+.strategyCard {
+  border: 1px solid rgba(216, 224, 232, 0.94);
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffffff, #fbfcff);
+  box-shadow: var(--shadow-soft);
+  padding: 16px;
+}
+
+.strategyCard div {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--coral);
+}
+
+.strategyCard h2 {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.strategyCard p {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
 .metricCard {
   min-height: 116px;
   border: 1px solid rgba(216, 223, 212, 0.88);
@@ -523,7 +557,7 @@ h1 {
 .weekdayHeader,
 .dayGrid {
   display: grid;
-  grid-template-columns: repeat(7, minmax(112px, 1fr));
+  grid-template-columns: repeat(7, minmax(160px, 1fr));
   gap: 6px;
 }
 
@@ -556,7 +590,7 @@ h1 {
 }
 
 .dayCell {
-  min-height: 132px;
+  min-height: 212px;
   border: 1px solid rgba(216, 223, 212, 0.92);
   border-radius: 8px;
   background: linear-gradient(180deg, #ffffff, #fbfcf8);
@@ -599,6 +633,18 @@ h1 {
   line-height: 1.35;
 }
 
+.dayWork {
+  margin: 9px 0 0;
+  padding-left: 16px;
+  color: #48525c;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+
+.dayWork li + li {
+  margin-top: 5px;
+}
+
 .dayFoot {
   display: flex;
   align-items: center;
@@ -639,7 +685,7 @@ h1 {
 
 .plannerTable {
   width: 100%;
-  min-width: 1620px;
+  min-width: 1880px;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 0.88rem;
@@ -687,6 +733,21 @@ h1 {
 .topicCell {
   min-width: 260px;
   font-weight: 750;
+}
+
+.workCell {
+  min-width: 310px;
+}
+
+.workCell ul {
+  margin: 0;
+  padding-left: 18px;
+  color: #35404a;
+  line-height: 1.45;
+}
+
+.workCell li + li {
+  margin-top: 5px;
 }
 
 .numberCell {
@@ -864,6 +925,7 @@ dd {
   }
 
   .metricGrid,
+  .strategyStrip,
   .toolbar,
   .weekGrid,
   .syllabusGrid {

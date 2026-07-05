@@ -7,6 +7,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Download,
+  Flame,
   LockKeyhole,
   LogOut,
   RotateCcw,
@@ -26,6 +27,7 @@ type HtmlDay = {
   date: string;
   sub: string;
   hours: string;
+  workItems?: string[];
 };
 
 type HtmlWeek = {
@@ -51,6 +53,7 @@ type DayRow = {
   "Main Subject": string;
   Topic: string;
   "Daily Task": string;
+  "Work Items": string[];
   "Target Hours": number;
   Status: Status;
   Notes: string | null;
@@ -110,6 +113,25 @@ const phaseSoftColors: Record<number, string> = {
   4: "#faeeda",
   5: "#fcebeb"
 };
+
+const strategyCards = [
+  {
+    label: "Accuracy First",
+    text: "Protect marks in MCQs, because wrong MCQs carry negative marking. Attempt sure questions first, then return to risky ones."
+  },
+  {
+    label: "Daily Error Log",
+    text: "Every wrong, skipped, or slow question must become one line in the mistake notebook with the exact fix."
+  },
+  {
+    label: "Mock Discipline",
+    text: "January is for full mocks, analysis, speed drills, and strategy correction after the full syllabus is locked."
+  },
+  {
+    label: "99% Routine",
+    text: "Concept, timed practice, PYQs, formula recall, and same-day reattempts happen daily. No passive reading day."
+  }
+];
 
 const statusClass: Record<Status, string> = {
   "Not Started": "statusNotStarted",
@@ -179,6 +201,7 @@ function buildRows() {
             "Main Subject": parsed.subject,
             Topic: parsed.topic,
             "Daily Task": day.sub,
+            "Work Items": day.workItems ?? [],
             "Target Hours": parseHours(day.hours),
             Status: "Not Started",
             Notes: null,
@@ -294,7 +317,7 @@ export default function PlannerPage() {
       const edit = edits[rowKey(row)];
       const matchesQuery =
         !needle ||
-        [row.Topic, row["Daily Task"], row["Main Subject"], row.Phase, row.Week]
+        [row.Topic, row["Daily Task"], row["Work Items"].join(" "), row["Main Subject"], row.Phase, row.Week]
           .join(" ")
           .toLowerCase()
           .includes(needle);
@@ -506,6 +529,18 @@ export default function PlannerPage() {
         <Metric icon={<Server />} label="Backend" value={backendStatus?.status === "connected" ? "Connected" : "Checking"} />
       </section>
 
+      <section className="strategyStrip" aria-label="Topper style strategy">
+        {strategyCards.map((item) => (
+          <article className="strategyCard" key={item.label}>
+            <div>
+              <Flame size={18} />
+              <h2>{item.label}</h2>
+            </div>
+            <p>{item.text}</p>
+          </article>
+        ))}
+      </section>
+
       <section className="toolbar" aria-label="Planner controls">
         <label className="searchBox">
           <Search size={18} />
@@ -578,6 +613,13 @@ export default function PlannerPage() {
                           >
                             <div className="dayNum" style={{ color: phaseColors[item.id] }}>{day.date}</div>
                             <div className="daySubject">{day.sub}</div>
+                            {day.workItems && (
+                              <ul className="dayWork">
+                                {day.workItems.slice(0, 2).map((work) => (
+                                  <li key={work}>{work}</li>
+                                ))}
+                              </ul>
+                            )}
                             <div className="dayFoot">
                               <span>{day.hours}</span>
                               {edit && <small className={statusClass[edit.status]}>{edit.status}</small>}
@@ -608,6 +650,7 @@ export default function PlannerPage() {
                   <th>Week</th>
                   <th>Subject</th>
                   <th>Task</th>
+                  <th>Daily Work</th>
                   <th>Target</th>
                   <th>Kind</th>
                   <th>Status</th>
@@ -627,6 +670,13 @@ export default function PlannerPage() {
                       <td>{row.Week}</td>
                       <td className="subjectCell">{row["Main Subject"]}</td>
                       <td className="topicCell">{row["Daily Task"]}</td>
+                      <td className="workCell">
+                        <ul>
+                          {row["Work Items"].map((item) => (
+                            <li key={item}>{item}</li>
+                          ))}
+                        </ul>
+                      </td>
                       <td className="numberCell">{row["Target Hours"]}</td>
                       <td>{row.Kind}</td>
                       <td>
