@@ -1,4 +1,4 @@
-import { createInitialState } from "./plannerData";
+import { createInitialState, plannerData } from "./plannerData";
 import type { PlannerState } from "../types/planner";
 
 const storagePrefix = "gate-me-planner-state-v5";
@@ -7,13 +7,38 @@ export function storageKeyForUser(userId: string) {
   return `${storagePrefix}-${userId}`;
 }
 
+function normalizeState(partial?: Partial<PlannerState>): PlannerState {
+  const base = createInitialState();
+  const dailyProgress = { ...base.dailyProgress, ...(partial?.dailyProgress ?? {}) };
+  plannerData.daywisePlan.forEach((day) => {
+    dailyProgress[day.id] = {
+      ...base.dailyProgress[day.id],
+      ...dailyProgress[day.id],
+      workItems: day.workItems.map((_, index) => dailyProgress[day.id]?.workItems?.[index] ?? { done: false })
+    };
+  });
+  return {
+    ...base,
+    ...partial,
+    dailyProgress,
+    mockTests: { ...base.mockTests, ...(partial?.mockTests ?? {}) },
+    mistakes: partial?.mistakes ?? base.mistakes,
+    backlog: partial?.backlog ?? base.backlog,
+    income: partial?.income ?? base.income,
+    expenses: partial?.expenses ?? base.expenses,
+    salary: { ...base.salary, ...(partial?.salary ?? {}) },
+    gymRoutine: { ...base.gymRoutine, ...(partial?.gymRoutine ?? {}) },
+    gymLogs: partial?.gymLogs ?? base.gymLogs
+  };
+}
+
 export async function loadProgress(userId: string, token: string): Promise<PlannerState> {
   try {
     const response = await fetch(`/api/progress?userId=${encodeURIComponent(userId)}`, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (response.ok) {
-      return { ...createInitialState(), ...((await response.json()) as Partial<PlannerState>) };
+      return normalizeState((await response.json()) as Partial<PlannerState>);
     }
   } catch {
     // Fall through to local storage.
@@ -21,13 +46,13 @@ export async function loadProgress(userId: string, token: string): Promise<Plann
 
   const saved = window.localStorage.getItem(storageKeyForUser(userId));
   if (!saved) {
-    return createInitialState();
+    return normalizeState();
   }
 
   try {
-    return { ...createInitialState(), ...(JSON.parse(saved) as Partial<PlannerState>) };
+    return normalizeState(JSON.parse(saved) as Partial<PlannerState>);
   } catch {
-    return createInitialState();
+    return normalizeState();
   }
 }
 
